@@ -1,0 +1,55 @@
+@import "@fontsource-variable/inter/index.css";
+@import "@fontsource/plus-jakarta-sans/600.css";
+@import "@fontsource/plus-jakarta-sans/700.css";
+@import "material-symbols/outlined.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    overscroll-behavior: none;
+    background-color: theme("colors.background");
+    color: theme("colors.on-surface");
+    font-family: theme("fontFamily.sans");
+  }
+  main > :first-child {
+    margin-top: 0;
+  }
+  :focus-visible {
+    outline: 2px solid theme("colors.brand.link");
+    outline-offset: 2px;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+  .material-symbols-outlined.filled {
+    font-variation-settings: "FILL" 1;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+}
+
+/* Tabular figures for every currency/number style (DESIGN.md: Tabular Numerals). */
+.font-currency-display,
+.font-currency-md,
+td,
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

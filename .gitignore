@@ -16,3 +16,4 @@ backend/target/
 # IDE files
 .idea/
 .vscode/
+frontend/.next/

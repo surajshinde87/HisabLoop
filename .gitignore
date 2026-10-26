@@ -1,7 +1,8 @@
 # Local Netlify folder
-.netlify
+
 # Next.js generated files
 frontend/.next/
+frontend/.netlify/
 frontend/node_modules/
 
 # Environment variables

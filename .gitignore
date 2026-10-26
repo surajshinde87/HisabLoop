@@ -1,0 +1,17 @@
+# Local Netlify folder
+.netlify
+# Next.js generated files
+frontend/.next/
+frontend/node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Java / Maven generated files
+backend/target/
+
+# IDE files
+.idea/
+.vscode/

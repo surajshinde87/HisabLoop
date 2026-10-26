@@ -1,0 +1,18 @@
+package com.hisabloop.company;
+
+public enum Permission {
+    VIEW_CLAIMS,
+    CREATE_CLAIM,
+    APPROVE_CLAIMS,
+    MANAGE_REIMBURSEMENTS,
+    VIEW_REIMBURSEMENTS,
+    VIEW_REPORTS,
+    EXPORT_DATA,
+    VIEW_POLICIES,
+    MANAGE_POLICIES,
+    VIEW_TEAM,
+    MANAGE_TEAM,
+    VIEW_AUDIT,
+    REVIEW_ITC,
+    MANAGE_COMPANY
+}

@@ -1,0 +1,141 @@
+
+
+spring:
+  application:
+    name: hisabloop
+    config:
+      import: optional:file:.env[.properties],optional:file:backend/.env[.properties]
+  profiles:
+    # Used only when no profile is set (local runs). Prod sets SPRING_PROFILES_ACTIVE=prod,
+    # which replaces this list, so the mariadb workaround never reaches prod.
+    default: dev,mariadb
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/hisabloop?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&useUnicode=true&characterEncoding=utf8}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Flyway owns the schema. Set SPRING_JPA_HIBERNATE_DDL_AUTO=validate to also check the
+      # entity mappings at startup (the integration tests always do).
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:none}
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        type:
+          # Store Instants as DATETIME(6) in UTC (matches the Flyway schema).
+          preferred_instant_jdbc_type: TIMESTAMP
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: ${APP_MAX_UPLOAD_SIZE:10MB}
+      max-request-size: ${APP_MAX_UPLOAD_SIZE:10MB}
+  mvc:
+    problemdetails:
+      enabled: true
+  jackson:
+    default-property-inclusion: non_absent
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${PORT:8082}
+  error:
+    include-stacktrace: never
+    include-message: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+hisabloop:
+  jwt:
+    # Base64 or plain text secret, at least 32 bytes. Never commit a real value.
+    secret: ${JWT_SECRET:hisabloop-local-dev-secret-please-change-0123456789abcdef}
+    issuer: hisabloop
+    access-token-ttl: ${JWT_ACCESS_TTL:PT15M}
+    refresh-token-ttl: ${JWT_REFRESH_TTL:P14D}
+  cookie:
+    secure: ${APP_COOKIE_SECURE:false}
+    same-site: ${APP_COOKIE_SAME_SITE:Lax}
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  frontend-base-url: ${APP_FRONTEND_BASE_URL:http://localhost:3000}
+  storage:
+    directory: ${APP_STORAGE_DIR:./data/receipts}
+    max-file-bytes: ${APP_MAX_UPLOAD_BYTES:10485760}
+  ocr:
+    # mock = deterministic development provider; none = no OCR (receipts go to NEEDS_REVIEW)
+    provider: ${APP_OCR_PROVIDER:none}
+  auth:
+    self-registration-enabled: ${APP_SELF_REGISTRATION:false}
+  contact:
+    max-requests-per-hour: ${APP_CONTACT_RATE_LIMIT:5}
+  plans:
+    STARTER: 99
+    GROWTH: 149
+    BUSINESS: 249
+  demo:
+    seed: false
+  mail:
+    # Log full email bodies (incl. one-time links) while no email provider is configured.
+    log-bodies: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+hisabloop:
+  cookie:
+    secure: ${APP_COOKIE_SECURE:false}
+  ocr:
+    provider: ${APP_OCR_PROVIDER:mock}
+  auth:
+    self-registration-enabled: ${APP_SELF_REGISTRATION:true}
+  mail:
+    log-bodies: true
+
+---
+# Local workaround: lets the MySQL driver run against a MariaDB server.
+# MariaDB's INFORMATION_SCHEMA.KEYWORDS has no RESERVED column, which breaks
+# Hibernate's JDBC metadata lookup. Skip that lookup and set the dialect explicitly.
+# Harmless on real MySQL 8 too.
+spring:
+  config:
+    activate:
+      on-profile: mariadb
+  jpa:
+    properties:
+      hibernate:
+        boot:
+          allow_jdbc_metadata_access: false
+        dialect: org.hibernate.dialect.MySQLDialect
+
+---
+spring:
+  config:
+    activate:
+      on-profile: demo
+  flyway:
+    locations: classpath:db/migration
+hisabloop:
+  demo:
+    seed: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+hisabloop:
+  cookie:
+    secure: true

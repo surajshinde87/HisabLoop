@@ -1,0 +1,18 @@
+spring:
+  jpa:
+    hibernate:
+      # Fail the tests if an entity mapping drifts from the Flyway schema.
+      ddl-auto: validate
+hisabloop:
+  jwt:
+    secret: dGVzdC1vbmx5LXNlY3JldC1kby1ub3QtdXNlLWluLXByb2R1Y3Rpb24tMTIzNDU2Nzg=
+  cookie:
+    secure: false
+  ocr:
+    provider: mock
+  auth:
+    self-registration-enabled: true
+  storage:
+    directory: ${java.io.tmpdir}/hisabloop-test-receipts
+  contact:
+    max-requests-per-hour: 100

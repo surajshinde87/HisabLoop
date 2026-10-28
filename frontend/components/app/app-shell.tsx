@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { AppSidebar } from "./app-sidebar";
 import { AppTopbar } from "./app-topbar";
 
-/** 240px fixed sidebar + 64px top bar (Stitch app shell). Below lg the sidebar is a drawer. */
+/** 240px fixed sidebar + 64px top bar. Below lg the sidebar is a drawer. */
 export function AppShell({ children }: { children: ReactNode }) {
   const [navOpen, setNavOpen] = useState(false);
   const pathname = usePathname();

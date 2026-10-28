@@ -5,7 +5,7 @@ import { formatINR, formatINRCompact } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { MonthSpend } from "@/types/api";
 
-/** Six-month spend bars with team tabs, built like the Stitch dashboard (current month highlighted). */
+/** Six-month spend bars with team tabs (current month highlighted). */
 export function SpendTrend({ months, teams, gstCaptured, itcEligible }: { months: MonthSpend[]; teams: string[]; gstCaptured: number; itcEligible: number }) {
   const [team, setTeam] = useState<string>("ALL");
   const value = (m: MonthSpend) => (team === "ALL" ? m.total : (m.byTeam[team] ?? 0));

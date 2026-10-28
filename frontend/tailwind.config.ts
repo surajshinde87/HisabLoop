@@ -1,9 +1,7 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Design tokens copied verbatim from the Stitch export (design-reference/.../code.html
- * `tailwind.config` and hisabloop_precision_fintech/DESIGN.md), plus the HisabLoop brand
- * palette used by the authenticated app.
+ * Design tokens and brand palette used across public pages and the authenticated app.
  */
 const config: Config = {
   darkMode: "class",

@@ -4,7 +4,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { formatINR, formatINRCompact } from "@/lib/format";
 import type { CategorySpend } from "@/types/api";
 
-/** Palette from the Stitch donut: navy, teal, blue, mint, light blue, pale. */
+/** Palette: navy, teal, blue, mint, light blue, pale. */
 export const CATEGORY_COLORS = ["#00163a", "#006b5f", "#3796f4", "#70f5e0", "#aec6ff", "#cadaff", "#c4c6d0"];
 
 export function CategoryDonut({ data, total }: { data: CategorySpend[]; total: number }) {

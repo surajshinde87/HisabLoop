@@ -1,7 +1,7 @@
 import { cn, initials } from "@/lib/utils";
 
 describe("cn", () => {
-  it("keeps Stitch type-scale sizes next to colour classes", () => {
+  it("keeps custom type-scale sizes next to colour classes", () => {
     expect(cn("font-headline-md text-headline-md", "text-primary")).toBe("font-headline-md text-headline-md text-primary");
   });
   it("still resolves real conflicts", () => {

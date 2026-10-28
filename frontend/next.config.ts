@@ -19,7 +19,7 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline'" + (process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""),
       "style-src 'self' 'unsafe-inline'",
-      // Stitch design photography is hosted on Google; replace with self-hosted assets before launch.
+      // Remote photography hosted on Google; replace with self-hosted assets before launch.
       "img-src 'self' data: blob: https://lh3.googleusercontent.com",
       "font-src 'self' data:",
       `connect-src 'self' ${apiOrigin}`,

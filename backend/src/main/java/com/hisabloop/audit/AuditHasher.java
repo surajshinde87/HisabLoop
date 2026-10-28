@@ -3,7 +3,7 @@ package com.hisabloop.audit;
 import com.hisabloop.common.util.Hashing;
 
 /**
- * Hash-chain format (also implemented by scripts/generate_demo_seed.py — keep them in sync):
+ * Hash-chain format:
  * sha256(prevHash|eventId|companyId|entityType|entityId|action|actorUserId|occurredAtEpochMillis|previousStatus|newStatus|metadataJson)
  * with null values written as empty strings.
  */

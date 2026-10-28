@@ -2,7 +2,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /**
- * The HisabLoop logo exactly as the Stitch designs build it: the Material Symbol "all_inclusive"
+ * The HisabLoop logo: the Material Symbol "all_inclusive"
  * in a navy rounded tile + "Hisab" (navy) "Loop" (teal) wordmark + tagline.
  */
 export function Logo({

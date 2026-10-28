@@ -65,7 +65,7 @@ function FieldError({ message }: { message?: string }) {
 }
 
 /**
- * Contact / demo-request and CA partner forms from the Stitch designs, submitted to
+ * Contact / demo-request and CA partner forms, submitted to
  * POST /api/v1/public/contact. Success is only shown after the backend stored the request.
  */
 export function ContactForm({ variant }: { variant: "demo" | "partner" }) {

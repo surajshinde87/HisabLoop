@@ -7,7 +7,7 @@ const UNIT_PRICE = 149; // Growth plan, ₹ per user per month (configurable pro
 const GST_RATE = 0.18;
 const inr = (n: number) => "₹" + n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-/** Interactive pricing estimator from the Stitch pricing page. */
+/** Interactive pricing estimator for the pricing page. */
 export function PricingEstimator() {
   const [users, setUsers] = useState(15);
   const subtotal = users * UNIT_PRICE;

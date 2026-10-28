@@ -13,7 +13,7 @@ const TONES: Record<Tone, { value: string; chip: string; bar: string; label: str
   muted: { value: "text-primary", chip: "bg-surface-container-low text-primary-container", bar: "bg-secondary-fixed opacity-70", label: "text-outline" },
 };
 
-/** KPI card from the Stitch dashboard: label, big value, icon chip, footer, coloured bottom bar. */
+/** KPI card: label, big value, icon chip, footer, coloured bottom bar. */
 export function KpiCard({
   label,
   value,

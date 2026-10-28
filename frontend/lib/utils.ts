@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { extendTailwindMerge } from "tailwind-merge";
 
 /**
- * tailwind-merge must know the Stitch type scale (text-headline-md etc.); otherwise it treats
+ * tailwind-merge must know the custom type scale (text-headline-md etc.); otherwise it treats
  * those classes as text colours and drops them when a colour class follows.
  */
 const TYPE_SCALE = [

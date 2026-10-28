@@ -38,7 +38,7 @@ const COLUMNS = [
   },
 ];
 
-/** Shared public footer, markup from the Stitch export. */
+/** Shared public footer. */
 export function SiteFooter() {
   const year = new Date().getFullYear();
   return (

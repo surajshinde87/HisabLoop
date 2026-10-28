@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 
 /**
- * FAQ search from the Stitch help-centre design. The FAQ answers are static content rendered on
+ * FAQ search for help centre. The FAQ answers are static content rendered on
  * the server as native <details data-faq-item>; this only toggles their visibility.
  */
 function applyFilter(query: string) {

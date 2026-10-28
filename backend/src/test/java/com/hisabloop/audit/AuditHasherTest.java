@@ -48,7 +48,7 @@ class AuditHasherTest {
 
     @Test
     void matchesSeedGeneratorFormat() {
-        // Same canonical string as scripts/generate_demo_seed.py builds.
+        // Same canonical string as demo seed builds.
         AuditEvent e = event(AuditHasher.GENESIS, "e1", "CLAIM_CONFIRMED", "CONFIRMED");
         String canonical = String.join("|", AuditHasher.GENESIS, "e1", "c1", "CLAIM", "claim-1", "CLAIM_CONFIRMED",
                 "u1", "1760000000123", "DRAFT", "CONFIRMED", "");

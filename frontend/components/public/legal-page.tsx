@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-/** Layout for legal pages, using the public-page hero pattern from the Stitch designs. */
+/** Layout for legal pages, using the public-page hero pattern. */
 export function LegalPage({ title, updated, intro, children }: { title: string; updated: string; intro: ReactNode; children: ReactNode }) {
   return (
     <main className="w-full flex-1 bg-background pt-20">

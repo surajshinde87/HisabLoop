@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-/** Card shell taken from the Stitch "Login / Role Selection" screen (blurred accents + logo lockup). */
+/** Card shell for login and role selection (blurred accents + logo lockup). */
 export function AuthShell({ title, subtitle, children, wide = false, footer }: { title: string; subtitle?: ReactNode; children: ReactNode; wide?: boolean; footer?: ReactNode }) {
   return (
     <main className="flex min-h-screen w-full items-center justify-center bg-surface p-space-md font-body-md text-body-md text-on-surface antialiased">

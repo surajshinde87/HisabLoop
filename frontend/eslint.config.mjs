@@ -5,7 +5,7 @@ const config = [
   ...nextVitals,
   ...nextTs,
   {
-    ignores: [".next/**", "node_modules/**", "next-env.d.ts", "coverage/**"],
+    ignores: [".next/**", ".netlify/**", "node_modules/**", "next-env.d.ts", "coverage/**"],
   },
   {
     files: ["components/public/generated/**"],

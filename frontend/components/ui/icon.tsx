@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-/** Material Symbols Outlined glyph, exactly as used throughout the Stitch designs. */
+/** Material Symbols Outlined glyph. */
 export function Icon({ name, className, filled = false, label }: { name: string; className?: string; filled?: boolean; label?: string }) {
   return (
     <span

@@ -9,7 +9,7 @@ import type { ReceiptDto } from "@/types/api";
 
 /**
  * Loads the receipt through the authenticated API (files are never public URLs) and shows it
- * with zoom/rotate controls from the Stitch "Tax Invoice Preview" panel.
+ * with zoom/rotate controls for tax invoice preview.
  */
 export function ReceiptPreview({ companyId, receipt }: { companyId: string; receipt: ReceiptDto }) {
   // Results are tagged with the receipt they belong to, so switching receipts never shows a stale image.

@@ -1,1212 +1,671 @@
+import type { ReactNode } from "react";
+
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisabloop.com";
+
+const focusRing =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary";
+
+const h2Class =
+  "font-headline-lg text-primary font-bold tracking-tight text-[24px] leading-[32px] sm:text-[30px] sm:leading-[38px] lg:text-[34px] lg:leading-[42px]";
+
+
+export const featuresJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/features#webpage`,
+      url: `${SITE_URL}/features`,
+      name: "HisabLoop features",
+      description:
+        "WhatsApp bill capture, automatic bill reading, approvals, policy checks, GST details, reimbursement batches and accountant-ready exports.",
+      inLanguage: "en-IN",
+      isPartOf: { "@id": `${SITE_URL}/#website` },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Features", item: `${SITE_URL}/features` },
+      ],
+    },
+  ],
+};
+
+/* -------------------------------------------------------------------------- */
+/*  Small building blocks                                                     */
+/* -------------------------------------------------------------------------- */
+
+function Icon({ name, className = "" }: { name: string; className?: string }) {
+  return (
+    <span aria-hidden="true" className={`material-symbols-outlined ${className}`}>
+      {name}
+    </span>
+  );
+}
+
+function PlannedTag() {
+  return (
+    <span className="ml-2 inline-flex items-center rounded-full bg-surface-container px-2 py-0.5 align-middle font-label-sm text-label-sm text-on-surface-variant">
+      Planned
+    </span>
+  );
+}
+
+type Point = { text: string; planned?: boolean };
+
+function PointList({ points }: { points: Point[] }) {
+  return (
+    <ul className="flex flex-col gap-3">
+      {points.map((p) => (
+        <li key={p.text} className="flex items-start gap-3">
+          <Icon name="check_circle" className="text-secondary text-lg mt-0.5 shrink-0" />
+          <span className="font-body-md text-body-md text-on-surface min-w-0">
+            {p.text}
+            {p.planned ? <PlannedTag /> : null}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** A decorative sample of the product UI. Hidden from assistive tech, captioned for everyone. */
+function Mock({
+  children,
+  caption = "Illustration with sample data.",
+  decorative = true,
+}: {
+  children: ReactNode;
+  caption?: string;
+  decorative?: boolean;
+}) {
+  return (
+    <figure className="min-w-0 w-full max-w-lg mx-auto lg:max-w-none">
+      <div
+        aria-hidden={decorative ? "true" : undefined}
+        className="bg-surface-container-lowest rounded-2xl p-4 sm:p-6 shadow-md"
+      >
+        {children}
+      </div>
+      <figcaption className="mt-3 text-center font-body-sm text-body-sm text-on-surface-variant">
+        {caption}
+      </figcaption>
+    </figure>
+  );
+}
+
+function FeatureSection({
+  id,
+  title,
+  intro,
+  points,
+  visual,
+  reverse = false,
+  extra,
+}: {
+  id: string;
+  title: string;
+  intro: string;
+  points: Point[];
+  visual: ReactNode;
+  reverse?: boolean;
+  extra?: ReactNode;
+}) {
+  return (
+    <section
+      id={id}
+      aria-labelledby={`${id}-title`}
+      className="scroll-mt-24 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-gutter items-center"
+    >
+      <div className={`lg:col-span-6 min-w-0 flex flex-col gap-5 ${reverse ? "lg:order-2" : ""}`}>
+        <h2 id={`${id}-title`} className={h2Class}>
+          {title}
+        </h2>
+        <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">{intro}</p>
+        <PointList points={points} />
+        {extra}
+      </div>
+      <div className={`lg:col-span-6 min-w-0 ${reverse ? "lg:order-1" : ""}`}>{visual}</div>
+    </section>
+  );
+}
+
+/** Non-interactive button look used inside illustrations. */
+function FakeButton({
+  children,
+  tone = "primary",
+  className = "",
+}: {
+  children: ReactNode;
+  tone?: "primary" | "secondary" | "neutral";
+  className?: string;
+}) {
+  const tones = {
+    primary: "bg-primary-container text-on-primary",
+    secondary: "bg-secondary text-on-secondary",
+    neutral: "bg-surface-container text-on-surface-variant",
+  } as const;
+  return (
+    <span
+      className={`inline-flex items-center justify-center rounded-lg px-3 py-1.5 font-label-md text-label-md ${tones[tone]} ${className}`}
+    >
+      {children}
+    </span>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Content                                                                   */
+/* -------------------------------------------------------------------------- */
+
+const jumpLinks = [
+  { href: "#feature-whatsapp", label: "WhatsApp capture" },
+  { href: "#feature-ocr", label: "Bill reading" },
+  { href: "#feature-approvals", label: "Approvals" },
+  { href: "#feature-policies", label: "Policy checks" },
+  { href: "#feature-gst", label: "GST details" },
+  { href: "#feature-batches", label: "Reimbursement" },
+  { href: "#feature-reports", label: "Exports" },
+  { href: "#feature-ca-workspace", label: "CA workspace" },
+];
+
+const exportFormats: { name: string; planned: boolean }[] = [
+  { name: "Excel (.xlsx)", planned: false },
+  { name: "CSV", planned: false },
+];
+
+const exportColumns = [
+  "Date",
+  "Vendor",
+  "GSTIN",
+  "Category",
+  "Taxable value",
+  "CGST / SGST / IGST",
+  "Total",
+  "Employee",
+  "Status",
+];
+
+const policyCards = [
+  {
+    icon: "tune",
+    title: "Category and role limits",
+    text: "Set a limit for each expense category and each role. A claim over the limit is flagged before the manager sees it.",
+    example: "Example: meals up to ₹600 per claim for the Sales role.",
+  },
+  {
+    icon: "content_copy",
+    title: "Duplicate detection",
+    text: "A bill is flagged when the same vendor, amount and date appear again, or when the same image is sent twice.",
+    example: "Stops the same bill being claimed twice by one person or across a team.",
+  },
+  {
+    icon: "badge",
+    title: "GSTIN checks",
+    text: "A missing or badly formatted GSTIN is flagged so the employee can fix it while the bill is still at hand.",
+    example: "The check covers the format of the number, not the vendor's registration status.",
+  },
+];
+
+const capturedFields = [
+  "Vendor name and GSTIN",
+  "Invoice date",
+  "Taxable value",
+  "CGST, SGST and IGST split",
+  "Total amount and payment mode",
+  "Category and original bill image",
+];
+
+/* -------------------------------------------------------------------------- */
+/*  Page                                                                      */
+/* -------------------------------------------------------------------------- */
+
 export function FeaturesContent() {
   return (
     <main className="w-full pt-20 bg-background flex-1">
-      <div className="flex flex-col w-full">
-        {" "}
-        <section className="w-full bg-surface py-space-xl px-margin">
-          <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
-            {" "}
-            <div className="inline-flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container text-primary font-label-sm text-label-sm tracking-wider uppercase shadow-sm mb-space-md">
-              <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-              {" Platform Capabilities \u00b7 Built for Indian MSMEs "}
-            </div>
-            {" "}
-            {" "}
-            <h1 className="font-headline-xl text-headline-xl text-primary max-w-3xl tracking-tight leading-tight">
-              {" Simple tools for every step of expense management. "}
-            </h1>
-            {" "}
-            {" "}
-            <p className="mt-space-md font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
-              {" Capture receipts, review claims, manage approvals, and organise financial records in one connected workflow \u2014 without forcing your team to learn complex new software. "}
-            </p>
-            {" "}
-            {" "}
-            <div className="mt-space-lg flex flex-wrap items-center justify-center gap-space-md">
-              <a className="inline-flex items-center gap-2 h-11 px-space-xl rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg shadow-md transition-all group" href="/register">
-                <span>
-                  {"Get Started Free"}
-                </span>
-                {" "}
-                <span className="material-symbols-outlined text-[18px] transition-transform duration-200 group-hover:translate-x-1">
-                  {"arrow_forward"}
-                </span>
-              </a>
-              {" "}
-              <a className="inline-flex items-center justify-center h-11 px-space-lg rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-lg text-label-lg shadow-sm transition-all" href="#navigator">
-                {" See How It Works "}
-              </a>
-            </div>
-            {" "}
-            {" "}
-            <div className="w-full mt-space-2xl pt-space-md overflow-x-auto no-scrollbar" id="navigator">
-              <div className="inline-flex items-center gap-space-xs p-1.5 bg-surface-container-low rounded-full shadow-inner">
-                <a className="px-space-md py-1.5 rounded-full bg-surface-container-lowest text-primary font-label-md text-label-md shadow-sm whitespace-nowrap hover:bg-surface-container transition-colors" href="#feature-whatsapp">
-                  {"WhatsApp Capture"}
-                </a>
-                {" "}
-                <a className="px-space-md py-1.5 rounded-full text-on-surface-variant font-label-md text-label-md whitespace-nowrap hover:text-primary transition-colors" href="#feature-ocr">
-                  {"AI Receipt OCR"}
-                </a>
-                {" "}
-                <a className="px-space-md py-1.5 rounded-full text-on-surface-variant font-label-md text-label-md whitespace-nowrap hover:text-primary transition-colors" href="#feature-approvals">
-                  {"Approval Chains"}
-                </a>
-                {" "}
-                <a className="px-space-md py-1.5 rounded-full text-on-surface-variant font-label-md text-label-md whitespace-nowrap hover:text-primary transition-colors" href="#feature-policies">
-                  {"Policy Guardrails"}
-                </a>
-                {" "}
-                <a className="px-space-md py-1.5 rounded-full text-on-surface-variant font-label-md text-label-md whitespace-nowrap hover:text-primary transition-colors" href="#feature-gst">
-                  {"GST-Aware Records"}
-                </a>
-                {" "}
-                <a className="px-space-md py-1.5 rounded-full text-on-surface-variant font-label-md text-label-md whitespace-nowrap hover:text-primary transition-colors" href="#feature-batches">
-                  {"Reimbursement Batches"}
-                </a>
-                {" "}
-                <a className="px-space-md py-1.5 rounded-full text-on-surface-variant font-label-md text-label-md whitespace-nowrap hover:text-primary transition-colors" href="#feature-reports">
-                  {"Reports & Exports"}
-                </a>
-                {" "}
-                <a className="px-space-md py-1.5 rounded-full text-on-surface-variant font-label-md text-label-md whitespace-nowrap hover:text-primary transition-colors" href="#feature-ca-workspace">
-                  {"CA Client Workspace"}
-                </a>
-              </div>
-            </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(featuresJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+
+      {/* ------------------------------ Hero ------------------------------ */}
+      <section aria-labelledby="features-title" className="w-full bg-surface px-margin py-12 sm:py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
+          <h1
+            id="features-title"
+            className="font-headline-xl text-primary font-bold tracking-tight max-w-3xl text-[30px] leading-[38px] sm:text-[38px] sm:leading-[46px] lg:text-[46px] lg:leading-[54px]"
+          >
+            Everything an expense claim needs, from bill to books
+          </h1>
+          <p className="mt-5 font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+            HisabLoop connects WhatsApp bill capture, approvals, policy checks and accountant-ready
+            exports in one workflow, so your team does not have to learn new software.
+          </p>
+
+          <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
+            <a
+              href="/register"
+              className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg shadow-md hover:bg-primary-container transition-colors ${focusRing}`}
+            >
+              Join the pilot
+            </a>
+            <a
+              href="/contact"
+              className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:bg-surface-container transition-colors ${focusRing}`}
+            >
+              Talk to us
+            </a>
           </div>
-        </section>
-        {" "}
-        {" "}
-        <div className="max-w-7xl mx-auto px-margin py-space-xl flex flex-col gap-space-2xl">
-          {" "}
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center scroll-mt-24" id="feature-whatsapp">
-            <div className="lg:col-span-6 flex flex-col gap-space-md">
-              <div className="inline-flex items-center gap-2 self-start px-space-sm py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">
-                <span className="material-symbols-outlined text-[16px]">
-                  {"chat"}
-                </span>
-                {" Zero Friction Inflow "}
-              </div>
-              {" "}
-              <h2 className="font-headline-lg text-headline-lg text-primary tracking-tight">
-                {" WhatsApp-First Capture."}
-                <br />
-                {"Zero employee app downloads. "}
-              </h2>
-              {" "}
-              <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                {" On-ground sales teams and field executives hate complicated enterprise claim forms. With HisabLoop, they simply forward a photo of their paper voucher or taxi bill to a verified WhatsApp bot. "}
-              </p>
-              {" "}
-              <ul className="flex flex-col gap-space-sm mt-space-xs">
-                <li className="flex items-start gap-space-sm">
-                  <span className="material-symbols-outlined text-secondary text-lg mt-0.5">
-                    {"check_circle"}
-                  </span>
-                  {" "}
-                  <span className="font-body-md text-body-md text-on-surface">
-                    {"Accepts photo snaps, camera scans, and forwarded vendor PDFs instantly"}
-                  </span>
+
+          <p className="mt-6 max-w-2xl font-body-sm text-body-sm text-on-surface-variant">
+            Features marked <PlannedTag /> are on the roadmap and are not part of the first release.
+          </p>
+
+          <nav aria-label="On this page" className="w-full mt-10">
+            <ul className="flex flex-nowrap sm:flex-wrap sm:justify-center gap-2 overflow-x-auto pb-2 sm:pb-0 -mx-margin px-margin sm:mx-0 sm:px-0">
+              {jumpLinks.map((l) => (
+                <li key={l.href} className="shrink-0">
+                  <a
+                    href={l.href}
+                    className={`inline-flex items-center rounded-full bg-surface-container-low px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors whitespace-nowrap ${focusRing}`}
+                  >
+                    {l.label}
+                  </a>
                 </li>
-                <li className="flex items-start gap-space-sm">
-                  <span className="material-symbols-outlined text-secondary text-lg mt-0.5">
-                    {"check_circle"}
-                  </span>
-                  {" "}
-                  <span className="font-body-md text-body-md text-on-surface">
-                    {"Natural language support for pocket cash expenses (e.g. "}
-                    <em>
-                      {"\"Auto fare \u20b9180 cash to APMC market\""}
-                    </em>
-                    {")"}
-                  </span>
-                </li>
-                <li className="flex items-start gap-space-sm">
-                  <span className="material-symbols-outlined text-secondary text-lg mt-0.5">
-                    {"check_circle"}
-                  </span>
-                  {" "}
-                  <span className="font-body-md text-body-md text-on-surface">
-                    {"Immediate WhatsApp confirmation slip with editable category pill"}
-                  </span>
-                </li>
-              </ul>
-            </div>
-            {" "}
-            {" "}
-            <div className="lg:col-span-6">
-              <div className="relative mx-auto max-w-md rounded-2xl bg-surface-container-high p-4 shadow-xl">
-                {" "}
-                <div className="flex items-center justify-between pb-3 bg-surface-container-high">
-                  <div className="flex items-center gap-3">
-                    <div className="relative w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary shadow-sm">
-                      <span className="material-symbols-outlined text-[20px]">
-                        {"all_inclusive"}
-                      </span>
-                      {" "}
-                      <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-secondary-container ring-2 ring-surface-container-high"></span>
-                    </div>
-                    {" "}
-                    <div>
-                      <p className="font-headline-sm text-headline-sm text-on-surface leading-tight">
-                        {"HisabLoop Bot"}
-                      </p>
-                      {" "}
-                      <p className="font-label-sm text-label-sm text-secondary font-medium">
-                        {"Verified Enterprise Account"}
-                      </p>
-                    </div>
-                  </div>
-                  {" "}
-                  <span className="material-symbols-outlined text-outline">
-                    {"more_vert"}
-                  </span>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-margin py-12 sm:py-16 flex flex-col gap-16 sm:gap-20 lg:gap-24">
+        {/* ---------------------------- Capture --------------------------- */}
+        <FeatureSection
+          id="feature-whatsapp"
+          title="Capture bills on WhatsApp, with nothing to install"
+          intro="Field staff and sales teams send a photo or PDF of a bill to the HisabLoop number. They check the details in the chat and tap Yes."
+          points={[
+            { text: "Accepts photos and PDFs of bills sent on WhatsApp." },
+            { text: "Shows the vendor, date, amount and category for the employee to confirm or edit." },
+            { text: "Works on the WhatsApp the employee already uses, with no login or training." },
+            {
+              text: "Add a claim by text or voice note when there is no bill, for example a cash auto fare.",
+              planned: true,
+            },
+          ]}
+          visual={
+            <Mock caption="Illustration with sample data: the bot reads a bill and asks the employee to confirm.">
+              <div className="flex items-center gap-3 pb-4">
+                <div className="w-10 h-10 rounded-full bg-[#25D366]/20 text-[#128C7E] flex items-center justify-center shrink-0">
+                  <Icon name="chat" className="text-xl" />
                 </div>
-                {" "}
-                {" "}
-                <div className="flex flex-col gap-3 pt-3 bg-surface-container-lowest p-4 rounded-xl shadow-inner">
-                  {" "}
-                  <div className="self-end max-w-[85%] bg-secondary-fixed text-on-secondary-fixed p-3 rounded-2xl rounded-tr-none shadow-sm">
-                    <div className="rounded-lg overflow-hidden mb-2 bg-surface">
-                      <img className="w-full h-32 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjJYwNFgA52u-Rn4qHIbwoCZLYhLi2Q3zqYDmj9K5hMAvoByTEl0SznJ4-ahPZMuP61U-jiR1ZjPJmyPRFqjdbPnRtmz0msiptqQymA0bBmq29tZSF-WP000q2rsxPEDArrvpbecyVk4eppllw8cX3ZBcI6LS7trjothYpUaODZO1-vYptItvg1kQvu_2PD6I7gLMiEqWuSJdRW0ZeBkEOesS5VX8ocvYTe4g4VA_6oGCVdFtY2i4y" alt="A clean top-down photograph of an Indian yellow-and-black auto rickshaw payment receipt slip and taxi bill with meter reading showing amount \u20b9180 on a wood desk background" />
-                    </div>
-                    {" "}
-                    <p className="font-body-md text-body-md leading-snug">
-                      {"Auto fare \u20b9180 cash to APMC market client visit"}
-                    </p>
-                    {" "}
-                    <div className="flex items-center justify-end gap-1 mt-1 text-on-secondary-fixed-variant">
-                      <span className="font-label-sm text-label-sm">
-                        {"11:42 AM"}
-                      </span>
-                      {" "}
-                      <span className="material-symbols-outlined text-[14px]">
-                        {"done_all"}
-                      </span>
-                    </div>
-                  </div>
-                  {" "}
-                  {" "}
-                  <div className="self-start max-w-[90%] bg-surface-container-low text-on-surface p-3.5 rounded-2xl rounded-tl-none shadow-sm">
-                    <div className="flex items-center gap-1.5 text-secondary mb-1">
-                      <span className="material-symbols-outlined text-[16px]">
-                        {"receipt_long"}
-                      </span>
-                      {" "}
-                      <span className="font-label-md text-label-md font-semibold">
-                        {"Expense Logged #EXP-8902"}
-                      </span>
-                    </div>
-                    {" "}
-                    <p className="font-headline-sm text-headline-sm text-primary mb-2">
-                      {"\u20b9180.00 \u2022 Local Travel"}
-                    </p>
-                    {" "}
-                    <div className="grid grid-cols-2 gap-2 text-on-surface-variant font-body-sm text-body-sm mb-3">
-                      <div className="bg-surface-container-lowest p-2 rounded-lg">
-                        <span className="block text-outline font-label-sm text-label-sm">
-                          {"Merchant"}
-                        </span>
-                        {" "}
-                        <span className="font-medium text-on-surface">
-                          {"APMC Auto Stand"}
-                        </span>
-                      </div>
-                      {" "}
-                      <div className="bg-surface-container-lowest p-2 rounded-lg">
-                        <span className="block text-outline font-label-sm text-label-sm">
-                          {"Payment"}
-                        </span>
-                        {" "}
-                        <span className="font-medium text-on-surface">
-                          {"Cash (Out-of-Pocket)"}
-                        </span>
-                      </div>
-                    </div>
-                    {" "}
-                    <div className="flex items-center gap-2">
-                      <button className="flex-1 py-1.5 px-3 bg-secondary text-on-secondary font-label-md text-label-md rounded-lg shadow-sm text-center">
-                        {"Confirm Claim"}
-                      </button>
-                      {" "}
-                      <button className="py-1.5 px-3 bg-surface-container text-on-surface font-label-md text-label-md rounded-lg">
-                        {"Edit"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-          {" "}
-          {" "}
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center scroll-mt-24" id="feature-ocr">
-            <div className="lg:col-span-6 order-2 lg:order-1">
-              {" "}
-              <div className="bg-surface-container-lowest p-space-lg rounded-2xl shadow-md">
-                <div className="flex items-center justify-between pb-space-sm mb-space-md border-b-0">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-primary-container text-secondary flex items-center justify-center">
-                      <span className="material-symbols-outlined text-lg">
-                        {"document_scanner"}
-                      </span>
-                    </div>
-                    {" "}
-                    <span className="font-headline-sm text-headline-sm text-primary">
-                      {"Extracted Metadata"}
-                    </span>
-                  </div>
-                  {" "}
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">
-                    <span className="material-symbols-outlined text-xs">
-                      {"verified"}
-                    </span>
-                    {" 98% AI Confidence "}
-                  </span>
-                </div>
-                {" "}
-                <div className="space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 bg-surface-container-low rounded-xl">
-                      <span className="block font-label-sm text-label-sm text-outline">
-                        {"Vendor / Supplier"}
-                      </span>
-                      {" "}
-                      <span className="font-headline-sm text-headline-sm text-primary">
-                        {"Uber India Systems Pvt Ltd"}
-                      </span>
-                      {" "}
-                      <span className="inline-block mt-1 font-label-sm text-label-sm text-secondary bg-surface-container-lowest px-1.5 py-0.5 rounded">
-                        {"SAC 996412"}
-                      </span>
-                    </div>
-                    {" "}
-                    <div className="p-3 bg-surface-container-low rounded-xl">
-                      <span className="block font-label-sm text-label-sm text-outline">
-                        {"Invoice Date & Number"}
-                      </span>
-                      {" "}
-                      <span className="font-body-md text-body-md font-semibold text-primary">
-                        {"08 Oct 2026"}
-                      </span>
-                      {" "}
-                      <span className="block font-body-sm text-body-sm text-on-surface-variant truncate">
-                        {"UBR-MH-2026-90412"}
-                      </span>
-                    </div>
-                  </div>
-                  {" "}
-                  {" "}
-                  <div className="p-3 bg-surface-container rounded-xl flex items-center justify-between">
-                    <div>
-                      <span className="block font-label-sm text-label-sm text-outline">
-                        {"Vendor GSTIN"}
-                      </span>
-                      {" "}
-                      <span className="font-headline-sm text-headline-sm text-primary tracking-wider">
-                        {"27AABCU9603R1ZM"}
-                      </span>
-                    </div>
-                    {" "}
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-lowest text-secondary font-label-sm text-label-sm">
-                      <span className="material-symbols-outlined text-[14px]">
-                        {"check"}
-                      </span>
-                      {" Checksum Valid "}
-                    </span>
-                  </div>
-                  {" "}
-                  {" "}
-                  <div className="p-3 bg-surface-container-low rounded-xl space-y-1.5">
-                    <div className="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
-                      <span>
-                        {"Taxable Value (Fuel & Fare)"}
-                      </span>
-                      {" "}
-                      <span className="font-medium text-on-surface">
-                        {"\u20b91,180.95"}
-                      </span>
-                    </div>
-                    {" "}
-                    <div className="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
-                      <span>
-                        {"CGST (2.5%)"}
-                      </span>
-                      {" "}
-                      <span className="font-medium text-on-surface">
-                        {"\u20b931.00"}
-                      </span>
-                    </div>
-                    {" "}
-                    <div className="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
-                      <span>
-                        {"SGST (2.5%)"}
-                      </span>
-                      {" "}
-                      <span className="font-medium text-on-surface">
-                        {"\u20b931.00"}
-                      </span>
-                    </div>
-                    {" "}
-                    <div className="pt-2 mt-2 bg-surface-container-lowest -mx-3 -mb-3 p-3 rounded-b-xl flex justify-between items-baseline">
-                      <span className="font-headline-sm text-headline-sm text-primary">
-                        {"Total Reimbursable"}
-                      </span>
-                      {" "}
-                      <span className="font-currency-display text-currency-display text-primary">
-                        {"\u20b91,240.00"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                {" "}
-                <div className="mt-4 flex items-center justify-between text-outline">
-                  <span className="font-body-sm text-body-sm flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[16px]">
-                      {"edit_note"}
-                    </span>
-                    {" Fully editable before claim submission "}
-                  </span>
-                  {" "}
-                  <button className="text-secondary font-label-md text-label-md hover:underline">
-                    {"Re-scan Image"}
-                  </button>
-                </div>
-              </div>
-            </div>
-            {" "}
-            <div className="lg:col-span-6 order-1 lg:order-2 flex flex-col gap-space-md">
-              <div className="inline-flex items-center gap-2 self-start px-space-sm py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">
-                <span className="material-symbols-outlined text-[16px]">
-                  {"psychology"}
+                <span className="font-headline-sm text-headline-sm text-primary font-bold">
+                  HisabLoop on WhatsApp
                 </span>
-                {" Computer Vision Tuned for India "}
               </div>
-              {" "}
-              <h2 className="font-headline-lg text-headline-lg text-primary tracking-tight">
-                {" AI-Powered Receipt Extraction."}
-                <br />
-                {"Ready for Indian Tax Codes. "}
-              </h2>
-              {" "}
-              <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                {" Generic international OCR engines struggle with crumbled thermal receipts, Indian Oil fuel bills, and handwritten toll chits. HisabLoop\u2019s AI engine is trained on tens of thousands of Indian commercial formats. "}
-              </p>
-              {" "}
-              <div className="grid grid-cols-2 gap-space-md mt-space-xs">
-                <div className="bg-surface-container-low p-space-md rounded-xl">
-                  <span className="font-headline-sm text-headline-sm text-primary block">
-                    {"GSTIN Validation"}
-                  </span>
-                  {" "}
-                  <span className="font-body-md text-body-md text-on-surface-variant mt-1 block">
-                    {"Live algorithmic state code and PAN checksum verification"}
-                  </span>
-                </div>
-                {" "}
-                <div className="bg-surface-container-low p-space-md rounded-xl">
-                  <span className="font-headline-sm text-headline-sm text-primary block">
-                    {"SAC / HSN Parser"}
-                  </span>
-                  {" "}
-                  <span className="font-body-md text-body-md text-on-surface-variant mt-1 block">
-                    {"Automatic classification of freight, lodging, food & tech service codes"}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </section>
-          {" "}
-          {" "}
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center scroll-mt-24" id="feature-approvals">
-            <div className="lg:col-span-6 flex flex-col gap-space-md">
-              <div className="inline-flex items-center gap-2 self-start px-space-sm py-1 rounded-full bg-surface-container-highest text-primary font-label-sm text-label-sm">
-                <span className="material-symbols-outlined text-[16px]">
-                  {"device_hub"}
-                </span>
-                {" Custom Hierarchy "}
-              </div>
-              {" "}
-              <h2 className="font-headline-lg text-headline-lg text-primary tracking-tight">
-                {" Flexible Approval Chains."}
-                <br />
-                {"No more chasing email sign-offs. "}
-              </h2>
-              {" "}
-              <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                {" Configure manager approval routes that match your firm's actual structure. Escalate large expenses over \u20b95,000 directly to the Director, while letting team leads clear routine site visits in 1 tap. "}
-              </p>
-              {" "}
-              <div className="flex flex-col gap-space-sm">
-                <div className="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-xl shadow-sm">
-                  <div className="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold">
-                    {"1"}
-                  </div>
-                  {" "}
-                  <div className="flex-1">
-                    <p className="font-headline-sm text-headline-sm text-primary">
-                      {"Department Lead Approval"}
-                    </p>
-                    {" "}
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">
-                      {"Claims under \u20b95,000 resolved in < 4 hours via WhatsApp nudge"}
-                    </p>
-                  </div>
-                </div>
-                {" "}
-                <div className="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-xl shadow-sm">
-                  <div className="w-8 h-8 rounded-full bg-primary-fixed text-primary flex items-center justify-center font-bold">
-                    {"2"}
-                  </div>
-                  {" "}
-                  <div className="flex-1">
-                    <p className="font-headline-sm text-headline-sm text-primary">
-                      {"Finance Admin & CA Ledger Check"}
-                    </p>
-                    {" "}
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">
-                      {"Cross-checks with company policy and GSTR-2B applicability"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {" "}
-            {" "}
-            <div className="lg:col-span-6">
-              <div className="bg-surface-container-lowest p-space-lg rounded-2xl shadow-md">
-                <div className="flex items-center justify-between pb-3 border-b-0">
-                  <div>
-                    <span className="font-label-sm text-label-sm text-outline uppercase tracking-wider">
-                      {"Manager Cockpit"}
-                    </span>
-                    {" "}
-                    <p className="font-headline-md text-headline-md text-primary">
-                      {"Meera Sengupta (Ops Lead)"}
-                    </p>
-                  </div>
-                  {" "}
-                  <span className="px-2.5 py-1 bg-surface-container text-primary font-label-md text-label-md rounded-full">
-                    {"3 Claims Waiting"}
-                  </span>
-                </div>
-                {" "}
-                <div className="mt-4 p-4 rounded-xl bg-surface-container-low space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
-                        {"RS"}
-                      </div>
-                      {" "}
-                      <div>
-                        <p className="font-headline-sm text-headline-sm text-primary">
-                          {"Ravi Sharma"}
-                        </p>
-                        {" "}
-                        <p className="font-body-sm text-body-sm text-on-surface-variant">
-                          {"Field Sales \u2022 Pune Territory"}
-                        </p>
-                      </div>
-                    </div>
-                    {" "}
-                    <span className="font-currency-md text-currency-md text-primary">
-                      {"\u20b93,420.00"}
-                    </span>
-                  </div>
-                  {" "}
-                  <div className="p-3 bg-surface-container-lowest rounded-lg flex items-center justify-between text-body-sm">
-                    <span className="text-on-surface-variant">
-                      {"Client Dinner & Pitch at Deccan Gymkhana"}
-                    </span>
-                    {" "}
-                    <span className="px-2 py-0.5 rounded bg-surface-container text-secondary font-label-sm text-label-sm">
-                      {"Within \u20b94k Limit"}
-                    </span>
-                  </div>
-                  {" "}
-                  <div className="flex items-center gap-2 pt-2">
-                    <button className="flex-1 py-2 rounded-lg bg-secondary text-on-secondary font-label-lg text-label-lg shadow-sm hover:opacity-90 transition-opacity">
-                      {"Approve"}
-                    </button>
-                    {" "}
-                    <button className="px-4 py-2 rounded-lg bg-surface-container text-on-surface font-label-lg text-label-lg hover:bg-surface-variant transition-colors">
-                      {"Query"}
-                    </button>
-                    {" "}
-                    <button className="px-3 py-2 rounded-lg bg-error-container text-on-error-container hover:opacity-90 transition-opacity">
-                      <span className="material-symbols-outlined text-[18px]">
-                        {"close"}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-          {" "}
-          {" "}
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center scroll-mt-24" id="feature-policies">
-            <div className="lg:col-span-12">
-              <div className="bg-surface-container-low p-space-xl rounded-2xl">
-                <div className="max-w-2xl mb-space-lg">
-                  <div className="inline-flex items-center gap-2 px-space-sm py-1 rounded-full bg-surface-container-lowest text-primary font-label-sm text-label-sm mb-2 shadow-sm">
-                    <span className="material-symbols-outlined text-[16px]">
-                      {"verified_user"}
-                    </span>
-                    {" Automated Guardrails "}
-                  </div>
-                  {" "}
-                  <h2 className="font-headline-lg text-headline-lg text-primary tracking-tight">
-                    {" Granular Policy Controls. Stop leakage before payout. "}
-                  </h2>
-                  {" "}
-                  <p className="font-body-lg text-body-lg text-on-surface-variant mt-2">
-                    {" Set automated limits based on role, location tier, or expenditure type. HisabLoop alerts employees in real time if a claim exceeds per-diem rules or contains duplicate receipts. "}
+              <div className="flex flex-col gap-3 bg-surface rounded-xl p-3 sm:p-4">
+                <div className="self-end max-w-[85%] rounded-2xl rounded-tr-none bg-[#DCF8C6]/70 p-3">
+                  <p className="flex items-center gap-2 font-body-md text-body-md text-on-surface">
+                    <Icon name="image" className="text-lg text-secondary" />
+                    Photo of an auto fare receipt
                   </p>
                 </div>
-                {" "}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-                  {" "}
-                  <div className="bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="font-label-md text-label-md text-outline uppercase">
-                        {"Travel & Per-Diem"}
-                      </span>
-                      {" "}
-                      <span className="material-symbols-outlined text-secondary">
-                        {"flight"}
-                      </span>
-                    </div>
-                    {" "}
-                    <p className="font-headline-md text-headline-md text-primary">
-                      {"\u20b92,000 / day"}
-                    </p>
-                    {" "}
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
-                      {"Tier-1 Metros (Mumbai, Delhi, BLR). Hotel room cap at \u20b94,500/night."}
-                    </p>
-                    {" "}
-                    <div className="mt-4 pt-3 bg-surface-container-low p-2 rounded-lg flex items-center gap-2 text-secondary font-label-sm text-label-sm">
-                      <span className="material-symbols-outlined text-sm">
-                        {"lock"}
-                      </span>
-                      {" Auto-flagged if exceeded "}
-                    </div>
-                  </div>
-                  {" "}
-                  {" "}
-                  <div className="bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="font-label-md text-label-md text-outline uppercase">
-                        {"Meals & Dining"}
-                      </span>
-                      {" "}
-                      <span className="material-symbols-outlined text-secondary">
-                        {"restaurant"}
-                      </span>
-                    </div>
-                    {" "}
-                    <p className="font-headline-md text-headline-md text-primary">
-                      {"\u20b9600 / meal"}
-                    </p>
-                    {" "}
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
-                      {"Non-alcoholic food bills only. Alcohol lines automatically subtracted by OCR."}
-                    </p>
-                    {" "}
-                    <div className="mt-4 pt-3 bg-surface-container-low p-2 rounded-lg flex items-center gap-2 text-secondary font-label-sm text-label-sm">
-                      <span className="material-symbols-outlined text-sm">
-                        {"lock"}
-                      </span>
-                      {" Itemized tax bill required "}
-                    </div>
-                  </div>
-                  {" "}
-                  {" "}
-                  <div className="bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="font-label-md text-label-md text-outline uppercase">
-                        {"Duplicate Detection"}
-                      </span>
-                      {" "}
-                      <span className="material-symbols-outlined text-error">
-                        {"fingerprint"}
-                      </span>
-                    </div>
-                    {" "}
-                    <p className="font-headline-md text-headline-md text-primary">
-                      {"SHA-256 Hash"}
-                    </p>
-                    {" "}
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
-                      {"Prevents the exact same paper receipt from being submitted twice across departments."}
-                    </p>
-                    {" "}
-                    <div className="mt-4 pt-3 bg-error-container p-2 rounded-lg flex items-center gap-2 text-on-error-container font-label-sm text-label-sm">
-                      <span className="material-symbols-outlined text-sm">
-                        {"block"}
-                      </span>
-                      {" Duplicate bills auto-blocked "}
-                    </div>
+                <div className="self-start max-w-[92%] rounded-2xl rounded-tl-none bg-surface-container-low p-3.5">
+                  <p className="font-headline-sm text-headline-sm text-primary">₹180 · Auto fare · Local travel</p>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">8 Oct · Paid in cash. Is this correct?</p>
+                  <div className="flex gap-2 mt-3">
+                    <FakeButton tone="secondary" className="flex-1">Yes</FakeButton>
+                    <FakeButton tone="neutral">Edit</FakeButton>
                   </div>
                 </div>
               </div>
-            </div>
-          </section>
-          {" "}
-          {" "}
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center scroll-mt-24" id="feature-gst">
-            <div className="lg:col-span-6 flex flex-col gap-space-md">
-              <div className="inline-flex items-center gap-2 self-start px-space-sm py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">
-                <span className="material-symbols-outlined text-[16px]">
-                  {"account_balance"}
-                </span>
-                {" Tax Compliance "}
-              </div>
-              {" "}
-              <h2 className="font-headline-lg text-headline-lg text-primary tracking-tight">
-                {" GST-Aware Records & Input Tax Credit (ITC). "}
-              </h2>
-              {" "}
-              <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                {" Indian businesses lose thousands every month because employee travel bills don't contain the correct corporate GSTIN, or ineligible ITC is claimed. HisabLoop keeps clean segregation ready for GSTR-2B reconciliation. "}
+            </Mock>
+          }
+        />
+
+        {/* ------------------------------ OCR ----------------------------- */}
+        <FeatureSection
+          id="feature-ocr"
+          reverse
+          title="Bills read automatically, confirmed by the employee"
+          intro="OCR and an AI model pull the key fields from the bill, and a validation step checks them. Because the employee confirms every claim, mistakes are caught before they reach your manager."
+          points={[
+            { text: "Reads vendor, date, total, tax amount, GSTIN and payment mode." },
+            { text: "Suggests a category and learns from the employee's corrections." },
+            { text: "Checks the GSTIN format and flags a missing or invalid number." },
+            { text: "Faded thermal slips and handwritten bills are harder to read, which is why the confirm step stays." },
+          ]}
+          visual={
+            <Mock caption="Illustration with sample data. The employee can edit any field before submitting.">
+              <p className="font-headline-sm text-headline-sm text-primary font-bold pb-3">Fields read from the bill</p>
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  ["Vendor", "Uber"],
+                  ["Invoice date", "8 Oct 2026"],
+                  ["Taxable value", "₹1,180.95"],
+                  ["GST (5%)", "₹59.05"],
+                ].map(([k, v]) => (
+                  <div key={k} className="bg-surface-container-low rounded-xl p-3 min-w-0">
+                    <dt className="font-label-sm text-label-sm text-on-surface-variant">{k}</dt>
+                    <dd className="font-body-md text-body-md text-primary font-semibold break-words">{v}</dd>
+                  </div>
+                ))}
+                <div className="sm:col-span-2 bg-surface-container rounded-xl p-3 flex flex-wrap items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <dt className="font-label-sm text-label-sm text-on-surface-variant">Vendor GSTIN</dt>
+                    <dd className="font-body-md text-body-md text-primary font-semibold tracking-wide break-all">
+                      27ABCDE1234F1Z5
+                    </dd>
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-surface-container-lowest px-2.5 py-1 font-label-sm text-label-sm text-secondary">
+                    <Icon name="check" className="text-sm" />
+                    Format valid
+                  </span>
+                </div>
+              </dl>
+              <p className="mt-3 flex items-center justify-between rounded-xl bg-surface-container-low px-4 py-3">
+                <span className="font-headline-sm text-headline-sm text-primary">Total</span>
+                <span className="font-currency-md text-currency-md text-primary font-bold">₹1,240.00</span>
               </p>
-              {" "}
-              <div className="p-space-md bg-surface-container-low rounded-xl">
-                <p className="font-label-md text-label-md text-secondary uppercase font-semibold">
-                  {"Important Disclaimer"}
+            </Mock>
+          }
+        />
+
+        {/* --------------------------- Approvals -------------------------- */}
+        <FeatureSection
+          id="feature-approvals"
+          title="Approve in chat, with the policy result in view"
+          intro="Managers receive an approval card in WhatsApp with Approve, Reject and Ask options. They see whether the claim is within limits and whether a duplicate was found."
+          points={[
+            { text: "Ask the employee a question without rejecting the claim." },
+            { text: "Reminders for claims that stay pending." },
+            { text: "Every status change is logged with who made it and when." },
+            { text: "Multi-level approval based on the claim amount.", planned: true },
+            { text: "Hand over approvals to a delegate while a manager is on leave.", planned: true },
+          ]}
+          visual={
+            <Mock caption="Illustration with sample data.">
+              <div className="flex items-center justify-between gap-3 pb-3">
+                <p className="font-headline-sm text-headline-sm text-primary font-bold">Approval request</p>
+                <span className="rounded-full bg-surface-container px-2.5 py-1 font-label-sm text-label-sm text-primary">
+                  3 waiting
+                </span>
+              </div>
+              <div className="rounded-xl bg-surface-container-low p-4 flex flex-col gap-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-headline-sm text-headline-sm text-primary">Client dinner</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Meals · 9 Oct</p>
+                  </div>
+                  <span className="font-currency-md text-currency-md text-primary font-bold shrink-0">₹3,420</span>
+                </div>
+                <p className="flex items-center gap-2 rounded-lg bg-surface-container-lowest p-3 font-body-sm text-body-sm text-on-surface-variant">
+                  <Icon name="check_circle" className="text-secondary text-base" />
+                  Within the meals limit · No duplicate found
                 </p>
-                {" "}
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
-                  {" HisabLoop supports tax record organisation and reconciliation prep; it does not replace professional Chartered Accountancy tax advisory or filing. "}
-                </p>
-              </div>
-            </div>
-            {" "}
-            {" "}
-            <div className="lg:col-span-6">
-              <div className="bg-surface-container-lowest p-space-lg rounded-2xl shadow-md">
-                <div className="flex items-center justify-between pb-3">
-                  <span className="font-headline-sm text-headline-sm text-primary">
-                    {"Monthly Claimed ITC Readiness"}
-                  </span>
-                  {" "}
-                  <span className="font-headline-sm text-headline-sm text-secondary font-bold">
-                    {"\u20b942,890 Eligible"}
-                  </span>
-                </div>
-                {" "}
-                <div className="space-y-3 mt-3">
-                  {" "}
-                  <div className="p-3 bg-surface-container-low rounded-xl flex items-center justify-between">
-                    <div>
-                      <p className="font-headline-sm text-headline-sm text-primary">
-                        {"Valid B2B Invoices"}
-                      </p>
-                      {" "}
-                      <p className="font-body-sm text-body-sm text-on-surface-variant">
-                        {"Eligible for 100% ITC (Company GSTIN matched)"}
-                      </p>
-                    </div>
-                    {" "}
-                    <span className="font-currency-md text-currency-md text-primary">
-                      {"\u20b938,200"}
-                    </span>
-                  </div>
-                  {" "}
-                  {" "}
-                  <div className="p-3 bg-surface-container-low rounded-xl flex items-center justify-between">
-                    <div>
-                      <p className="font-headline-sm text-headline-sm text-primary">
-                        {"Blocked Credits (Sec 17(5))"}
-                      </p>
-                      {" "}
-                      <p className="font-body-sm text-body-sm text-on-surface-variant">
-                        {"Outdoor catering & personal grooming vouchers"}
-                      </p>
-                    </div>
-                    {" "}
-                    <span className="font-currency-md text-currency-md text-outline">
-                      {"\u20b94,690"}
-                    </span>
-                  </div>
-                  {" "}
-                  {" "}
-                  <div className="p-3 bg-surface-container-low rounded-xl flex items-center justify-between">
-                    <div>
-                      <p className="font-headline-sm text-headline-sm text-primary">
-                        {"Unregistered Vendors (B2C)"}
-                      </p>
-                      {" "}
-                      <p className="font-body-sm text-body-sm text-on-surface-variant">
-                        {"Cash auto receipts, small tea stalls"}
-                      </p>
-                    </div>
-                    {" "}
-                    <span className="font-currency-md text-currency-md text-on-surface-variant">
-                      {"\u20b98,120"}
-                    </span>
-                  </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <FakeButton tone="secondary">Approve</FakeButton>
+                  <FakeButton tone="neutral">Ask</FakeButton>
+                  <FakeButton tone="neutral">Reject</FakeButton>
                 </div>
               </div>
-            </div>
-          </section>
-          {" "}
-          {" "}
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center scroll-mt-24" id="feature-batches">
-            <div className="lg:col-span-6 order-2 lg:order-1">
-              {" "}
-              <div className="bg-surface-container-lowest p-space-lg rounded-2xl shadow-md">
-                <div className="flex items-center justify-between pb-3">
-                  <div>
-                    <span className="font-label-sm text-label-sm text-outline uppercase tracking-wider">
-                      {"Payment Batch"}
-                    </span>
-                    {" "}
-                    <p className="font-headline-md text-headline-md text-primary">
-                      {"#BATCH-44 \u2022 Pune Operations"}
-                    </p>
-                  </div>
-                  {" "}
-                  <span className="px-2.5 py-1 bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md rounded-full font-semibold">
-                    {"Approved"}
-                  </span>
-                </div>
-                {" "}
-                <div className="grid grid-cols-2 gap-3 my-4">
-                  <div className="p-3 bg-surface-container-low rounded-xl">
-                    <span className="block font-label-sm text-label-sm text-outline">
-                      {"Total Approved Claims"}
-                    </span>
-                    {" "}
-                    <span className="font-headline-lg text-headline-lg text-primary">
-                      {"14 Claims"}
-                    </span>
-                  </div>
-                  {" "}
-                  <div className="p-3 bg-surface-container-low rounded-xl">
-                    <span className="block font-label-sm text-label-sm text-outline">
-                      {"Total Disbursement"}
-                    </span>
-                    {" "}
-                    <span className="font-currency-display text-currency-display text-primary">
-                      {"\u20b932,450"}
-                    </span>
-                  </div>
-                </div>
-                {" "}
-                {" "}
-                <div className="space-y-2 mb-4">
-                  <div className="flex justify-between items-center p-2.5 bg-surface-container-low rounded-lg text-body-sm">
-                    <span className="font-medium text-primary">
-                      {"Ravi Sharma (6 vouchers)"}
-                    </span>
-                    {" "}
-                    <span className="font-semibold text-primary">
-                      {"\u20b914,200 \u2022 HDFC ****9821"}
-                    </span>
-                  </div>
-                  {" "}
-                  <div className="flex justify-between items-center p-2.5 bg-surface-container-low rounded-lg text-body-sm">
-                    <span className="font-medium text-primary">
-                      {"Kavita Nair (4 vouchers)"}
-                    </span>
-                    {" "}
-                    <span className="font-semibold text-primary">
-                      {"\u20b99,850 \u2022 ICICI ****4412"}
-                    </span>
-                  </div>
-                  {" "}
-                  <div className="flex justify-between items-center p-2.5 bg-surface-container-low rounded-lg text-body-sm">
-                    <span className="font-medium text-primary">
-                      {"Amit Patil (4 vouchers)"}
-                    </span>
-                    {" "}
-                    <span className="font-semibold text-primary">
-                      {"\u20b98,400 \u2022 SBI ****1092"}
-                    </span>
-                  </div>
-                </div>
-                {" "}
-                {" "}
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <button className="flex-1 py-2 px-3 bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm flex items-center justify-center gap-1.5 hover:bg-primary-container transition-colors">
-                    <span className="material-symbols-outlined text-[18px]">
-                      {"download"}
-                    </span>
-                    {" Bank CSV (HDFC/ICICI/SBI) "}
-                  </button>
-                  {" "}
-                  <button className="py-2 px-4 bg-secondary text-on-secondary font-label-md text-label-md rounded-lg shadow-sm hover:opacity-90 transition-opacity">
-                    {" Mark as Paid "}
-                  </button>
-                </div>
-                {" "}
-                <p className="mt-2 text-center font-label-sm text-label-sm text-outline">
-                  {" \ud83d\ude80 Direct UPI Bulk Payouts arriving in Q1 2026 "}
-                </p>
-              </div>
-            </div>
-            {" "}
-            <div className="lg:col-span-6 order-1 lg:order-2 flex flex-col gap-space-md">
-              <div className="inline-flex items-center gap-2 self-start px-space-sm py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">
-                <span className="material-symbols-outlined text-[16px]">
-                  {"payments"}
-                </span>
-                {" Close the Loop "}
-              </div>
-              {" "}
-              <h2 className="font-headline-lg text-headline-lg text-primary tracking-tight">
-                {" Reimbursement Batches."}
-                <br />
-                {"Disburse 50 claims in one click. "}
-              </h2>
-              {" "}
-              <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                {" No more manual NEFT beneficiary entries one by one on your banking portal. Bundle all approved vouchers from your team into a single pre-formatted batch file accepted by every major Indian corporate netbanking portal. "}
-              </p>
-              {" "}
-              <ul className="flex flex-col gap-space-sm">
-                <li className="flex items-center gap-2 font-body-md text-body-md text-on-surface">
-                  <span className="material-symbols-outlined text-secondary">
-                    {"check_circle"}
-                  </span>
-                  {" Pre-formatted bulk payment templates for SBI, HDFC Bank, ICICI, and Axis "}
-                </li>
-                <li className="flex items-center gap-2 font-body-md text-body-md text-on-surface">
-                  <span className="material-symbols-outlined text-secondary">
-                    {"check_circle"}
-                  </span>
-                  {" Automatic WhatsApp reimbursement alert sent to the employee on clearance "}
-                </li>
-              </ul>
-            </div>
-          </section>
-          {" "}
-          {" "}
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center scroll-mt-24" id="feature-reports">
-            <div className="lg:col-span-6 flex flex-col gap-space-md">
-              <div className="inline-flex items-center gap-2 self-start px-space-sm py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">
-                <span className="material-symbols-outlined text-[16px]">
-                  {"bar_chart"}
-                </span>
-                {" Financial Clarity "}
-              </div>
-              {" "}
-              <h2 className="font-headline-lg text-headline-lg text-primary tracking-tight">
-                {" Audit-Grade Reports & One-Click Exports. "}
-              </h2>
-              {" "}
-              <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                {" Your bookkeeper will thank you. Seamlessly export expense vouchers directly to Tally Prime XML, Zoho Books, or standard Excel worksheets without missing receipts. "}
-              </p>
-              {" "}
-              <div className="flex flex-wrap gap-2 pt-2">
-                <span className="px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-md text-label-md font-semibold">
-                  {"Tally XML"}
-                </span>
-                {" "}
-                <span className="px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-md text-label-md font-semibold">
-                  {"Zoho Books Sync"}
-                </span>
-                {" "}
-                <span className="px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-md text-label-md font-semibold">
-                  {"QuickBooks CSV"}
-                </span>
-                {" "}
-                <span className="px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-md text-label-md font-semibold">
-                  {"CA Ledger PDF"}
-                </span>
-              </div>
-            </div>
-            {" "}
-            {" "}
-            <div className="lg:col-span-6">
-              <div className="bg-surface-container-lowest p-space-lg rounded-2xl shadow-md">
-                <div className="flex items-center justify-between pb-3">
-                  <span className="font-headline-sm text-headline-sm text-primary">
-                    {"Export Centre"}
-                  </span>
-                  {" "}
-                  <span className="text-outline font-label-sm text-label-sm">
-                    {"FY 2025-26 (Q3)"}
-                  </span>
-                </div>
-                {" "}
-                {" "}
-                <div className="flex gap-2 p-1 bg-surface-container-low rounded-lg mb-4">
-                  <button className="flex-1 py-1 px-2 rounded-md bg-surface-container-lowest text-primary font-label-sm text-label-sm font-semibold shadow-sm">
-                    {"GST ITC Ledger"}
-                  </button>
-                  {" "}
-                  <button className="flex-1 py-1 px-2 rounded-md text-on-surface-variant font-label-sm text-label-sm">
-                    {"Dept Spend"}
-                  </button>
-                  {" "}
-                  <button className="flex-1 py-1 px-2 rounded-md text-on-surface-variant font-label-sm text-label-sm">
-                    {"Vendor Summary"}
-                  </button>
-                </div>
-                {" "}
-                {" "}
-                <div className="space-y-3 bg-surface-container-low p-4 rounded-xl">
-                  <div>
-                    <div className="flex justify-between font-label-sm text-label-sm mb-1">
-                      <span className="text-on-surface">
-                        {"Field Operations & Fuel"}
-                      </span>
-                      {" "}
-                      <span className="text-primary font-bold">
-                        {"\u20b91,42,800 (45%)"}
-                      </span>
-                    </div>
-                    {" "}
-                    <div className="w-full bg-surface-container rounded-full h-2">
-                      <div className="bg-primary h-2 rounded-full" style={{"width": "45%"}}></div>
-                    </div>
-                  </div>
-                  {" "}
-                  <div>
-                    <div className="flex justify-between font-label-sm text-label-sm mb-1">
-                      <span className="text-on-surface">
-                        {"Client Entertainment & Meals"}
-                      </span>
-                      {" "}
-                      <span className="text-primary font-bold">
-                        {"\u20b982,400 (26%)"}
-                      </span>
-                    </div>
-                    {" "}
-                    <div className="w-full bg-surface-container rounded-full h-2">
-                      <div className="bg-secondary h-2 rounded-full" style={{"width": "26%"}}></div>
-                    </div>
-                  </div>
-                  {" "}
-                  <div>
-                    <div className="flex justify-between font-label-sm text-label-sm mb-1">
-                      <span className="text-on-surface">
-                        {"Software & Subscriptions"}
-                      </span>
-                      {" "}
-                      <span className="text-primary font-bold">
-                        {"\u20b954,000 (17%)"}
-                      </span>
-                    </div>
-                    {" "}
-                    <div className="w-full bg-surface-container rounded-full h-2">
-                      <div className="bg-secondary-fixed-dim h-2 rounded-full" style={{"width": "17%"}}></div>
-                    </div>
-                  </div>
-                </div>
-                {" "}
-                <button className="w-full mt-4 py-2.5 rounded-xl bg-primary text-on-primary font-label-md text-label-md shadow flex items-center justify-center gap-2 hover:bg-primary-container transition-colors">
-                  <span className="material-symbols-outlined text-[18px]">
-                    {"file_download"}
-                  </span>
-                  {" Generate Verified CA Export Pack (.ZIP) "}
-                </button>
-              </div>
-            </div>
-          </section>
-          {" "}
-          {" "}
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center scroll-mt-24" id="feature-ca-workspace">
-            <div className="lg:col-span-12">
-              <div className="bg-surface-container p-space-xl rounded-2xl">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-space-lg">
-                  <div>
-                    <div className="inline-flex items-center gap-2 px-space-sm py-1 rounded-full bg-surface-container-lowest text-primary font-label-sm text-label-sm mb-2 shadow-sm">
-                      <span className="material-symbols-outlined text-[16px]">
-                        {"verified"}
-                      </span>
-                      {" For Accounting Professionals "}
-                    </div>
-                    {" "}
-                    <h2 className="font-headline-lg text-headline-lg text-primary tracking-tight">
-                      {" Chartered Accountant Partner Workspace. "}
-                    </h2>
-                    {" "}
-                    <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl mt-1">
-                      {" Manage all your MSME clients in a unified cockpit. Review claims, verify GST compliance scores, and download audit-ready proof archives in one click. "}
-                    </p>
-                  </div>
-                  {" "}
-                  <a className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-container-lowest text-primary font-label-md text-label-md shadow-sm hover:bg-surface-container-low transition-colors self-start" href="/accountants">
-                    <span>
-                      {"Join CA Partner Program"}
-                    </span>
-                    {" "}
-                    <span className="material-symbols-outlined text-sm">
-                      {"arrow_forward"}
-                    </span>
-                  </a>
-                </div>
-                {" "}
-                {" "}
-                <div className="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
-                  <div className="grid grid-cols-12 bg-surface-container-low p-3 font-label-sm text-label-sm text-outline uppercase tracking-wider">
-                    <div className="col-span-4">
-                      {"Client Enterprise"}
-                    </div>
-                    {" "}
-                    <div className="col-span-3 text-center">
-                      {"Data Completeness"}
-                    </div>
-                    {" "}
-                    <div className="col-span-2 text-center">
-                      {"Unreviewed"}
-                    </div>
-                    {" "}
-                    <div className="col-span-3 text-right">
-                      {"Audit Pack"}
-                    </div>
-                  </div>
-                  {" "}
-                  {" "}
-                  <div className="grid grid-cols-12 p-3.5 items-center hover:bg-surface-container-low/50 transition-colors">
-                    <div className="col-span-4 flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-primary-fixed text-primary flex items-center justify-center font-bold text-xs">
-                        {"SA"}
-                      </div>
-                      {" "}
-                      <div>
-                        <p className="font-headline-sm text-headline-sm text-primary">
-                          {"Shinde Agro Traders"}
-                        </p>
-                        {" "}
-                        <p className="font-body-sm text-body-sm text-outline">
-                          {"GSTIN: 27AABCS1284K1Z0"}
-                        </p>
-                      </div>
-                    </div>
-                    {" "}
-                    <div className="col-span-3 flex items-center justify-center gap-2">
-                      <span className="font-headline-sm text-headline-sm text-secondary font-bold">
-                        {"96%"}
-                      </span>
-                      {" "}
-                      <span className="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">
-                        {"High"}
-                      </span>
-                    </div>
-                    {" "}
-                    <div className="col-span-2 text-center font-label-md text-label-md text-on-surface">
-                      {"4 claims"}
-                    </div>
-                    {" "}
-                    <div className="col-span-3 text-right">
-                      <button className="px-3 py-1 bg-surface-container text-primary font-label-sm text-label-sm rounded-lg hover:bg-primary hover:text-on-primary transition-all">
-                        {"Download"}
-                      </button>
-                    </div>
-                  </div>
-                  {" "}
-                  {" "}
-                  <div className="grid grid-cols-12 p-3.5 items-center hover:bg-surface-container-low/50 transition-colors bg-surface-container-lowest">
-                    <div className="col-span-4 flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-xs">
-                        {"KE"}
-                      </div>
-                      {" "}
-                      <div>
-                        <p className="font-headline-sm text-headline-sm text-primary">
-                          {"Kulkarni Electronics"}
-                        </p>
-                        {" "}
-                        <p className="font-body-sm text-body-sm text-outline">
-                          {"GSTIN: 27AABCK8901L1ZT"}
-                        </p>
-                      </div>
-                    </div>
-                    {" "}
-                    <div className="col-span-3 flex items-center justify-center gap-2">
-                      <span className="font-headline-sm text-headline-sm text-secondary font-bold">
-                        {"92%"}
-                      </span>
-                      {" "}
-                      <span className="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">
-                        {"Good"}
-                      </span>
-                    </div>
-                    {" "}
-                    <div className="col-span-2 text-center font-label-md text-label-md text-on-surface">
-                      {"11 claims"}
-                    </div>
-                    {" "}
-                    <div className="col-span-3 text-right">
-                      <button className="px-3 py-1 bg-surface-container text-primary font-label-sm text-label-sm rounded-lg hover:bg-primary hover:text-on-primary transition-all">
-                        {"Download"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-        {" "}
-        {" "}
-        <section className="w-full bg-primary text-on-primary py-space-2xl px-margin mt-space-xl relative overflow-hidden">
-          {" "}
-          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-secondary/20 blur-3xl pointer-events-none"></div>
-          {" "}
-          <div className="max-w-5xl mx-auto flex flex-col items-center text-center relative z-10">
-            <div className="w-12 h-12 rounded-2xl bg-surface-container-lowest/10 flex items-center justify-center text-secondary mb-space-md shadow-inner">
-              <span className="material-symbols-outlined text-secondary-container text-2xl">
-                {"all_inclusive"}
-              </span>
-            </div>
-            {" "}
-            <h2 className="font-headline-xl text-headline-xl text-on-primary tracking-tight max-w-2xl">
-              {" Bring your expense workflow together. "}
+            </Mock>
+          }
+        />
+
+        {/* ----------------------------- Policies -------------------------- */}
+        <section
+          id="feature-policies"
+          aria-labelledby="feature-policies-title"
+          className="scroll-mt-24 bg-surface-container-low rounded-2xl p-6 sm:p-8 lg:p-10"
+        >
+          <div className="max-w-2xl mb-8">
+            <h2 id="feature-policies-title" className={h2Class}>
+              Policy checks before a claim reaches approval
             </h2>
-            {" "}
-            <p className="mt-space-sm font-body-lg text-body-lg text-on-primary-container max-w-xl leading-relaxed">
-              {" Start capturing receipts and organising books in minutes. No credit card required. Free 30-day pilot for companies with 5 to 50 employees. "}
+            <p className="font-body-lg text-body-lg text-on-surface-variant mt-3 leading-relaxed">
+              Rules run as soon as the employee confirms a bill, so managers spend their time on claims
+              that need a decision.
             </p>
-            {" "}
-            <div className="mt-space-lg flex flex-wrap items-center justify-center gap-space-md">
-              <a className="inline-flex items-center gap-2 h-12 px-space-xl rounded-lg bg-secondary text-on-secondary font-label-lg text-label-lg shadow-lg hover:opacity-90 transition-opacity" href="/register">
-                <span>
-                  {"Get Started Free"}
-                </span>
-                {" "}
-                <span className="material-symbols-outlined text-[18px]">
-                  {"arrow_forward"}
-                </span>
-              </a>
-              {" "}
-              <a className="inline-flex items-center justify-center h-12 px-space-lg rounded-lg bg-surface-container-lowest/10 hover:bg-surface-container-lowest/20 text-on-primary font-label-lg text-label-lg transition-colors" href="/contact">
-                {" Book a 15-Minute Demo "}
-              </a>
-            </div>
-            {" "}
-            <div className="mt-space-lg flex items-center gap-6 text-on-primary-container font-label-sm text-label-sm">
-              <span className="flex items-center gap-1">
-                <span className="material-symbols-outlined text-sm text-secondary-container">
-                  {"check"}
-                </span>
-                {" Fast 5-minute setup"}
-              </span>
-              {" "}
-              <span className="flex items-center gap-1">
-                <span className="material-symbols-outlined text-sm text-secondary-container">
-                  {"check"}
-                </span>
-                {" Works with existing Tally & Excel"}
-              </span>
-              {" "}
-              <span className="flex items-center gap-1">
-                <span className="material-symbols-outlined text-sm text-secondary-container">
-                  {"check"}
-                </span>
-                {" WhatsApp Bot included"}
-              </span>
-            </div>
           </div>
+          <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-gutter">
+            {policyCards.map((c) => (
+              <li key={c.title} className="min-w-0">
+                <article className="h-full bg-surface-container-lowest rounded-xl p-5 shadow-sm flex flex-col gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-surface-container text-primary flex items-center justify-center">
+                    <Icon name={c.icon} className="text-xl" />
+                  </div>
+                  <h3 className="font-headline-sm text-headline-sm text-primary font-bold">{c.title}</h3>
+                  <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">{c.text}</p>
+                  <p className="mt-auto rounded-lg bg-surface-container-low p-3 font-body-sm text-body-sm text-on-surface-variant">
+                    {c.example}
+                  </p>
+                </article>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-6 font-body-sm text-body-sm text-on-surface-variant">
+            Flags for suspicious bills, such as an edited image or a future date, are planned
+            <PlannedTag />
+          </p>
         </section>
+
+        {/* ------------------------------- GST ---------------------------- */}
+        <FeatureSection
+          id="feature-gst"
+          reverse
+          title="GST details captured when the bill is sent"
+          intro="HisabLoop keeps the GSTIN, tax amount and CGST, SGST and IGST split with every claim. Capturing them at the moment of purchase means the employee can still fix a gap."
+          points={[
+            { text: "Tax fields are stored in separate columns, ready for your accountant." },
+            { text: "Missing or invalid GSTINs are flagged on the claim." },
+            {
+              text: "GST report with taxable value, CGST, SGST, IGST and eligible input tax credit.",
+              planned: true,
+            },
+          ]}
+          extra={
+            <p className="rounded-xl bg-surface-container-low p-4 font-body-sm text-body-sm text-on-surface-variant">
+              <strong className="font-semibold text-primary">Please note:</strong> HisabLoop helps organise
+              tax records and prepare for reconciliation. It does not replace advice from a chartered
+              accountant or the filing of returns.
+            </p>
+          }
+          visual={
+            <Mock caption="What HisabLoop keeps on every claim." decorative={false}>
+              <h3 className="font-headline-sm text-headline-sm text-primary font-bold pb-3">Stored with each claim</h3>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {capturedFields.map((f) => (
+                  <li
+                    key={f}
+                    className="flex items-center gap-2 rounded-lg bg-surface-container-low px-3 py-2.5 font-body-md text-body-md text-on-surface"
+                  >
+                    <Icon name="check" className="text-secondary text-base shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </Mock>
+          }
+        />
+
+        {/* ----------------------------- Batches -------------------------- */}
+        <FeatureSection
+          id="feature-batches"
+          title="Group approved claims into reimbursement batches"
+          intro="Approved claims join a batch. Finance reviews the batch, downloads a bank transfer file and marks it paid, and each employee gets a Paid message on WhatsApp."
+          points={[
+            { text: "See the total for each employee before you pay." },
+            { text: "Download a bank transfer file in CSV format." },
+            { text: "Payment status is recorded on every claim." },
+            {
+              text: "Pay by UPI directly from HisabLoop through a licensed payment partner.",
+              planned: true,
+            },
+          ]}
+          visual={
+            <Mock caption="Illustration with sample data.">
+              <div className="flex items-center justify-between gap-3 pb-3">
+                <p className="font-headline-sm text-headline-sm text-primary font-bold">Reimbursement batch</p>
+                <span className="rounded-full bg-secondary-fixed/40 px-2.5 py-1 font-label-sm text-label-sm text-on-secondary-fixed">
+                  Approved
+                </span>
+              </div>
+              <ul className="flex flex-col gap-2">
+                {[
+                  ["Employee A", "6 claims", "₹14,200"],
+                  ["Employee B", "4 claims", "₹9,850"],
+                  ["Employee C", "4 claims", "₹8,400"],
+                ].map(([n, c, a]) => (
+                  <li
+                    key={n}
+                    className="flex items-center justify-between gap-3 rounded-lg bg-surface-container-low px-3 py-2.5 font-body-md text-body-md"
+                  >
+                    <span className="text-primary font-medium min-w-0">
+                      {n} <span className="text-on-surface-variant font-normal">· {c}</span>
+                    </span>
+                    <span className="text-primary font-semibold shrink-0">{a}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="flex items-center justify-between rounded-xl bg-surface-container px-4 py-3 mt-3">
+                <span className="font-headline-sm text-headline-sm text-primary">Batch total</span>
+                <span className="font-currency-md text-currency-md text-primary font-bold">₹32,450</span>
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+                <FakeButton tone="primary">Download bank file</FakeButton>
+                <FakeButton tone="secondary">Mark as paid</FakeButton>
+              </div>
+            </Mock>
+          }
+        />
+
+        {/* ----------------------------- Exports -------------------------- */}
+        <FeatureSection
+          id="feature-reports"
+          reverse
+          title="Exports your accountant can use"
+          intro="The first release exports to Excel and CSV files with accountant-friendly columns, so your accountant gets one clean file instead of a folder of photos."
+          points={[
+            { text: "Excel and CSV exports for any month or date range." },
+            { text: "Each row traces back to the original bill and its approval history." },
+            { text: "Spend by category, person, team and month in a dashboard.", planned: true },
+          ]}
+          visual={
+            <Mock caption="Export formats and the columns in each file." decorative={false}>
+              <h3 className="font-headline-sm text-headline-sm text-primary font-bold pb-3">Formats</h3>
+              <ul className="flex flex-wrap gap-2">
+                {exportFormats.map((f) => (
+                  <li
+                    key={f.name}
+                    className="inline-flex items-center rounded-lg bg-surface-container px-3 py-1.5 font-label-md text-label-md font-semibold text-primary"
+                  >
+                    {f.name}
+                    {f.planned ? <PlannedTag /> : null}
+                  </li>
+                ))}
+              </ul>
+              <h3 className="font-headline-sm text-headline-sm text-primary font-bold pt-5 pb-3">Columns</h3>
+              <ul className="flex flex-wrap gap-2">
+                {exportColumns.map((c) => (
+                  <li
+                    key={c}
+                    className="rounded-full bg-surface-container-low px-3 py-1 font-label-md text-label-md text-on-surface-variant"
+                  >
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            </Mock>
+          }
+        />
+
+        {/* --------------------------- CA workspace ----------------------- */}
+        <FeatureSection
+          id="feature-ca-workspace"
+          title="One workspace for accountants with several clients"
+          intro="Accountants get a partner login to switch between client companies, review claims and download clean exports. A free partner account is planned."
+          points={[
+            { text: "Switch between client companies without logging out." },
+            { text: "Review each client's claims and flags in one place." },
+            { text: "Download the same structured exports your clients' finance teams use." },
+          ]}
+          extra={
+            <a
+              href="/accountants"
+              className={`inline-flex w-fit items-center gap-2 rounded-lg bg-surface-container-low px-4 py-2.5 font-label-md text-label-md text-primary hover:bg-surface-container transition-colors ${focusRing}`}
+            >
+              Learn about CA partnerships
+              <Icon name="arrow_forward" className="text-base" />
+            </a>
+          }
+          visual={
+            <Mock caption="Illustration with sample data." decorative={false}>
+              <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Sample client list, scrolls sideways on small screens">
+                <table className="w-full min-w-[420px] text-left font-body-md text-body-md">
+                  <caption className="sr-only">Sample list of client companies</caption>
+                  <thead>
+                    <tr className="bg-surface-container-low text-primary font-label-md text-label-md">
+                      <th scope="col" className="px-3 py-2.5 font-semibold">Client</th>
+                      <th scope="col" className="px-3 py-2.5 font-semibold">Claims waiting</th>
+                      <th scope="col" className="px-3 py-2.5 font-semibold">Last export</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-outline-variant/40 text-on-surface">
+                    {[
+                      ["Client A", "4", "30 Sep 2026"],
+                      ["Client B", "11", "30 Sep 2026"],
+                      ["Client C", "0", "Not yet exported"],
+                    ].map((r) => (
+                      <tr key={r[0]}>
+                        {r.map((c, i) => (
+                          <td key={i} className="px-3 py-3 whitespace-nowrap">
+                            {c}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Mock>
+          }
+        />
       </div>
+
+      {/* ------------------------------- CTA ------------------------------ */}
+      <section aria-labelledby="features-cta-title" className="w-full px-margin pb-16 sm:pb-24">
+        <div className="max-w-5xl mx-auto bg-primary text-on-primary rounded-3xl px-6 py-12 sm:px-10 sm:py-14 lg:p-16 text-center flex flex-col items-center gap-5 shadow-xl">
+          <h2
+            id="features-cta-title"
+            className="font-headline-xl font-bold tracking-tight text-on-primary max-w-2xl text-[26px] leading-[34px] sm:text-[32px] sm:leading-[40px] lg:text-[38px] lg:leading-[46px]"
+          >
+            Try these features with your own team
+          </h2>
+          <p className="font-body-lg text-body-lg text-on-primary-container max-w-xl leading-relaxed">
+            We are working with a small group of pilot teams and accountants. Pilot teams start with a
+            free 30-day trial.
+          </p>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
+            <a
+              href="/register"
+              className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-secondary text-on-secondary font-label-lg text-label-lg font-bold shadow-lg hover:opacity-90 transition-opacity ${focusRing}`}
+            >
+              Join the pilot
+            </a>
+            <a
+              href="/contact"
+              className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-surface-container-lowest/10 text-on-primary font-label-lg text-label-lg hover:bg-surface-container-lowest/20 transition-colors ${focusRing}`}
+            >
+              Talk to us
+            </a>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

@@ -1,8 +1,28 @@
+import type { Metadata } from "next";
 import { FeaturesContent } from "@/components/public/generated/features-content";
-import { pageMetadata } from "@/lib/seo";
 
-export const metadata = pageMetadata("/features", "Features", "WhatsApp receipt capture, AI-assisted extraction, multi-level approvals, policy limits, GSTIN checks, reimbursement batches and CA-ready exports.");
+export const metadata: Metadata = {
+  title: "Features: WhatsApp Expense Claims and Approvals",
+  description:
+    "See how HisabLoop handles WhatsApp bill capture, automatic bill reading, approvals, policy checks, GST details, reimbursement batches and accountant-ready exports.",
+  alternates: { canonical: "/features" },
+  openGraph: {
+    title: "HisabLoop features: from bill to books",
+    description:
+      "WhatsApp bill capture, approvals, policy checks, GST details and Excel or CSV exports for small Indian teams and their accountants.",
+    url: "/features",
+    siteName: "HisabLoop",
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HisabLoop features: from bill to books",
+    description:
+      "WhatsApp bill capture, approvals, policy checks, GST details and Excel or CSV exports for small Indian teams and their accountants.",
+  },
+};
 
-export default function Page() {
+export default function FeaturesPage() {
   return <FeaturesContent />;
 }

@@ -1,10 +1,5 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
-import { Icon } from "@/components/ui/icon";
-
-/* -------------------------------------------------------------------------- */
-/*  Config                                                                    */
-/* -------------------------------------------------------------------------- */
+import Link from "next/link";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisabloop.com";
 
@@ -14,9 +9,6 @@ const focusRing =
 const h2Class =
   "font-headline-xl text-primary font-bold tracking-tight text-[26px] leading-[34px] sm:text-[32px] sm:leading-[40px] lg:text-[38px] lg:leading-[46px]";
 
-/* -------------------------------------------------------------------------- */
-/*  Content (single source of truth for the page and the structured data)     */
-/* -------------------------------------------------------------------------- */
 
 const painPoints = [
   {
@@ -93,8 +85,8 @@ const features: { icon: string; title: string; text: string; status: Status }[] 
   },
   {
     icon: "account_balance",
-    title: "GST reports and accounting links",
-    text: "Reports for taxable value, CGST, SGST, IGST and eligible ITC, plus Tally and Zoho Books integration.",
+    title: "GST reports",
+    text: "Reports for taxable value, CGST, SGST, IGST and eligible ITC, ready to share with your accountant.",
     status: "Planned",
   },
   {
@@ -181,10 +173,9 @@ const plans = [
   {
     name: "Business",
     price: "₹249",
-    blurb: "For teams that want accounting integrations and payouts.",
+    blurb: "For teams that want payouts and priority support.",
     items: [
       "Everything in Growth",
-      "Tally and Zoho Books integration (planned)",
       "UPI payouts (planned)",
       "Priority support",
     ],
@@ -215,8 +206,8 @@ const faqs = [
     a: "In the first release, finance downloads a bank transfer file for each approved batch and pays from it. Paying by UPI directly from HisabLoop is planned and will go through a licensed payment partner.",
   },
   {
-    q: "Which accounting tools does it work with?",
-    a: "The first release exports to Excel and CSV with accountant-friendly columns. Tally and Zoho Books integrations are planned.",
+    q: "What files does my accountant get?",
+    a: "The first release exports to Excel and CSV with accountant-friendly columns. Your accountant can open them in Excel or use them as the starting point for their own records. HisabLoop does not connect directly to accounting software yet.",
   },
   {
     q: "Who can see my company's data?",
@@ -288,6 +279,14 @@ export const homeJsonLd = {
 /*  Small building blocks                                                     */
 /* -------------------------------------------------------------------------- */
 
+function Icon({ name, className = "" }: { name: string; className?: string }) {
+  return (
+    <span aria-hidden="true" className={`material-symbols-outlined ${className}`}>
+      {name}
+    </span>
+  );
+}
+
 function SectionHeader({
   id,
   title,
@@ -325,9 +324,7 @@ function StatusTag({ status }: { status: Status }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Page                                                                      */
-/* -------------------------------------------------------------------------- */
+
 
 export function HomeContent() {
   return (
@@ -717,8 +714,8 @@ export function HomeContent() {
                   <Link
                     href={p.cta.href}
                     className={`mt-8 w-full h-11 rounded-lg flex items-center justify-center font-label-md text-label-md font-semibold transition-colors ${focusRing} ${p.highlight
-                        ? "bg-primary-container text-on-primary hover:bg-primary shadow-md"
-                        : "bg-surface-container text-primary hover:bg-surface-container-high"
+                      ? "bg-primary-container text-on-primary hover:bg-primary shadow-md"
+                      : "bg-surface-container text-primary hover:bg-surface-container-high"
                       }`}
                   >
                     {p.cta.label}
@@ -750,7 +747,7 @@ export function HomeContent() {
                 className="group bg-surface-container-lowest rounded-2xl shadow-sm"
               >
                 <summary
-                  className={`flex items-center justify-between gap-4 p-5 sm:p-6 list-none [&::-webkit-details-marker]:hidden cursor-pointer rounded-2xl ${focusRing}`}
+                  className={`flex items-center justify-between gap-4 p-5 sm:p-6 list-none cursor-pointer rounded-2xl ${focusRing}`}
                 >
                   <h3 className="font-headline-sm text-headline-sm text-primary font-bold">{f.q}</h3>
                   <Icon

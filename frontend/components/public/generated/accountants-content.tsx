@@ -1,1014 +1,555 @@
+import type { ReactNode } from "react";
 import { ContactForm } from "@/components/public/contact-form";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisabloop.com";
+
+const focusRing =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary";
+
+const h2Class =
+  "font-headline-lg text-primary font-bold tracking-tight text-2xl sm:text-3xl lg:text-4xl leading-tight";
+
+type Step = { who: string; icon: string; title: string; text: string };
+
+const painPoints = [
+  {
+    icon: "forum",
+    title: "Unorganized WhatsApp chats",
+    text: "Receipts arrive scattered across individual chats and groups, requiring hours of manual sorting per client.",
+  },
+  {
+    icon: "receipt_long",
+    title: "Faded slips & missing GSTINs",
+    text: "Thermal paper fades quickly, and receipts frequently lack readable GSTINs, invoice numbers, or CGST/SGST splits.",
+  },
+  {
+    icon: "keyboard",
+    title: "Tedious manual spreadsheet entry",
+    text: "Staff re-type date, vendor, tax breakdown, and voucher amounts by hand, increasing the risk of data entry errors.",
+  },
+  {
+    icon: "event_busy",
+    title: "Month-end filing bottleneck",
+    text: "Missing bills, unverifiable expenses, and client queries pile up right before GSTR filing deadlines.",
+  },
+];
+
+const flow: Step[] = [
+  {
+    who: "Client Employee",
+    icon: "photo_camera",
+    title: "WhatsApp Capture",
+    text: "Snaps a bill or PDF and sends it directly to the HisabLoop WhatsApp number. No app install required.",
+  },
+  {
+    who: "HisabLoop Engine",
+    icon: "document_scanner",
+    title: "Field Extraction & Verification",
+    text: "Extracts vendor, invoice date, amount, GSTIN, and tax split. The employee confirms values immediately in chat.",
+  },
+  {
+    who: "Policy Engine",
+    icon: "fact_check",
+    title: "Validation & Flagging",
+    text: "Identifies duplicate submissions, invalid GSTIN formats, and claims exceeding internal spending caps.",
+  },
+  {
+    who: "Client Manager",
+    icon: "how_to_reg",
+    title: "1-Tap Approval",
+    text: "Manager approves or queries the claim directly within their messaging chat with full context.",
+  },
+  {
+    who: "Accountant (CA)",
+    icon: "table_view",
+    title: "Standardized Export",
+    text: "Log in to your workspace to view verified vouchers and download audit-ready Excel/CSV ledger summaries.",
+  },
+];
+
+const benefits: { icon: string; title: string; text: string; planned?: boolean }[] = [
+  {
+    icon: "groups",
+    title: "Multi-Client Practice Dashboard",
+    text: "Manage multiple client firms from a single login. Client company ledgers and records remain completely isolated.",
+  },
+  {
+    icon: "table_view",
+    title: "Standardized Excel & CSV Exports",
+    text: "Get clear columns for date, vendor, GSTIN, category, taxable value, CGST, SGST, IGST, and approval status.",
+  },
+  {
+    icon: "flag",
+    title: "Exception-First Review",
+    text: "Filter by flagged issues—like duplicate invoices or invalid GSTINs—so you only spend time on discrepancies.",
+  },
+  {
+    icon: "history_edu",
+    title: "Audit Trail & Original Receipts",
+    text: "Inspect original receipt images alongside extracted data, approval timestamps, and employee edit logs.",
+  },
+  {
+    icon: "inventory",
+    title: "Statutory Bill Retention",
+    text: "Receipt images and digital audit trails are securely archived to meet Indian statutory audit compliance periods.",
+  },
+  {
+    icon: "assessment",
+    title: "Automated GST ITC Summary",
+    text: "Consolidated breakdown of eligible Input Tax Credit (ITC) with separated CGST, SGST, and IGST components.",
+    planned: true,
+  },
+];
+
+const flaggedChecks = [
+  "Duplicate invoice submissions (matching amount, date, or vendor)",
+  "Unregistered or incorrectly formatted GSTINs",
+  "Expenses exceeding team or category budget caps",
+  "Missing mandatory bill details or unreadable receipts",
+];
+
+const sampleClients = [
+  { name: "Apex Logistics Pvt Ltd", claims: "18", flags: "2", status: "Ready to Export" },
+  { name: "BlueSky Media Agency", claims: "34", flags: "0", status: "Ready to Export" },
+  { name: "Zenith Health Clinics", claims: "12", flags: "3", status: "Needs Review" },
+];
+
+const partnerOffers = [
+  {
+    icon: "workspace_premium",
+    title: "Free Partner Portal Access",
+    text: "Zero subscription fees for CA firms managing their clients through the HisabLoop web workspace.",
+  },
+  {
+    icon: "handshake",
+    title: "Dedicated Onboarding Assistance",
+    text: "Direct setup support to configure your clients' employee directories, categories, and approval paths.",
+  },
+  {
+    icon: "forum",
+    title: "Direct Product Input",
+    text: "Work directly with our product team to shape export formats, ledger schemas, and compliance reporting.",
+  },
+  {
+    icon: "savings",
+    title: "Client Referral Benefits",
+    text: "Special volume pricing discounts and partner incentives for practices introducing multiple client accounts.",
+  },
+];
+
+const faqs = [
+  {
+    q: "Does HisabLoop replace our accounting software?",
+    a: "No. HisabLoop acts as an intake and pre-accounting layer. It collects, reads, and validates expense receipts from your clients and provides clean, structured Excel and CSV files formatted for entry into your accounting software. Direct two-way sync integrations are planned for future versions.",
+  },
+  {
+    q: "Do our clients need to download or install a new app?",
+    a: "No. Employees and managers submit receipts, verify details, and approve expenses entirely inside WhatsApp. Only you and the client's finance administrators use the browser-based web dashboard.",
+  },
+  {
+    q: "Who remains responsible for filing GST returns?",
+    a: "Your firm maintains full control. HisabLoop extracts GSTINs and tax splits as an operational aid to ensure source documents are legible and organized. Final tax classification, reconciliation, and statutory filing remain with the accountant.",
+  },
+  {
+    q: "Can my practice manage multiple independent businesses?",
+    a: "Yes. The CA workspace provides a unified firm view to switch across client accounts while maintaining strict data isolation between companies.",
+  },
+];
+
+export const accountantsJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/accountants#webpage`,
+      url: `${SITE_URL}/accountants`,
+      name: "HisabLoop for Chartered Accountants & Tax Practitioners",
+      description:
+        "Streamline client expense collection via WhatsApp. Eliminate manual receipt chasing, extract GST data automatically, and download structured Excel/CSV files.",
+      inLanguage: "en-IN",
+      isPartOf: {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: SITE_URL,
+        name: "HisabLoop",
+      },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "For Accountants", item: `${SITE_URL}/accountants` },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    },
+  ],
+};
+
+/* -------------------------------------------------------------------------- */
+/*  Building Blocks                                                           */
+/* -------------------------------------------------------------------------- */
+
+function Icon({ name, className = "" }: { name: string; className?: string }) {
+  return (
+    <span aria-hidden="true" className={`material-symbols-outlined select-none ${className}`}>
+      {name}
+    </span>
+  );
+}
+
+function PlannedTag() {
+  return (
+    <span className="ml-2 inline-flex items-center rounded-full bg-surface-container px-2.5 py-0.5 align-middle text-xs font-medium text-on-surface-variant">
+      Coming Soon
+    </span>
+  );
+}
+
+function Flow({ steps, label }: { steps: Step[]; label: string }) {
+  return (
+    <ol aria-label={label} className="grid grid-cols-1 lg:grid-cols-5 gap-3 lg:gap-2">
+      {steps.map((s, i) => {
+        const isLast = i === steps.length - 1;
+        return (
+          <li key={s.title} className="flex flex-col lg:flex-row items-stretch min-w-0">
+            <div className="flex-1 rounded-xl bg-surface-container-lowest p-5 shadow-sm border border-outline-variant/30 flex flex-col justify-between gap-3">
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="w-10 h-10 shrink-0 rounded-lg bg-surface-container text-primary flex items-center justify-center">
+                    <Icon name={s.icon} className="text-xl" />
+                  </div>
+                  <span className="rounded-full bg-surface-container-low px-2.5 py-0.5 text-xs font-semibold text-on-surface-variant">
+                    {s.who}
+                  </span>
+                </div>
+                <h3 className="font-bold text-primary text-base">
+                  <span className="sr-only">Step {i + 1}: </span>
+                  {s.title}
+                </h3>
+                <p className="mt-1 text-sm text-on-surface-variant leading-relaxed">{s.text}</p>
+              </div>
+            </div>
+            {!isLast && (
+              <div
+                aria-hidden="true"
+                className="flex items-center justify-center text-outline py-2 lg:py-0 lg:px-1 shrink-0"
+              >
+                <Icon name="arrow_downward" className="lg:hidden text-lg" />
+                <Icon name="arrow_forward" className="hidden lg:block text-lg" />
+              </div>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+function Wrapper({ children }: { children: ReactNode }) {
+  return <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{children}</div>;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Main View Component                                                       */
+/* -------------------------------------------------------------------------- */
 
 export function AccountantsContent() {
   return (
-    <main className="w-full pt-20 bg-background flex-1">
-      <div className="flex flex-col w-full">
-        {" "}
-        <section className="relative overflow-hidden pt-space-2xl pb-space-2xl bg-surface-container-low">
-          <div className="absolute inset-0 pointer-events-none opacity-40">
-            <div className="absolute -top-32 -right-24 w-96 h-96 rounded-full bg-secondary-fixed filter blur-3xl opacity-30"></div>
-            {" "}
-            <div className="absolute -bottom-24 -left-20 w-80 h-80 rounded-full bg-primary-fixed filter blur-3xl opacity-40"></div>
+    <main className="w-full pt-16 sm:pt-20 bg-background flex-1">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(accountantsJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+
+      {/* Hero */}
+      <section aria-labelledby="ca-title" className="w-full bg-surface-container-low py-14 sm:py-20 lg:py-24 border-b border-outline-variant/20">
+        <Wrapper>
+          <div className="max-w-3xl mx-auto flex flex-col items-center text-center">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase mb-4">
+              Practice Management for CAs & Accountants
+            </span>
+            <h1
+              id="ca-title"
+              className="text-primary font-extrabold tracking-tight text-3xl sm:text-4xl lg:text-5xl leading-tight"
+            >
+              Audit-ready client expense data without chasing receipts
+            </h1>
+            <p className="mt-5 text-base sm:text-lg text-on-surface-variant leading-relaxed max-w-2xl">
+              Your clients submit bills instantly over WhatsApp. HisabLoop validates GST details, flags exceptions, and delivers structured ledger summaries for your practice.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
+              <a
+                href="#partner-form"
+                className={`inline-flex items-center justify-center w-full sm:w-auto h-12 px-8 rounded-lg bg-primary text-on-primary font-semibold text-sm shadow hover:bg-primary/90 transition-all ${focusRing}`}
+              >
+                Join Partner Pilot
+              </a>
+              <a
+                href="#how-it-works-ca"
+                className={`inline-flex items-center justify-center w-full sm:w-auto h-12 px-8 rounded-lg bg-surface-container-lowest text-on-surface font-semibold text-sm border border-outline-variant/40 hover:bg-surface-container transition-all ${focusRing}`}
+              >
+                See Workflow
+              </a>
+            </div>
+            <p className="mt-4 text-xs sm:text-sm text-on-surface-variant">
+              Free pilot access available for practicing Chartered Accountants & tax consultants.
+            </p>
           </div>
-          {" "}
-          <div className="relative max-w-7xl mx-auto px-margin">
-            <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
-              {" "}
-              <div className="inline-flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-lowest shadow-sm mb-space-lg">
-                <span className="material-symbols-outlined text-secondary text-sm">
-                  {"verified_user"}
-                </span>
-                {" "}
-                <span className="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">
-                  {" Dedicated CA Portal \u00b7 Purpose-Built For Indian Accounting Firms "}
-                </span>
-              </div>
-              {" "}
-              {" "}
-              <h1 className="font-headline-xl text-headline-xl text-primary font-bold tracking-tight text-center mb-space-md">
-                {" Cleaner expense records."}
-                <br />
-                {" "}
-                <span className="text-secondary">
-                  {"Smoother client workflows."}
-                </span>
-              </h1>
-              {" "}
-              {" "}
-              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-3xl text-center leading-relaxed mb-space-xl">
-                {" Help your MSME clients organize expense receipts via WhatsApp, automatically verify 15-digit GSTINs, safeguard Input Tax Credit (ITC), and export audit-ready ledgers into Tally Prime or Zoho Books \u2014 without chasing shoe-boxes or messy WhatsApp groups. "}
-              </p>
-              {" "}
-              {" "}
-              <div className="flex flex-col sm:flex-row items-center gap-space-md justify-center w-full max-w-md mb-space-2xl">
-                <a className="w-full sm:w-auto inline-flex items-center justify-center h-12 px-space-xl rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg shadow-sm transition-all duration-200" href="#partner-form">
-                  <span className="material-symbols-outlined text-base mr-2">
-                    {"dashboard"}
-                  </span>
-                  {" Explore the CA Workspace "}
-                </a>
-                {" "}
-                <a className="w-full sm:w-auto inline-flex items-center justify-center h-12 px-space-xl rounded-lg bg-surface-container-lowest text-primary hover:bg-surface-container font-label-lg text-label-lg shadow-sm transition-all duration-200" href="#partner-form">
-                  <span className="material-symbols-outlined text-base mr-2">
-                    {"assignment_ind"}
-                  </span>
-                  {" Register as a CA Partner "}
-                </a>
-              </div>
-              {" "}
-              {" "}
-              <div className="w-full bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-space-md items-center">
-                  <div className="flex items-center justify-center gap-2 text-left">
-                    <span className="material-symbols-outlined text-secondary text-lg">
-                      {"check_circle"}
-                    </span>
-                    {" "}
-                    <span className="font-label-sm text-label-sm text-on-surface font-semibold leading-tight">
-                      {"Complimentary CA Seat"}
-                      <br />
-                      <span className="text-on-surface-variant font-normal">
-                        {"on all Growth Plans"}
-                      </span>
-                    </span>
-                  </div>
-                  {" "}
-                  <div className="flex items-center justify-center gap-2 text-left">
-                    <span className="material-symbols-outlined text-secondary text-lg">
-                      {"sync_alt"}
-                    </span>
-                    {" "}
-                    <span className="font-label-sm text-label-sm text-on-surface font-semibold leading-tight">
-                      {"1-Click Sync"}
-                      <br />
-                      <span className="text-on-surface-variant font-normal">
-                        {"Tally Prime XML & Zoho"}
-                      </span>
-                    </span>
-                  </div>
-                  {" "}
-                  <div className="flex items-center justify-center gap-2 text-left">
-                    <span className="material-symbols-outlined text-secondary text-lg">
-                      {"policy"}
-                    </span>
-                    {" "}
-                    <span className="font-label-sm text-label-sm text-on-surface font-semibold leading-tight">
-                      {"Sec 17(5) Segregation"}
-                      <br />
-                      <span className="text-on-surface-variant font-normal">
-                        {"Automated blocked ITC"}
-                      </span>
-                    </span>
-                  </div>
-                  {" "}
-                  <div className="flex items-center justify-center gap-2 text-left">
-                    <span className="material-symbols-outlined text-secondary text-lg">
-                      {"lock"}
-                    </span>
-                    {" "}
-                    <span className="font-label-sm text-label-sm text-on-surface font-semibold leading-tight">
-                      {"Immutable Scans"}
-                      <br />
-                      <span className="text-on-surface-variant font-normal">
-                        {"Zero client data tampering"}
-                      </span>
-                    </span>
-                  </div>
+        </Wrapper>
+      </section>
+
+      {/* The Problem */}
+      <section aria-labelledby="problem-title" className="w-full bg-surface py-14 sm:py-20">
+        <Wrapper>
+          <header className="max-w-2xl mb-10">
+            <h2 id="problem-title" className={h2Class}>
+              The month-end expense bottleneck
+            </h2>
+            <p className="mt-3 text-base text-on-surface-variant leading-relaxed">
+              When clients rely on unstructured chats and paper slips, your staff spends critical filing days doing clerical entry rather than advisory.
+            </p>
+          </header>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {painPoints.map((p) => (
+              <li key={p.title} className="rounded-xl bg-surface-container-low p-6 flex flex-col gap-3 border border-outline-variant/20">
+                <div className="w-10 h-10 rounded-lg bg-surface-container-lowest text-primary flex items-center justify-center shadow-xs">
+                  <Icon name={p.icon} className="text-xl" />
                 </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        {" "}
-        {" "}
-        <section className="py-space-2xl bg-surface">
-          <div className="max-w-7xl mx-auto px-margin">
-            <div className="max-w-3xl mx-auto text-center mb-space-2xl">
-              <span className="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold block mb-2">
-                {" The Month-End Bottleneck "}
-              </span>
-              {" "}
-              <h2 className="font-headline-lg text-headline-lg text-primary font-bold mb-space-sm">
-                {" Stop spending 30% of your billable hours sorting crumpled paper vouchers. "}
-              </h2>
-              {" "}
-              <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                {" External CAs and bookkeepers spend days untangling chaotic client receipts before filing GSTR-2B, 3B, and computing tax liabilities. "}
-              </p>
-            </div>
-            {" "}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-error-container text-on-error-container flex items-center justify-center mb-space-md">
-                    <span className="material-symbols-outlined text-xl">
-                      {"receipt_long"}
-                    </span>
+                <h3 className="font-bold text-primary text-base">{p.title}</h3>
+                <p className="text-sm text-on-surface-variant leading-relaxed">{p.text}</p>
+              </li>
+            ))}
+          </ul>
+        </Wrapper>
+      </section>
+
+      {/* Workflow */}
+      <section
+        id="how-it-works-ca"
+        aria-labelledby="flow-title"
+        className="w-full bg-surface-container-low py-14 sm:py-20 scroll-mt-20 border-y border-outline-variant/20"
+      >
+        <Wrapper>
+          <header className="max-w-2xl mb-10">
+            <h2 id="flow-title" className={h2Class}>
+              How bills reach your practice
+            </h2>
+            <p className="mt-3 text-base text-on-surface-variant leading-relaxed">
+              Clients capture expenses as they occur inside WhatsApp. You review verified, structured ledgers on the web.
+            </p>
+          </header>
+          <Flow steps={flow} label="Process flow from receipt capture to accountant download" />
+        </Wrapper>
+      </section>
+
+      {/* Benefits */}
+      <section aria-labelledby="benefits-title" className="w-full bg-surface py-14 sm:py-20">
+        <Wrapper>
+          <header className="max-w-2xl mb-10">
+            <h2 id="benefits-title" className={h2Class}>
+              Designed for accounting practices
+            </h2>
+            <p className="mt-3 text-base text-on-surface-variant leading-relaxed">
+              Streamline document intake, reduce follow-up queries, and keep clean audit documentation for every client.
+            </p>
+          </header>
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {benefits.map((b) => (
+              <li key={b.title} className="min-w-0">
+                <article className="h-full rounded-xl bg-surface-container-lowest p-6 shadow-sm border border-outline-variant/30 flex flex-col gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-surface-container text-secondary flex items-center justify-center">
+                    <Icon name={b.icon} className="text-xl" />
                   </div>
-                  {" "}
-                  <h3 className="font-headline-sm text-headline-sm text-primary mb-space-xs font-semibold">
-                    {"Missing & Faded Invoices"}
+                  <h3 className="font-bold text-primary text-lg flex items-center flex-wrap">
+                    {b.title}
+                    {b.planned && <PlannedTag />}
                   </h3>
-                  {" "}
-                  <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                    {" Thermal taxi slips, petrol bills, and toll chits fade within weeks, resulting in unverified expenses and disallowances during statutory assessments. "}
-                  </p>
-                </div>
-                {" "}
-                <div className="pt-space-md mt-space-md bg-surface-container-low -mx-space-lg -mb-space-lg px-space-lg pb-space-md rounded-b-xl">
-                  <span className="font-label-sm text-label-sm text-error font-medium flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">
-                      {"warning"}
-                    </span>
-                    {" Disallowance Risk: High "}
-                  </span>
-                </div>
-              </div>
-              {" "}
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-surface-container text-primary flex items-center justify-center mb-space-md">
-                    <span className="material-symbols-outlined text-xl">
-                      {"fact_check"}
-                    </span>
-                  </div>
-                  {" "}
-                  <h3 className="font-headline-sm text-headline-sm text-primary mb-space-xs font-semibold">
-                    {"Mismatched GSTINs"}
-                  </h3>
-                  {" "}
-                  <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                    {" Clients submit bills with wrong state prefixes or invalid supplier numbers, triggering GSTR-2B mismatches and disputed ITC claims. "}
-                  </p>
-                </div>
-                {" "}
-                <div className="pt-space-md mt-space-md bg-surface-container-low -mx-space-lg -mb-space-lg px-space-lg pb-space-md rounded-b-xl">
-                  <span className="font-label-sm text-label-sm text-on-surface-variant font-medium flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">
-                      {"tune"}
-                    </span>
-                    {" 15-Digit Master Verification "}
-                  </span>
-                </div>
-              </div>
-              {" "}
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-secondary-container text-on-secondary-container flex items-center justify-center mb-space-md">
-                    <span className="material-symbols-outlined text-xl">
-                      {"block"}
-                    </span>
-                  </div>
-                  {" "}
-                  <h3 className="font-headline-sm text-headline-sm text-primary mb-space-xs font-semibold">
-                    {"Blocked Credits (Sec 17(5))"}
-                  </h3>
-                  {" "}
-                  <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                    {" Manually screening every voucher for food, club memberships, or personal conveyances consumes senior audit associates' valuable hours. "}
-                  </p>
-                </div>
-                {" "}
-                <div className="pt-space-md mt-space-md bg-surface-container-low -mx-space-lg -mb-space-lg px-space-lg pb-space-md rounded-b-xl">
-                  <span className="font-label-sm text-label-sm text-secondary font-medium flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">
-                      {"shield"}
-                    </span>
-                    {" Automated Isolation "}
-                  </span>
-                </div>
-              </div>
-              {" "}
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-surface-container text-on-surface flex items-center justify-center mb-space-md">
-                    <span className="material-symbols-outlined text-xl">
-                      {"table_rows"}
-                    </span>
-                  </div>
-                  {" "}
-                  <h3 className="font-headline-sm text-headline-sm text-primary mb-space-xs font-semibold">
-                    {"Messy Spreadsheets"}
-                  </h3>
-                  {" "}
-                  <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                    {" Endless email threads and late-night calls to directors just to discover who spent \u20b93,400 at an ambiguous local enterprise merchant. "}
-                  </p>
-                </div>
-                {" "}
-                <div className="pt-space-md mt-space-md bg-surface-container-low -mx-space-lg -mb-space-lg px-space-lg pb-space-md rounded-b-xl">
-                  <span className="font-label-sm text-label-sm text-on-surface-variant font-medium flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">
-                      {"chat"}
-                    </span>
-                    {" WhatsApp Inflow Feeds "}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        {" "}
-        {" "}
-        <section className="py-space-2xl bg-surface-container-low">
-          <div className="max-w-7xl mx-auto px-margin">
-            <div className="max-w-3xl mb-space-xl">
-              <span className="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold block mb-2">
-                {" Multi-Client Architecture "}
-              </span>
-              {" "}
-              <h2 className="font-headline-lg text-headline-lg text-primary font-bold mb-space-xs">
-                {" One cockpit to supervise all your client businesses. "}
+                  <p className="text-sm text-on-surface-variant leading-relaxed">{b.text}</p>
+                </article>
+              </li>
+            ))}
+          </ul>
+        </Wrapper>
+      </section>
+
+      {/* Practice Workspace Preview */}
+      <section
+        aria-labelledby="workspace-title"
+        className="w-full bg-surface-container-low py-14 sm:py-20 border-y border-outline-variant/20"
+      >
+        <Wrapper>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="lg:col-span-5 min-w-0">
+              <h2 id="workspace-title" className={h2Class}>
+                Single dashboard for all client firms
               </h2>
-              {" "}
-              <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                {" Toggle between 5, 20, or 100+ client firms with individual tenant isolation, read-only audit controls, and real-time data completeness metrics. "}
+              <p className="mt-4 text-base text-on-surface-variant leading-relaxed">
+                Switch across client entities instantly. View pending claim volumes, check pre-filing flags, and export clean data batches on demand.
               </p>
+              <h3 className="mt-6 font-bold text-primary text-base">
+                Automated Exception Checks
+              </h3>
+              <ul className="mt-3 flex flex-col gap-2.5">
+                {flaggedChecks.map((flag) => (
+                  <li key={flag} className="flex items-start gap-2 text-sm text-on-surface">
+                    <Icon name="check_circle" className="text-secondary text-base mt-0.5 shrink-0" />
+                    <span>{flag}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            {" "}
-            {" "}
-            <div className="bg-surface-container-lowest rounded-xl shadow-md overflow-hidden">
-              {" "}
-              <div className="bg-surface-container p-space-md flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
-                <div className="flex items-center gap-space-sm flex-wrap">
-                  <div className="flex items-center gap-2 bg-surface-container-lowest px-space-sm py-1.5 rounded-lg shadow-sm">
-                    <span className="material-symbols-outlined text-secondary text-base">
-                      {"domain"}
-                    </span>
-                    {" "}
-                    <span className="font-label-md text-label-md text-primary font-semibold">
-                      {"Deshmukh & Co. CA Partner Hub"}
-                    </span>
-                  </div>
-                  {" "}
-                  <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-secondary text-on-secondary font-label-sm text-label-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span>
-                    {" 24 Active Firm Tenancies "}
-                  </span>
-                </div>
-                {" "}
-                {" "}
-                <div className="flex items-center gap-space-sm flex-wrap">
-                  <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3 top-2.5 text-outline text-sm">
-                      {"search"}
-                    </span>
-                    {" "}
-                    <input className="h-9 pl-9 pr-3 rounded-lg bg-surface-container-lowest font-body-sm text-body-sm text-on-surface outline-none w-48 sm:w-64 shadow-sm" placeholder="Search clients, GSTIN..." readOnly type="text" defaultValue="Filter: All Clients (Active)" />
-                  </div>
-                  {" "}
-                  <div className="bg-surface-container-lowest h-9 px-3 rounded-lg flex items-center gap-1.5 text-on-surface font-label-sm text-label-sm shadow-sm">
-                    <span className="material-symbols-outlined text-sm text-outline">
-                      {"calendar_today"}
-                    </span>
-                    {" "}
-                    <span>
-                      {"Q3 FY 2025-26"}
-                    </span>
-                  </div>
+
+            <figure className="lg:col-span-7 min-w-0">
+              <div className="rounded-xl bg-surface-container-lowest p-4 sm:p-6 shadow-md border border-outline-variant/30">
+                <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Sample Client Ledger Overview">
+                  <table className="w-full min-w-[440px] text-left text-sm">
+                    <thead>
+                      <tr className="bg-surface-container-low text-primary text-xs font-semibold uppercase tracking-wider">
+                        <th scope="col" className="px-4 py-3 rounded-l-lg">Client Entity</th>
+                        <th scope="col" className="px-4 py-3">Pending Claims</th>
+                        <th scope="col" className="px-4 py-3">Exceptions</th>
+                        <th scope="col" className="px-4 py-3 rounded-r-lg">Batch Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-outline-variant/30 text-on-surface">
+                      {sampleClients.map((client) => (
+                        <tr key={client.name} className="hover:bg-surface-container-lowest/80 transition-colors">
+                          <th scope="row" className="px-4 py-3.5 font-semibold text-primary whitespace-nowrap">
+                            {client.name}
+                          </th>
+                          <td className="px-4 py-3.5">{client.claims}</td>
+                          <td className="px-4 py-3.5">
+                            {client.flags !== "0" ? (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-error-container text-on-error-container">
+                                {client.flags} flagged
+                              </span>
+                            ) : (
+                              <span className="text-on-surface-variant text-xs">None</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3.5 whitespace-nowrap text-xs font-medium text-on-surface-variant">
+                            {client.status}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
-              {" "}
-              {" "}
-              <div className="grid grid-cols-2 md:grid-cols-4 p-space-md gap-space-md bg-surface-container-low">
-                <div className="bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
-                  <span className="font-label-sm text-label-sm text-on-surface-variant block mb-1">
-                    {"Total Client Ledgers"}
-                  </span>
-                  {" "}
-                  <span className="font-headline-md text-headline-md text-primary font-bold">
-                    {"24 Active"}
-                  </span>
-                  {" "}
-                  <span className="font-body-sm text-body-sm text-secondary block mt-0.5">
-                    {"100% cloud synced"}
-                  </span>
-                </div>
-                {" "}
-                <div className="bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
-                  <span className="font-label-sm text-label-sm text-on-surface-variant block mb-1">
-                    {"Q3 Reviewed Inflow"}
-                  </span>
-                  {" "}
-                  <span className="font-headline-md text-headline-md text-primary font-bold">
-                    {"\u20b918,42,850"}
-                  </span>
-                  {" "}
-                  <span className="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">
-                    {"1,248 vouchers tagged"}
-                  </span>
-                </div>
-                {" "}
-                <div className="bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
-                  <span className="font-label-sm text-label-sm text-on-surface-variant block mb-1">
-                    {"Eligible ITC Recovered"}
-                  </span>
-                  {" "}
-                  <span className="font-headline-md text-headline-md text-secondary font-bold">
-                    {"\u20b92,84,310"}
-                  </span>
-                  {" "}
-                  <span className="font-body-sm text-body-sm text-secondary block mt-0.5">
-                    {"GSTR-2B reconciled"}
-                  </span>
-                </div>
-                {" "}
-                <div className="bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
-                  <span className="font-label-sm text-label-sm text-on-surface-variant block mb-1">
-                    {"Sec 17(5) Flagged"}
-                  </span>
-                  {" "}
-                  <span className="font-headline-md text-headline-md text-error font-bold">
-                    {"\u20b938,200"}
-                  </span>
-                  {" "}
-                  <span className="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">
-                    {"Isolated from claim"}
-                  </span>
-                </div>
-              </div>
-              {" "}
-              {" "}
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="bg-surface-container-high font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
-                      <th className="py-space-sm px-space-md">
-                        {"Client Legal Name & GSTIN"}
-                      </th>
-                      <th className="py-space-sm px-space-md">
-                        {"Pending Review"}
-                      </th>
-                      <th className="py-space-sm px-space-md">
-                        {"Data Completeness"}
-                      </th>
-                      <th className="py-space-sm px-space-md">
-                        {"Last Export Timestamp"}
-                      </th>
-                      <th className="py-space-sm px-space-md text-right">
-                        {"Audit & Export Actions"}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-surface-container font-body-md text-body-md text-on-surface">
-                    <tr className="hover:bg-surface-container-low transition-colors">
-                      <td className="py-space-md px-space-md">
-                        <div className="font-headline-sm text-headline-sm text-primary font-semibold">
-                          {"Shinde Agro Traders"}
-                        </div>
-                        {" "}
-                        <div className="font-label-sm text-label-sm text-on-surface-variant font-mono">
-                          {"GSTIN: 27AABCS1284K1ZD"}
-                        </div>
-                      </td>
-                      <td className="py-space-md px-space-md">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                          {" 42 Unreviewed "}
-                        </span>
-                      </td>
-                      <td className="py-space-md px-space-md">
-                        <div className="flex items-center gap-2">
-                          <div className="w-24 bg-surface-container-high rounded-full h-2 overflow-hidden">
-                            <div className="bg-secondary h-full rounded-full" style={{"width": "96%"}}></div>
-                          </div>
-                          {" "}
-                          <span className="font-label-sm text-label-sm text-secondary font-semibold">
-                            {"96% High"}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-space-md px-space-md text-on-surface-variant font-body-sm text-body-sm">
-                        {" Yesterday, 5:20 PM "}
-                      </td>
-                      <td className="py-space-md px-space-md text-right space-x-2">
-                        <button className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">
-                          <span className="material-symbols-outlined text-sm">
-                            {"visibility"}
-                          </span>
-                          {" Open "}
-                        </button>
-                        {" "}
-                        <button className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm hover:bg-primary-container transition-colors shadow-sm">
-                          <span className="material-symbols-outlined text-sm">
-                            {"download"}
-                          </span>
-                          {" Tally XML "}
-                        </button>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-surface-container-low transition-colors">
-                      <td className="py-space-md px-space-md">
-                        <div className="font-headline-sm text-headline-sm text-primary font-semibold">
-                          {"Kulkarni Electronics LLP"}
-                        </div>
-                        {" "}
-                        <div className="font-label-sm text-label-sm text-on-surface-variant font-mono">
-                          {"GSTIN: 27AABCK8901L1ZT"}
-                        </div>
-                      </td>
-                      <td className="py-space-md px-space-md">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                          {" 11 Unreviewed "}
-                        </span>
-                      </td>
-                      <td className="py-space-md px-space-md">
-                        <div className="flex items-center gap-2">
-                          <div className="w-24 bg-surface-container-high rounded-full h-2 overflow-hidden">
-                            <div className="bg-secondary h-full rounded-full" style={{"width": "92%"}}></div>
-                          </div>
-                          {" "}
-                          <span className="font-label-sm text-label-sm text-secondary font-semibold">
-                            {"92% Good"}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-space-md px-space-md text-on-surface-variant font-body-sm text-body-sm">
-                        {" 3 days ago "}
-                      </td>
-                      <td className="py-space-md px-space-md text-right space-x-2">
-                        <button className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">
-                          <span className="material-symbols-outlined text-sm">
-                            {"visibility"}
-                          </span>
-                          {" Open "}
-                        </button>
-                        {" "}
-                        <button className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm hover:bg-primary-container transition-colors shadow-sm">
-                          <span className="material-symbols-outlined text-sm">
-                            {"download"}
-                          </span>
-                          {" Tally XML "}
-                        </button>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-surface-container-low transition-colors bg-surface-container-lowest">
-                      <td className="py-space-md px-space-md">
-                        <div className="font-headline-sm text-headline-sm text-primary font-semibold">
-                          {"BlueDart Fleet Services (Branch #4)"}
-                        </div>
-                        {" "}
-                        <div className="font-label-sm text-label-sm text-on-surface-variant font-mono">
-                          {"GSTIN: 24AAGCB5621M1ZN"}
-                        </div>
-                      </td>
-                      <td className="py-space-md px-space-md">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
-                          <span className="material-symbols-outlined text-xs">
-                            {"flag"}
-                          </span>
-                          {" 3 Audit Flags "}
-                        </span>
-                      </td>
-                      <td className="py-space-md px-space-md">
-                        <div className="flex items-center gap-2">
-                          <div className="w-24 bg-surface-container-high rounded-full h-2 overflow-hidden">
-                            <div className="bg-error h-full rounded-full" style={{"width": "78%"}}></div>
-                          </div>
-                          {" "}
-                          <span className="font-label-sm text-label-sm text-error font-semibold">
-                            {"78% Review"}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-space-md px-space-md text-on-surface-variant font-body-sm text-body-sm">
-                        {" Oct 12, 11:45 AM "}
-                      </td>
-                      <td className="py-space-md px-space-md text-right space-x-2">
-                        <button className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-error-container text-on-error-container font-label-sm text-label-sm hover:opacity-90 transition-opacity">
-                          <span className="material-symbols-outlined text-sm">
-                            {"build"}
-                          </span>
-                          {" Resolve Flags "}
-                        </button>
-                        {" "}
-                        <button className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm hover:bg-primary-container transition-colors shadow-sm">
-                          <span className="material-symbols-outlined text-sm">
-                            {"download"}
-                          </span>
-                          {" Tally XML "}
-                        </button>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-surface-container-low transition-colors">
-                      <td className="py-space-md px-space-md">
-                        <div className="font-headline-sm text-headline-sm text-primary font-semibold">
-                          {"Apex Design Studio"}
-                        </div>
-                        {" "}
-                        <div className="font-label-sm text-label-sm text-on-surface-variant font-mono">
-                          {"GSTIN: 27AABCA3319Q1ZP"}
-                        </div>
-                      </td>
-                      <td className="py-space-md px-space-md">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">
-                          <span className="material-symbols-outlined text-xs">
-                            {"done_all"}
-                          </span>
-                          {" 0 Pending "}
-                        </span>
-                      </td>
-                      <td className="py-space-md px-space-md">
-                        <div className="flex items-center gap-2">
-                          <div className="w-24 bg-surface-container-high rounded-full h-2 overflow-hidden">
-                            <div className="bg-secondary h-full rounded-full" style={{"width": "100%"}}></div>
-                          </div>
-                          {" "}
-                          <span className="font-label-sm text-label-sm text-secondary font-semibold">
-                            {"100% Ready"}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-space-md px-space-md text-on-surface-variant font-body-sm text-body-sm">
-                        {" Today, 10:15 AM "}
-                      </td>
-                      <td className="py-space-md px-space-md text-right space-x-2">
-                        <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container-low text-secondary font-label-sm text-label-sm font-semibold">
-                          <span className="material-symbols-outlined text-sm">
-                            {"check"}
-                          </span>
-                          {" Audit Ready "}
-                        </span>
-                        {" "}
-                        <button className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">
-                          <span className="material-symbols-outlined text-sm">
-                            {"output"}
-                          </span>
-                          {" Zoho Export "}
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              {" "}
-              {" "}
-              <div className="p-space-md bg-surface-container flex flex-col md:flex-row items-center justify-between gap-space-md">
-                <div className="flex items-center gap-space-sm">
-                  <div className="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary shadow-sm">
-                    <span className="material-symbols-outlined text-xl">
-                      {"folder_zip"}
-                    </span>
-                  </div>
-                  {" "}
-                  <div>
-                    <span className="font-headline-sm text-headline-sm text-primary font-semibold block">
-                      {"Audit Pack 1-Click Bundle"}
-                    </span>
-                    {" "}
-                    <span className="font-body-sm text-body-sm text-on-surface-variant">
-                      {"Download original high-res bill scans paired side-by-side with digital timestamp, manager sign-off, and GST tax vouchers."}
-                    </span>
-                  </div>
-                </div>
-                {" "}
-                <button className="whitespace-nowrap px-space-md py-2 rounded-lg bg-secondary text-on-secondary font-label-sm text-label-sm hover:bg-on-secondary-container transition-colors shadow-sm">
-                  {" Batch Download PDF Archive "}
-                </button>
-              </div>
-            </div>
+              <figcaption className="mt-2 text-center text-xs text-on-surface-variant">
+                Preview of CA partner multi-entity review workspace.
+              </figcaption>
+            </figure>
           </div>
-        </section>
-        {" "}
-        {" "}
-        <section className="py-space-2xl bg-surface">
-          <div className="max-w-7xl mx-auto px-margin">
-            <div className="max-w-3xl mx-auto text-center mb-space-2xl">
-              <span className="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold block mb-2">
-                {" Streamlined Reconciliation "}
-              </span>
-              {" "}
-              <h2 className="font-headline-lg text-headline-lg text-primary font-bold mb-space-xs">
-                {" How HisabLoop transforms your month-end bookkeeping. "}
+        </Wrapper>
+      </section>
+
+      {/* Partner Registration */}
+      <section id="partner-form" aria-labelledby="partner-title" className="w-full bg-surface py-14 sm:py-20 scroll-mt-20">
+        <Wrapper>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            <div className="lg:col-span-5 min-w-0 flex flex-col">
+              <h2 id="partner-title" className={h2Class}>
+                Join the CA Partner Pilot
               </h2>
-              {" "}
-              <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                {" From paper voucher capture to clean statutory accounting entries in four effortless milestones. "}
+              <p className="mt-4 text-base text-on-surface-variant leading-relaxed">
+                We are onboarding forward-thinking accounting practices to test HisabLoop with selected clients and help shape our export formatting.
               </p>
-            </div>
-            {" "}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter relative">
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col">
-                <div className="flex items-center justify-between mb-space-md">
-                  <span className="font-headline-xl text-headline-xl text-secondary/30 font-bold">
-                    {"01"}
-                  </span>
-                  {" "}
-                  <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
-                    <span className="material-symbols-outlined">
-                      {"send_to_mobile"}
-                    </span>
-                  </div>
-                </div>
-                {" "}
-                <h3 className="font-headline-sm text-headline-sm text-primary font-semibold mb-space-xs">
-                  {"Client Auto-Ingestion"}
-                </h3>
-                {" "}
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  {" Employees snap chits directly in WhatsApp. Vouchers flow directly into the respective client entity account without your team intervention. "}
-                </p>
-              </div>
-              {" "}
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col">
-                <div className="flex items-center justify-between mb-space-md">
-                  <span className="font-headline-xl text-headline-xl text-secondary/30 font-bold">
-                    {"02"}
-                  </span>
-                  {" "}
-                  <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
-                    <span className="material-symbols-outlined">
-                      {"auto_fix_high"}
-                    </span>
-                  </div>
-                </div>
-                {" "}
-                <h3 className="font-headline-sm text-headline-sm text-primary font-semibold mb-space-xs">
-                  {"Automated Tax Segregation"}
-                </h3>
-                {" "}
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  {" OCR verifies the 15-digit supplier GSTIN against master records, extracts taxable base, splits CGST/SGST/IGST, and checks active GST filing status. "}
-                </p>
-              </div>
-              {" "}
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col">
-                <div className="flex items-center justify-between mb-space-md">
-                  <span className="font-headline-xl text-headline-xl text-secondary/30 font-bold">
-                    {"03"}
-                  </span>
-                  {" "}
-                  <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
-                    <span className="material-symbols-outlined">
-                      {"rule"}
-                    </span>
-                  </div>
-                </div>
-                {" "}
-                <h3 className="font-headline-sm text-headline-sm text-primary font-semibold mb-space-xs">
-                  {"CA Exception Audit"}
-                </h3>
-                {" "}
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  {" Your team reviews only flagged items: duplicate receipts, unreadable figures, or potential Section 17(5) blocked credits. "}
-                </p>
-              </div>
-              {" "}
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col">
-                <div className="flex items-center justify-between mb-space-md">
-                  <span className="font-headline-xl text-headline-xl text-secondary/30 font-bold">
-                    {"04"}
-                  </span>
-                  {" "}
-                  <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
-                    <span className="material-symbols-outlined">
-                      {"sync"}
-                    </span>
-                  </div>
-                </div>
-                {" "}
-                <h3 className="font-headline-sm text-headline-sm text-primary font-semibold mb-space-xs">
-                  {"One-Click Ledger Export"}
-                </h3>
-                {" "}
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  {" Generate native Tally Prime XML vouchers or push expenses directly to Zoho Books ledgers with original high-resolution receipt URLs attached. "}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-        {" "}
-        {" "}
-        <section className="py-space-2xl bg-surface-container-low">
-          <div className="max-w-7xl mx-auto px-margin">
-            <div className="max-w-3xl mb-space-2xl">
-              <span className="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold block mb-2">
-                {" Engineered For Compliance "}
-              </span>
-              {" "}
-              <h2 className="font-headline-lg text-headline-lg text-primary font-bold mb-space-xs">
-                {" Key capabilities built specifically for tax professionals. "}
-              </h2>
-              {" "}
-              <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                {" Comprehensive tools designed to protect your audit practice, preserve client Input Tax Credit, and satisfy statutory tax assessment demands. "}
-              </p>
-            </div>
-            {" "}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary mb-space-md">
-                  <span className="material-symbols-outlined">
-                    {"pin"}
-                  </span>
-                </div>
-                {" "}
-                <h3 className="font-headline-sm text-headline-sm text-primary font-semibold mb-space-xs">
-                  {"GSTIN 15-Digit Checksum & Status"}
-                </h3>
-                {" "}
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  {" Validates State Code, PAN segment, entity code, and checksum algorithm before any transaction touches your audit sheet, eliminating invalid vendor records. "}
-                </p>
-              </div>
-              {" "}
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary mb-space-md">
-                  <span className="material-symbols-outlined">
-                    {"filter_alt"}
-                  </span>
-                </div>
-                {" "}
-                <h3 className="font-headline-sm text-headline-sm text-primary font-semibold mb-space-xs">
-                  {"ITC Sec 17(5) Classifier"}
-                </h3>
-                {" "}
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  {" Proactively isolates blocked tax credits like food & beverages, outdoor catering, health services, and motor vehicle conveyances from regular B2B ITC. "}
-                </p>
-              </div>
-              {" "}
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary mb-space-md">
-                  <span className="material-symbols-outlined">
-                    {"fingerprint"}
-                  </span>
-                </div>
-                {" "}
-                <h3 className="font-headline-sm text-headline-sm text-primary font-semibold mb-space-xs">
-                  {"SHA-256 Perceptual Duplicate Hash"}
-                </h3>
-                {" "}
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  {" Screens uploaded bills against previous claims across employees using image perceptual hashing. Prevents accidental double reimbursement and duplicate ITC claims. "}
-                </p>
-              </div>
-              {" "}
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary mb-space-md">
-                  <span className="material-symbols-outlined">
-                    {"integration_instructions"}
-                  </span>
-                </div>
-                {" "}
-                <h3 className="font-headline-sm text-headline-sm text-primary font-semibold mb-space-xs">
-                  {"Native Tally Prime & Zoho Ledgers"}
-                </h3>
-                {" "}
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  {" Matches standard Indian Chart of Accounts: Pre-configures Expense Heads, Sundry Creditors, CGST, SGST, and IGST tax ledgers for zero manual remapping. "}
-                </p>
-              </div>
-              {" "}
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary mb-space-md">
-                  <span className="material-symbols-outlined">
-                    {"inventory_2"}
-                  </span>
-                </div>
-                {" "}
-                <h3 className="font-headline-sm text-headline-sm text-primary font-semibold mb-space-xs">
-                  {"8-Year Digital Receipt Archive"}
-                </h3>
-                {" "}
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  {" Satisfies Section 44AB and Income Tax Act retention mandates. Securely store immutable, timestamped high-resolution bill scans for statutory inspection. "}
-                </p>
-              </div>
-              {" "}
-              {" "}
-              <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary mb-space-md">
-                  <span className="material-symbols-outlined">
-                    {"quickreply"}
-                  </span>
-                </div>
-                {" "}
-                <h3 className="font-headline-sm text-headline-sm text-primary font-semibold mb-space-xs">
-                  {"Client In-App Audit Queries"}
-                </h3>
-                {" "}
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  {" Tag questionable vouchers with a query flag that alerts the client business owner via WhatsApp without exposing your audit team's personal numbers. "}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-        {" "}
-        {" "}
-        <section className="py-space-2xl bg-surface" id="partner-form">
-          <div className="max-w-7xl mx-auto px-margin">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
-              {" "}
-              <div className="lg:col-span-5 flex flex-col">
-                <span className="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold block mb-2">
-                  {" CA Partner Programme "}
-                </span>
-                {" "}
-                <h2 className="font-headline-lg text-headline-lg text-primary font-bold mb-space-md">
-                  {" Equip your firm with modern expense tooling. "}
-                </h2>
-                {" "}
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed mb-space-lg">
-                  {" Empower your practice with multi-client expense automation, instant Tally exports, and zero receipt chasing. Join 300+ practicing Chartered Accountants across India. "}
-                </p>
-                {" "}
-                <div className="space-y-space-md mb-space-xl">
-                  <div className="flex items-start gap-space-sm">
-                    <span className="material-symbols-outlined text-secondary text-lg mt-0.5">
-                      {"check_circle"}
-                    </span>
-                    {" "}
-                    <div>
-                      <span className="font-label-md text-label-md text-primary font-semibold block">
-                        {"Complimentary Read-Only Portal Seats"}
-                      </span>
-                      {" "}
-                      <span className="font-body-sm text-body-sm text-on-surface-variant">
-                        {"Your audit staff gets free access to client workspaces when your client is on a Growth Plan."}
-                      </span>
+              <ul className="mt-6 flex flex-col gap-4">
+                {partnerOffers.map((offer) => (
+                  <li key={offer.title} className="flex items-start gap-3">
+                    <div className="w-9 h-9 shrink-0 rounded-lg bg-surface-container text-secondary flex items-center justify-center">
+                      <Icon name={offer.icon} className="text-lg" />
                     </div>
-                  </div>
-                  {" "}
-                  <div className="flex items-start gap-space-sm">
-                    <span className="material-symbols-outlined text-secondary text-lg mt-0.5">
-                      {"check_circle"}
-                    </span>
-                    {" "}
-                    <div>
-                      <span className="font-label-md text-label-md text-primary font-semibold block">
-                        {"Dedicated Partner Onboarding"}
-                      </span>
-                      {" "}
-                      <span className="font-body-sm text-body-sm text-on-surface-variant">
-                        {"We assist in setting up WhatsApp receipt submission bots for your MSME clients."}
-                      </span>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-primary text-sm">
+                        {offer.title}
+                      </h3>
+                      <p className="mt-0.5 text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+                        {offer.text}
+                      </p>
                     </div>
-                  </div>
-                  {" "}
-                  <div className="flex items-start gap-space-sm">
-                    <span className="material-symbols-outlined text-secondary text-lg mt-0.5">
-                      {"check_circle"}
-                    </span>
-                    {" "}
-                    <div>
-                      <span className="font-label-md text-label-md text-primary font-semibold block">
-                        {"Early Access to Statutory Features"}
-                      </span>
-                      {" "}
-                      <span className="font-body-sm text-body-sm text-on-surface-variant">
-                        {"Be the first to utilize automated GSTR-2B discrepancy alerts and e-Invoice cross-checks."}
-                      </span>
-                    </div>
-                  </div>
-                  {" "}
-                  <div className="flex items-start gap-space-sm">
-                    <span className="material-symbols-outlined text-secondary text-lg mt-0.5">
-                      {"check_circle"}
-                    </span>
-                    {" "}
-                    <div>
-                      <span className="font-label-md text-label-md text-primary font-semibold block">
-                        {"Priority WhatsApp & Phone Support Desk"}
-                      </span>
-                      {" "}
-                      <span className="font-body-sm text-body-sm text-on-surface-variant">
-                        {"Direct access to technical accounting support for ledger mappings and API queries."}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                {" "}
-                <div className="p-space-md rounded-xl bg-surface-container-low">
-                  <span className="font-label-sm text-label-sm text-on-surface-variant leading-normal block">
-                    <strong className="text-primary font-semibold">
-                      {"Statutory Disclaimer:"}
-                    </strong>
-                    {" HisabLoop provides automated bookkeeping and receipt ingestion software. We do not provide chartered accountancy, legal, tax assessment, or advisory services. "}
-                  </span>
-                </div>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8 rounded-xl bg-surface-container-low p-4 text-xs text-on-surface-variant border border-outline-variant/30 leading-relaxed">
+                <strong className="font-semibold text-primary">Compliance Note:</strong> HisabLoop is a data-intake and expense management software provider. It does not provide statutory audit, legal, or chartered accountancy services.
               </div>
-              {" "}
-              {" "}
-              <div className="lg:col-span-7">
-                <div className="bg-surface-container-lowest rounded-xl p-space-xl shadow-md">
-                  <div className="mb-space-lg">
-                    <h3 className="font-headline-md text-headline-md text-primary font-bold">
-                      {"Register Your Practice / Firm"}
-                    </h3>
-                    {" "}
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
-                      {"Join forward-thinking CAs across India. Free setup."}
-                    </p>
-                  </div>
-                  {" "}
-                  <ContactForm variant="partner" />
-                </div>
+            </div>
+
+            <div className="lg:col-span-7 min-w-0">
+              <div className="rounded-2xl bg-surface-container-lowest p-6 sm:p-8 shadow-md border border-outline-variant/30">
+                <h3 className="text-xl font-bold text-primary">
+                  Register Your Practice
+                </h3>
+                <p className="mt-1 mb-6 text-sm text-on-surface-variant">
+                  Submit your firm details to get partner sandbox access and set up your first pilot client.
+                </p>
+                <ContactForm variant="partner" />
               </div>
             </div>
           </div>
-        </section>
-        {" "}
-        {" "}
-        <section className="py-space-2xl bg-primary-container text-on-primary relative overflow-hidden">
-          <div className="absolute inset-0 pointer-events-none opacity-10">
-            <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-secondary"></div>
+        </Wrapper>
+      </section>
+
+      {/* FAQ */}
+      <section aria-labelledby="ca-faq-title" className="w-full bg-surface-container-low py-14 sm:py-20 border-t border-outline-variant/20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <h2 id="ca-faq-title" className={`${h2Class} mb-8 text-center`}>
+            Frequently Asked Questions
+          </h2>
+          <div className="flex flex-col gap-3">
+            {faqs.map((f) => (
+              <details key={f.q} name="ca-faq" className="group rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-xs">
+                <summary
+                  className={`flex items-center justify-between gap-4 p-5 list-none cursor-pointer rounded-xl font-semibold text-primary text-base ${focusRing}`}
+                >
+                  <span>{f.q}</span>
+                  <Icon
+                    name="expand_more"
+                    className="shrink-0 text-on-surface-variant transition-transform duration-200 group-open:rotate-180"
+                  />
+                </summary>
+                <p className="px-5 pb-5 text-sm text-on-surface-variant leading-relaxed border-t border-outline-variant/10 pt-3">
+                  {f.a}
+                </p>
+              </details>
+            ))}
           </div>
-          {" "}
-          <div className="relative max-w-7xl mx-auto px-margin text-center">
-            <div className="max-w-3xl mx-auto flex flex-col items-center">
-              <div className="w-12 h-12 rounded-xl bg-surface/10 flex items-center justify-center text-secondary-container mb-space-md">
-                <span className="material-symbols-outlined text-2xl">
-                  {"account_balance"}
-                </span>
-              </div>
-              {" "}
-              <h2 className="font-headline-lg text-headline-lg text-on-primary font-bold mb-space-sm text-center">
-                {" Give your clients a 10x better receipt experience."}
-                <br />
-                {" Give your team audit peace of mind. "}
-              </h2>
-              {" "}
-              <p className="font-body-lg text-body-lg text-on-primary-container max-w-2xl text-center mb-space-xl leading-relaxed">
-                {" Start simplifying client books today. Book a 1-on-1 walkthrough tailored to your practice size and accounting stack. "}
-              </p>
-              {" "}
-              <div className="flex flex-col sm:flex-row items-center gap-space-md justify-center w-full max-w-md">
-                <a className="w-full sm:w-auto inline-flex items-center justify-center h-12 px-space-xl rounded-lg bg-secondary-container text-on-secondary-container font-label-lg text-label-lg hover:bg-secondary hover:text-on-secondary shadow-sm transition-all duration-200 font-semibold" href="#partner-form">
-                  <span className="material-symbols-outlined text-base mr-2">
-                    {"calendar_month"}
-                  </span>
-                  {" Book a Practice Walkthrough "}
-                </a>
-                {" "}
-                <a className="w-full sm:w-auto inline-flex items-center justify-center h-12 px-space-xl rounded-lg bg-surface/10 text-on-primary hover:bg-surface/20 font-label-lg text-label-lg transition-colors" href="#partner-form">
-                  <span className="material-symbols-outlined text-base mr-2">
-                    {"play_circle"}
-                  </span>
-                  {" Explore Live CA Demo "}
-                </a>
-              </div>
-            </div>
+        </div>
+      </section>
+
+      {/* Bottom CTA */}
+      <section aria-labelledby="ca-cta-title" className="w-full bg-surface py-14 sm:py-20">
+        <Wrapper>
+          <div className="bg-primary text-on-primary rounded-3xl p-8 sm:p-12 lg:p-16 text-center flex flex-col items-center gap-5 shadow-xl">
+            <h2
+              id="ca-cta-title"
+              className="font-bold tracking-tight text-white max-w-2xl text-2xl sm:text-3xl lg:text-4xl leading-tight"
+            >
+              Start with a single pilot client
+            </h2>
+            <p className="text-base sm:text-lg text-white/90 max-w-xl leading-relaxed">
+              Select one client with high monthly receipt volume. We will help configure their team so you can experience the month-end difference firsthand.
+            </p>
+            <a
+              href="#partner-form"
+              className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-white text-primary font-bold text-sm shadow hover:bg-white/90 transition-all ${focusRing}`}
+            >
+              Request Partner Access
+            </a>
           </div>
-        </section>
-      </div>
+        </Wrapper>
+      </section>
     </main>
   );
 }

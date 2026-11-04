@@ -71,10 +71,12 @@ const faqs = [
 
 function Check({ planned }: { planned?: boolean }) {
   return (
-    <span
-      className={`material-symbols-outlined text-lg shrink-0 mt-0.5 ${planned ? "text-on-surface-variant" : "text-secondary"}`}
-    >
-      {planned ? "schedule" : "check_circle"}
+    <span className="flex items-center h-[1lh] shrink-0">
+      <span
+        className={`material-symbols-outlined text-lg leading-none ${planned ? "text-on-surface-variant" : "text-secondary"}`}
+      >
+        {planned ? "schedule" : "check_circle"}
+      </span>
     </span>
   );
 }
@@ -102,14 +104,14 @@ export function PricingContent() {
 
           {/* Plans */}
           <section className="max-w-7xl mx-auto px-margin py-space-lg">
-            <Stagger className="grid grid-cols-1 lg:grid-cols-3 gap-gutter items-stretch">
+            <Stagger className="grid grid-cols-1 lg:grid-cols-3 gap-x-gutter gap-y-space-xl lg:gap-y-gutter items-stretch w-full max-w-md lg:max-w-none mx-auto">
               {plans.map((p) => (
                 <StaggerItem
                   lift
                   key={p.name}
-                  className={`relative flex flex-col justify-between bg-surface-container-lowest rounded-xl p-space-xl ${
+                  className={`relative flex flex-col justify-between w-full bg-surface-container-lowest rounded-xl p-space-lg sm:p-space-xl ${
                     p.highlight
-                      ? "shadow-xl shadow-primary/5 -mt-2 lg:-mt-4 mb-2 lg:mb-0"
+                      ? "shadow-xl shadow-primary/5 lg:-mt-4"
                       : "shadow-sm hover:shadow-md transition-shadow duration-200"
                   }`}
                 >
@@ -128,7 +130,7 @@ export function PricingContent() {
                     >
                       {p.name}
                     </span>
-                    <div className="flex items-baseline gap-1 my-space-sm">
+                    <div className="flex flex-wrap items-baseline gap-x-1 my-space-sm">
                       <span className="font-currency-display text-currency-display text-primary">{p.price}</span>
                       <span className="font-body-sm text-body-sm text-on-surface-variant">/ user / month</span>
                     </div>
@@ -143,9 +145,9 @@ export function PricingContent() {
                         {p.heading}
                       </span>
                       {p.items.map((it) => (
-                        <div key={it.text} className="flex items-start gap-space-sm">
+                        <div key={it.text} className="flex items-start gap-space-sm font-body-md text-body-md">
                           <Check planned={it.planned} />
-                          <span className="font-body-md text-body-md text-on-surface">
+                          <span className="text-on-surface">
                             {it.text}
                             {it.planned ? (
                               <span className="ml-2 text-on-surface-variant text-label-sm font-semibold">(Planned)</span>

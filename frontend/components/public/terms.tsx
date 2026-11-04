@@ -5,7 +5,7 @@ const SUPPORT_EMAIL = "help@hisabloop.com";
 
 export function TermsContent() {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-16 sm:py-20">
+    <main className="mx-auto max-w-3xl px-4 py-16 mt-16 sm:py-20">
       <header className="mb-10 border-b pb-8">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Terms of Service</h1>
         <p className="mt-2 text-sm text-muted-foreground">Last updated: 1 November 2026</p>

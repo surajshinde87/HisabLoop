@@ -14,23 +14,23 @@ type Step = { who: string; icon: string; title: string; text: string };
 const painPoints = [
   {
     icon: "forum",
-    title: "Unorganized WhatsApp chats",
-    text: "Receipts arrive scattered across individual chats and groups, requiring hours of manual sorting per client.",
+    title: "Bills scattered across chats",
+    text: "Receipts arrive in different chats and groups and have to be sorted by hand.",
   },
   {
     icon: "receipt_long",
-    title: "Faded slips & missing GSTINs",
-    text: "Thermal paper fades quickly, and receipts frequently lack readable GSTINs, invoice numbers, or CGST/SGST splits.",
+    title: "Faded slips and missing GSTINs",
+    text: "Thermal slips fade, and many bills arrive without a readable GSTIN or tax split.",
   },
   {
     icon: "keyboard",
-    title: "Tedious manual spreadsheet entry",
-    text: "Staff re-type date, vendor, tax breakdown, and voucher amounts by hand, increasing the risk of data entry errors.",
+    title: "Re-typing into Excel",
+    text: "Staff type date, vendor, tax and amount by hand, and mistakes creep in.",
   },
   {
     icon: "event_busy",
-    title: "Month-end filing bottleneck",
-    text: "Missing bills, unverifiable expenses, and client queries pile up right before GSTR filing deadlines.",
+    title: "Month-end rush",
+    text: "Missing bills and client queries pile up just before filing deadlines.",
   },
 ];
 
@@ -38,121 +38,105 @@ const flow: Step[] = [
   {
     who: "Client Employee",
     icon: "photo_camera",
-    title: "WhatsApp Capture",
-    text: "Snaps a bill or PDF and sends it directly to the HisabLoop WhatsApp number. No app install required.",
+    title: "Sends the bill",
+    text: "Sends a photo or PDF to the HisabLoop WhatsApp number. No app to install.",
   },
   {
-    who: "HisabLoop Engine",
+    who: "HisabLoop",
     icon: "document_scanner",
-    title: "Field Extraction & Verification",
-    text: "Extracts vendor, invoice date, amount, GSTIN, and tax split. The employee confirms values immediately in chat.",
+    title: "Reads the details",
+    text: "Fills in vendor, date, amount, GSTIN and tax split. The employee confirms them.",
   },
   {
-    who: "Policy Engine",
+    who: "HisabLoop",
     icon: "fact_check",
-    title: "Validation & Flagging",
-    text: "Identifies duplicate submissions, invalid GSTIN formats, and claims exceeding internal spending caps.",
+    title: "Checks the claim",
+    text: "Flags duplicates, badly formatted GSTINs and claims over the category limit.",
   },
   {
     who: "Client Manager",
     icon: "how_to_reg",
-    title: "1-Tap Approval",
-    text: "Manager approves or queries the claim directly within their messaging chat with full context.",
+    title: "Approves",
+    text: "Approves, rejects or sends the claim back for changes.",
   },
   {
     who: "Accountant (CA)",
     icon: "table_view",
-    title: "Standardized Export",
-    text: "Log in to your workspace to view verified vouchers and download audit-ready Excel/CSV ledger summaries.",
+    title: "Exports",
+    text: "You review approved claims and download Excel or CSV files.",
   },
 ];
 
 const benefits: { icon: string; title: string; text: string; planned?: boolean }[] = [
   {
     icon: "groups",
-    title: "Multi-Client Practice Dashboard",
-    text: "Manage multiple client firms from a single login. Client company ledgers and records remain completely isolated.",
+    title: "All clients in one login",
+    text: "Switch between client companies. Each client's data stays separate.",
   },
   {
     icon: "table_view",
-    title: "Standardized Excel & CSV Exports",
-    text: "Get clear columns for date, vendor, GSTIN, category, taxable value, CGST, SGST, IGST, and approval status.",
+    title: "Excel and CSV exports",
+    text: "Separate columns for date, vendor, GSTIN, category, taxable value, CGST, SGST, IGST and status.",
   },
   {
     icon: "flag",
-    title: "Exception-First Review",
-    text: "Filter by flagged issues—like duplicate invoices or invalid GSTINs—so you only spend time on discrepancies.",
+    title: "Flags first",
+    text: "See duplicates and GSTIN problems first, so you spend time only where it is needed.",
   },
   {
     icon: "history_edu",
-    title: "Audit Trail & Original Receipts",
-    text: "Inspect original receipt images alongside extracted data, approval timestamps, and employee edit logs.",
-  },
-  {
-    icon: "inventory",
-    title: "Statutory Bill Retention",
-    text: "Receipt images and digital audit trails are securely archived to meet Indian statutory audit compliance periods.",
+    title: "Original bills and history",
+    text: "See the original bill next to its details and approval history.",
   },
   {
     icon: "assessment",
-    title: "Automated GST ITC Summary",
-    text: "Consolidated breakdown of eligible Input Tax Credit (ITC) with separated CGST, SGST, and IGST components.",
-    planned: true,
+    title: "GST summary per client",
+    text: "Monthly GST totals, ITC marked as eligible, and how complete each client's GST data is.",
   },
 ];
 
 const flaggedChecks = [
-  "Duplicate invoice submissions (matching amount, date, or vendor)",
-  "Unregistered or incorrectly formatted GSTINs",
-  "Expenses exceeding team or category budget caps",
-  "Missing mandatory bill details or unreadable receipts",
+  "Duplicate bills",
+  "Missing or badly formatted GSTINs",
+  "Claims over the category limit",
+  "Claims without a receipt",
 ];
 
 const sampleClients = [
-  { name: "Apex Logistics Pvt Ltd", claims: "18", flags: "2", status: "Ready to Export" },
-  { name: "BlueSky Media Agency", claims: "34", flags: "0", status: "Ready to Export" },
-  { name: "Zenith Health Clinics", claims: "12", flags: "3", status: "Needs Review" },
+  { name: "Client A", claims: "18", flags: "2", status: "Ready to export" },
+  { name: "Client B", claims: "34", flags: "0", status: "Ready to export" },
+  { name: "Client C", claims: "12", flags: "3", status: "Needs review" },
 ];
 
 const partnerOffers = [
   {
-    icon: "workspace_premium",
-    title: "Free Partner Portal Access",
-    text: "Zero subscription fees for CA firms managing their clients through the HisabLoop web workspace.",
-  },
-  {
     icon: "handshake",
-    title: "Dedicated Onboarding Assistance",
-    text: "Direct setup support to configure your clients' employee directories, categories, and approval paths.",
+    title: "Setup help",
+    text: "We help set up your pilot client's team, categories and approvals.",
   },
   {
     icon: "forum",
-    title: "Direct Product Input",
-    text: "Work directly with our product team to shape export formats, ledger schemas, and compliance reporting.",
-  },
-  {
-    icon: "savings",
-    title: "Client Referral Benefits",
-    text: "Special volume pricing discounts and partner incentives for practices introducing multiple client accounts.",
+    title: "Shape the product",
+    text: "Tell us what your exports and reports should look like.",
   },
 ];
 
 const faqs = [
   {
     q: "Does HisabLoop replace our accounting software?",
-    a: "No. HisabLoop acts as an intake and pre-accounting layer. It collects, reads, and validates expense receipts from your clients and provides clean, structured Excel and CSV files formatted for entry into your accounting software. Direct two-way sync integrations are planned for future versions.",
+    a: "No. HisabLoop collects and checks your clients' expense bills and gives you Excel and CSV files. It does not connect directly to accounting software yet.",
   },
   {
     q: "Do our clients need to download or install a new app?",
-    a: "No. Employees and managers submit receipts, verify details, and approve expenses entirely inside WhatsApp. Only you and the client's finance administrators use the browser-based web dashboard.",
+    a: "No. Employees send bills on WhatsApp. You and the client's finance team use the web dashboard.",
   },
   {
     q: "Who remains responsible for filing GST returns?",
-    a: "Your firm maintains full control. HisabLoop extracts GSTINs and tax splits as an operational aid to ensure source documents are legible and organized. Final tax classification, reconciliation, and statutory filing remain with the accountant.",
+    a: "You do. HisabLoop organises GSTINs and tax splits. Classification, reconciliation and filing stay with you.",
   },
   {
     q: "Can my practice manage multiple independent businesses?",
-    a: "Yes. The CA workspace provides a unified firm view to switch across client accounts while maintaining strict data isolation between companies.",
+    a: "Yes. You switch between clients from one login, and each client controls your access. Access is read-only.",
   },
 ];
 
@@ -163,9 +147,9 @@ export const accountantsJsonLd = {
       "@type": "WebPage",
       "@id": `${SITE_URL}/accountants#webpage`,
       url: `${SITE_URL}/accountants`,
-      name: "HisabLoop for Chartered Accountants & Tax Practitioners",
+      name: "HisabLoop for Chartered Accountants",
       description:
-        "Streamline client expense collection via WhatsApp. Eliminate manual receipt chasing, extract GST data automatically, and download structured Excel/CSV files.",
+        "Your clients send bills on WhatsApp. You review them with GST details and download Excel or CSV files.",
       inLanguage: "en-IN",
       isPartOf: {
         "@type": "WebSite",
@@ -275,33 +259,33 @@ export function AccountantsContent() {
         <Wrapper>
           <div className="max-w-3xl mx-auto flex flex-col items-center text-center">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase mb-4">
-              Practice Management for CAs & Accountants
+              For CAs and accountants
             </span>
             <h1
               id="ca-title"
               className="text-primary font-extrabold tracking-tight text-3xl sm:text-4xl lg:text-5xl leading-tight"
             >
-              Audit-ready client expense data without chasing receipts
+              Client expenses without chasing receipts
             </h1>
             <p className="mt-5 text-base sm:text-lg text-on-surface-variant leading-relaxed max-w-2xl">
-              Your clients submit bills instantly over WhatsApp. HisabLoop validates GST details, flags exceptions, and delivers structured ledger summaries for your practice.
+              Your clients send bills on WhatsApp. You get checked claims with GST details and clean Excel or CSV files.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
               <a
                 href="#partner-form"
                 className={`inline-flex items-center justify-center w-full sm:w-auto h-12 px-8 rounded-lg bg-primary text-on-primary font-semibold text-sm shadow hover:bg-primary/90 transition-all ${focusRing}`}
               >
-                Join Partner Pilot
+                Join the partner pilot
               </a>
               <a
                 href="#how-it-works-ca"
                 className={`inline-flex items-center justify-center w-full sm:w-auto h-12 px-8 rounded-lg bg-surface-container-lowest text-on-surface font-semibold text-sm border border-outline-variant/40 hover:bg-surface-container transition-all ${focusRing}`}
               >
-                See Workflow
+                See how it works
               </a>
             </div>
             <p className="mt-4 text-xs sm:text-sm text-on-surface-variant">
-              Free pilot access available for practicing Chartered Accountants & tax consultants.
+              Read-only access, given by each client.
             </p>
           </div>
         </Wrapper>
@@ -312,10 +296,10 @@ export function AccountantsContent() {
         <Wrapper>
           <header className="max-w-2xl mb-10">
             <h2 id="problem-title" className={h2Class}>
-              The month-end expense bottleneck
+              The month-end problem
             </h2>
             <p className="mt-3 text-base text-on-surface-variant leading-relaxed">
-              When clients rely on unstructured chats and paper slips, your staff spends critical filing days doing clerical entry rather than advisory.
+              When bills come in as chats and paper slips, your team spends filing days on data entry.
             </p>
           </header>
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -344,7 +328,7 @@ export function AccountantsContent() {
               How bills reach your practice
             </h2>
             <p className="mt-3 text-base text-on-surface-variant leading-relaxed">
-              Clients capture expenses as they occur inside WhatsApp. You review verified, structured ledgers on the web.
+              Clients send bills on WhatsApp. You review them on the web.
             </p>
           </header>
           <Flow steps={flow} label="Process flow from receipt capture to accountant download" />
@@ -356,10 +340,10 @@ export function AccountantsContent() {
         <Wrapper>
           <header className="max-w-2xl mb-10">
             <h2 id="benefits-title" className={h2Class}>
-              Designed for accounting practices
+              What you get
             </h2>
             <p className="mt-3 text-base text-on-surface-variant leading-relaxed">
-              Streamline document intake, reduce follow-up queries, and keep clean audit documentation for every client.
+              Fewer follow-up queries and clean records for every client.
             </p>
           </header>
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -390,13 +374,13 @@ export function AccountantsContent() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             <div className="lg:col-span-5 min-w-0">
               <h2 id="workspace-title" className={h2Class}>
-                Single dashboard for all client firms
+                All your clients in one place
               </h2>
               <p className="mt-4 text-base text-on-surface-variant leading-relaxed">
-                Switch across client entities instantly. View pending claim volumes, check pre-filing flags, and export clean data batches on demand.
+                See each client&apos;s claims and flags, and export when you are ready.
               </p>
               <h3 className="mt-6 font-bold text-primary text-base">
-                Automated Exception Checks
+                What gets flagged
               </h3>
               <ul className="mt-3 flex flex-col gap-2.5">
                 {flaggedChecks.map((flag) => (
@@ -410,14 +394,14 @@ export function AccountantsContent() {
 
             <figure className="lg:col-span-7 min-w-0">
               <div className="rounded-xl bg-surface-container-lowest p-4 sm:p-6 shadow-md border border-outline-variant/30">
-                <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Sample Client Ledger Overview">
+                <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Sample client list">
                   <table className="w-full min-w-[440px] text-left text-sm">
                     <thead>
                       <tr className="bg-surface-container-low text-primary text-xs font-semibold uppercase tracking-wider">
-                        <th scope="col" className="px-4 py-3 rounded-l-lg">Client Entity</th>
-                        <th scope="col" className="px-4 py-3">Pending Claims</th>
-                        <th scope="col" className="px-4 py-3">Exceptions</th>
-                        <th scope="col" className="px-4 py-3 rounded-r-lg">Batch Status</th>
+                        <th scope="col" className="px-4 py-3 rounded-l-lg">Client</th>
+                        <th scope="col" className="px-4 py-3">Claims</th>
+                        <th scope="col" className="px-4 py-3">Flags</th>
+                        <th scope="col" className="px-4 py-3 rounded-r-lg">Status</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-outline-variant/30 text-on-surface">
@@ -446,7 +430,7 @@ export function AccountantsContent() {
                 </div>
               </div>
               <figcaption className="mt-2 text-center text-xs text-on-surface-variant">
-                Preview of CA partner multi-entity review workspace.
+                Illustration with sample data.
               </figcaption>
             </figure>
           </div>
@@ -459,10 +443,10 @@ export function AccountantsContent() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             <div className="lg:col-span-5 min-w-0 flex flex-col">
               <h2 id="partner-title" className={h2Class}>
-                Join the CA Partner Pilot
+                Join the partner pilot
               </h2>
               <p className="mt-4 text-base text-on-surface-variant leading-relaxed">
-                We are onboarding forward-thinking accounting practices to test HisabLoop with selected clients and help shape our export formatting.
+                We are looking for a few accounting practices to try HisabLoop with one or two clients.
               </p>
               <ul className="mt-6 flex flex-col gap-4">
                 {partnerOffers.map((offer) => (
@@ -482,17 +466,17 @@ export function AccountantsContent() {
                 ))}
               </ul>
               <div className="mt-8 rounded-xl bg-surface-container-low p-4 text-xs text-on-surface-variant border border-outline-variant/30 leading-relaxed">
-                <strong className="font-semibold text-primary">Compliance Note:</strong> HisabLoop is a data-intake and expense management software provider. It does not provide statutory audit, legal, or chartered accountancy services.
+                <strong className="font-semibold text-primary">Note:</strong> HisabLoop is expense management software. It does not provide audit, legal or accounting services.
               </div>
             </div>
 
             <div className="lg:col-span-7 min-w-0">
               <div className="rounded-2xl bg-surface-container-lowest p-6 sm:p-8 shadow-md border border-outline-variant/30">
                 <h3 className="text-xl font-bold text-primary">
-                  Register Your Practice
+                  Tell us about your practice
                 </h3>
                 <p className="mt-1 mb-6 text-sm text-on-surface-variant">
-                  Submit your firm details to get partner sandbox access and set up your first pilot client.
+                  We will get in touch to set up your first pilot client.
                 </p>
                 <ContactForm variant="partner" />
               </div>
@@ -505,7 +489,7 @@ export function AccountantsContent() {
       <section aria-labelledby="ca-faq-title" className="w-full bg-surface-container-low py-14 sm:py-20 border-t border-outline-variant/20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <h2 id="ca-faq-title" className={`${h2Class} mb-8 text-center`}>
-            Frequently Asked Questions
+            Common questions
           </h2>
           <div className="flex flex-col gap-3">
             {faqs.map((f) => (
@@ -536,16 +520,16 @@ export function AccountantsContent() {
               id="ca-cta-title"
               className="font-bold tracking-tight text-white max-w-2xl text-2xl sm:text-3xl lg:text-4xl leading-tight"
             >
-              Start with a single pilot client
+              Start with one client
             </h2>
             <p className="text-base sm:text-lg text-white/90 max-w-xl leading-relaxed">
-              Select one client with high monthly receipt volume. We will help configure their team so you can experience the month-end difference firsthand.
+              Pick a client with lots of monthly bills. We will help set up their team.
             </p>
             <a
               href="#partner-form"
               className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-white text-primary font-bold text-sm shadow hover:bg-white/90 transition-all ${focusRing}`}
             >
-              Request Partner Access
+              Join the partner pilot
             </a>
           </div>
         </Wrapper>

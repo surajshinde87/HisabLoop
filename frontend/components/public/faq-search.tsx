@@ -34,8 +34,8 @@ export function FaqSearchInput() {
       onKeyDown={(e) => {
         if (e.key === "Escape") setValue("");
       }}
-      aria-label="Search FAQ and Knowledge Base"
-      placeholder="Search by keyword (e.g., GSTIN validation, Tally XML sync, WhatsApp photo tips, Sec 17(5))..."
+      aria-label="Search questions"
+      placeholder="Search questions, e.g. GST, approvals, exports"
       className="h-16 w-full bg-transparent pr-6 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:outline-none"
     />
   );

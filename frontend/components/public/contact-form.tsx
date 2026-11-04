@@ -32,16 +32,16 @@ const partnerSchema = contactSchema.extend({
 
 type Tab = "demo" | "sales" | "ca";
 const TABS: { id: Tab; label: string }[] = [
-  { id: "demo", label: "Schedule a Live Demo (15 Min)" },
-  { id: "sales", label: "General Inquiries" },
-  { id: "ca", label: "CA Partner Onboarding" },
+  { id: "demo", label: "Book a demo" },
+  { id: "sales", label: "General question" },
+  { id: "ca", label: "CA partner" },
 ];
-const SLOTS = ["Today, 3:00 PM", "Today, 5:30 PM", "Tomorrow, 11:30 AM"];
+const SLOTS = ["Morning", "Afternoon", "Evening"];
 const ROLES = [
-  { value: "founder", label: "Founder / Owner", hint: "MSME Decision Maker" },
-  { value: "cfo", label: "CFO / Controller", hint: "Finance Lead" },
-  { value: "ca", label: "CA / Auditor", hint: "Tax Consultant" },
-  { value: "ops", label: "Operations Lead", hint: "Field / Fleet Mgr" },
+  { value: "founder", label: "Founder / Owner", hint: "Runs the business" },
+  { value: "cfo", label: "Finance", hint: "Accounts or finance lead" },
+  { value: "ca", label: "CA / Accountant", hint: "Practising accountant" },
+  { value: "ops", label: "Operations", hint: "Manages a team" },
 ];
 const ERPS = [
   { value: "Tally Prime / ERP 9", label: "Tally Prime / ERP 9" },
@@ -90,7 +90,7 @@ export function ContactForm({ variant }: { variant: "demo" | "partner" }) {
       partner ? `ICAI / FRN: ${v.icai || "-"}` : `Company size: ${v.teamSize ?? "-"}`,
       `${partner ? "Clients" : "Accounting software"}: ${partner ? (v.teamSize ?? "-") : (v.erp ?? []).join(", ") || "-"}`,
       partner ? `Software: ${(v.erp ?? []).join(", ") || "-"}` : "",
-      !partner && tab !== "sales" ? `Preferred slot (IST): ${slot}` : "",
+      !partner && tab !== "sales" ? `Best time to call (IST): ${slot}` : "",
     ].filter(Boolean);
     try {
       const res = await contactService.submit({
@@ -144,24 +144,24 @@ export function ContactForm({ variant }: { variant: "demo" | "partner" }) {
         {honeypot}
         <div className="grid grid-cols-1 gap-space-md sm:grid-cols-2">
           <div>
-            <label htmlFor="p-name" className="mb-1 block font-label-sm text-label-sm text-primary">Full Name *</label>
-            <input id="p-name" className={partnerInput} placeholder="CA Rahul Deshmukh" aria-invalid={!!errors.fullName} {...register("fullName")} />
+            <label htmlFor="p-name" className="mb-1 block font-label-sm text-label-sm text-primary">Full name *</label>
+            <input id="p-name" className={partnerInput} placeholder="Your name" aria-invalid={!!errors.fullName} {...register("fullName")} />
             <FieldError message={errors.fullName?.message} />
           </div>
           <div>
-            <label htmlFor="p-firm" className="mb-1 block font-label-sm text-label-sm text-primary">Firm Name / Practice *</label>
-            <input id="p-firm" className={partnerInput} placeholder="Deshmukh & Associates, CAs" aria-invalid={!!errors.company} {...register("company")} />
+            <label htmlFor="p-firm" className="mb-1 block font-label-sm text-label-sm text-primary">Firm name *</label>
+            <input id="p-firm" className={partnerInput} placeholder="Your firm's name" aria-invalid={!!errors.company} {...register("company")} />
             <FieldError message={errors.company?.message} />
           </div>
         </div>
         <div className="grid grid-cols-1 gap-space-md sm:grid-cols-2">
           <div>
-            <label htmlFor="p-email" className="mb-1 block font-label-sm text-label-sm text-primary">Business Email *</label>
-            <input id="p-email" type="email" className={partnerInput} placeholder="rahul@deshmukh-ca.in" aria-invalid={!!errors.email} {...register("email")} />
+            <label htmlFor="p-email" className="mb-1 block font-label-sm text-label-sm text-primary">Email *</label>
+            <input id="p-email" type="email" className={partnerInput} placeholder="name@firm.in" aria-invalid={!!errors.email} {...register("email")} />
             <FieldError message={errors.email?.message} />
           </div>
           <div>
-            <label htmlFor="p-phone" className="mb-1 block font-label-sm text-label-sm text-primary">Phone Number *</label>
+            <label htmlFor="p-phone" className="mb-1 block font-label-sm text-label-sm text-primary">Phone *</label>
             <div className="flex">
               <span className="inline-flex items-center rounded-l-lg bg-surface-container px-3 font-body-sm text-body-sm text-on-surface-variant">+91</span>
               <input id="p-phone" type="tel" className={cn(partnerInput, "rounded-l-none")} placeholder="98230 12345" aria-invalid={!!errors.phone} {...register("phone")} />
@@ -171,11 +171,11 @@ export function ContactForm({ variant }: { variant: "demo" | "partner" }) {
         </div>
         <div className="grid grid-cols-1 gap-space-md sm:grid-cols-2">
           <div>
-            <label htmlFor="p-icai" className="mb-1 block font-label-sm text-label-sm text-primary">ICAI Membership / FRN (Optional)</label>
+            <label htmlFor="p-icai" className="mb-1 block font-label-sm text-label-sm text-primary">ICAI membership or FRN (optional)</label>
             <input id="p-icai" className={partnerInput} placeholder="M. No. 142857" {...register("icai")} />
           </div>
           <div>
-            <label htmlFor="p-clients" className="mb-1 block font-label-sm text-label-sm text-primary">Estimated MSME Clients</label>
+            <label htmlFor="p-clients" className="mb-1 block font-label-sm text-label-sm text-primary">Number of clients</label>
             <select id="p-clients" className={partnerInput} {...register("teamSize")}>
               <option>5 – 20 Clients</option>
               <option>21 – 50 Clients</option>
@@ -185,7 +185,7 @@ export function ContactForm({ variant }: { variant: "demo" | "partner" }) {
           </div>
         </div>
         <fieldset>
-          <legend className="mb-2 block font-label-sm text-label-sm text-primary">Primary Accounting Software Used</legend>
+          <legend className="mb-2 block font-label-sm text-label-sm text-primary">Accounting software you use</legend>
           <div className="flex flex-wrap gap-2">
             {["Tally Prime", "Zoho Books", "QuickBooks", "Busy Accounting", "Other"].map((s) => (
               <label key={s} className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-surface px-3 py-1.5 font-label-sm text-label-sm text-on-surface hover:bg-surface-container">
@@ -196,13 +196,13 @@ export function ContactForm({ variant }: { variant: "demo" | "partner" }) {
           </div>
         </fieldset>
         <div>
-          <label htmlFor="p-notes" className="mb-1 block font-label-sm text-label-sm text-primary">Practice Notes or Specific Requirements</label>
-          <textarea id="p-notes" rows={3} className={cn(partnerInput, "h-auto p-3")} placeholder="Tell us about your client mix or any specific ERP integration requirements..." {...register("notes")} />
+          <label htmlFor="p-notes" className="mb-1 block font-label-sm text-label-sm text-primary">Anything else? (optional)</label>
+          <textarea id="p-notes" rows={3} className={cn(partnerInput, "h-auto p-3")} placeholder="Tell us about your clients and how they share bills today" {...register("notes")} />
         </div>
         <div className="flex items-start gap-2">
           <input id="agree" type="checkbox" className="mt-1 rounded text-primary focus:ring-0" {...register("agree")} />
           <label htmlFor="agree" className="font-body-sm text-body-sm text-on-surface-variant">
-            I agree to the HisabLoop Privacy Policy and consent to receive practice onboarding assistance via WhatsApp or phone.
+            I agree to the HisabLoop Privacy Policy and to be contacted by WhatsApp or phone.
           </label>
         </div>
         <FieldError message={errors.agree?.message} />
@@ -211,12 +211,8 @@ export function ContactForm({ variant }: { variant: "demo" | "partner" }) {
           disabled={formState.isSubmitting}
           className="h-12 w-full rounded-lg bg-primary font-label-lg text-label-lg text-on-primary shadow-sm transition-all duration-200 hover:bg-primary-container disabled:opacity-60"
         >
-          {formState.isSubmitting ? "Submitting…" : "Submit CA Partner Registration"}
+          {formState.isSubmitting ? "Submitting…" : "Join the partner pilot"}
         </button>
-        <div className="flex items-center justify-center gap-2 pt-2 text-center">
-          <span className="material-symbols-outlined text-sm text-secondary" aria-hidden>lock</span>
-          <span className="font-body-sm text-body-sm text-on-surface-variant">Sent over HTTPS. We strictly respect CA-client confidentiality.</span>
-        </div>
         {status}
       </form>
     );
@@ -246,14 +242,14 @@ export function ContactForm({ variant }: { variant: "demo" | "partner" }) {
         <div className="grid grid-cols-1 gap-space-md sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
             <label className="font-label-md text-label-md text-primary" htmlFor="full-name">
-              Full Name <span className="text-error">*</span>
+              Full name <span className="text-error">*</span>
             </label>
-            <input id="full-name" className={contactInput} placeholder="e.g. Ramesh Kulkarni" aria-invalid={!!errors.fullName} {...register("fullName")} />
+            <input id="full-name" className={contactInput} placeholder="Your name" aria-invalid={!!errors.fullName} {...register("fullName")} />
             <FieldError message={errors.fullName?.message} />
           </div>
           <div className="flex flex-col gap-1.5">
             <label className="font-label-md text-label-md text-primary" htmlFor="work-email">
-              Business Email <span className="text-error">*</span>
+              Email <span className="text-error">*</span>
             </label>
             <input id="work-email" type="email" className={contactInput} placeholder="name@company.in" aria-invalid={!!errors.email} {...register("email")} />
             <FieldError message={errors.email?.message} />
@@ -271,23 +267,23 @@ export function ContactForm({ variant }: { variant: "demo" | "partner" }) {
             {errors.phone ? (
               <FieldError message={errors.phone.message} />
             ) : (
-              <span className="font-body-sm text-body-sm text-on-surface-variant">We use this to confirm your slot</span>
+              <span className="font-body-sm text-body-sm text-on-surface-variant">We use this to confirm a time</span>
             )}
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="font-label-md text-label-md text-primary" htmlFor="team-size">Company Size</label>
+            <label className="font-label-md text-label-md text-primary" htmlFor="team-size">Team size</label>
             <select id="team-size" className={contactInput} {...register("teamSize")}>
-              <option value="1-10">&lt; 10 employees (Micro MSME)</option>
-              <option value="10-50">10 – 50 employees (Growth MSME)</option>
-              <option value="50-200">50 – 200 employees (Scale-up)</option>
-              <option value="200+">200+ employees (Multi-branch / Enterprise)</option>
-              <option value="ca-firm">Practicing CA Firm / Multi-client</option>
+              <option value="1-10">Fewer than 10 people</option>
+              <option value="10-50">10 – 50 people</option>
+              <option value="50-200">50 – 200 people</option>
+              <option value="200+">200+ people</option>
+              <option value="ca-firm">CA firm</option>
             </select>
           </div>
         </div>
         <fieldset className="flex flex-col gap-1.5">
           <legend className="mb-1.5 font-label-md text-label-md text-primary">
-            Your Primary Role <span className="text-error">*</span>
+            Your role <span className="text-error">*</span>
           </legend>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {ROLES.map((r) => (
@@ -304,11 +300,11 @@ export function ContactForm({ variant }: { variant: "demo" | "partner" }) {
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-1 font-label-md text-label-md text-primary">
                 <span className="material-symbols-outlined text-sm text-secondary" aria-hidden>schedule</span>
-                Preferred 15-Min Slot
+                Best time to call
               </span>
-              <span className="font-label-sm text-label-sm font-semibold text-secondary">Indian Standard Time (IST)</span>
+              <span className="font-label-sm text-label-sm font-semibold text-secondary">IST</span>
             </div>
-            <div className="mt-2 grid grid-cols-3 gap-2" role="radiogroup" aria-label="Preferred slot">
+            <div className="mt-2 grid grid-cols-3 gap-2" role="radiogroup" aria-label="Best time to call">
               {SLOTS.map((s) => (
                 <button
                   key={s}
@@ -328,7 +324,7 @@ export function ContactForm({ variant }: { variant: "demo" | "partner" }) {
           </div>
         )}
         <fieldset className="flex flex-col gap-1.5">
-          <legend className="mb-1.5 font-label-md text-label-md text-primary">Current Accounting Ledger / ERP in Use</legend>
+          <legend className="mb-1.5 font-label-md text-label-md text-primary">Accounting software you use today</legend>
           <div className="flex flex-wrap gap-2">
             {ERPS.map((e) => (
               <label key={e.value} className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-surface-container-low px-3 py-1.5 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container">
@@ -339,12 +335,12 @@ export function ContactForm({ variant }: { variant: "demo" | "partner" }) {
           </div>
         </fieldset>
         <div className="flex flex-col gap-1.5">
-          <label className="font-label-md text-label-md text-primary" htmlFor="notes">Specific questions or expense challenges (Optional)</label>
+          <label className="font-label-md text-label-md text-primary" htmlFor="notes">Anything else? (optional)</label>
           <textarea
             id="notes"
             rows={2}
             className={cn(contactInput, "h-auto p-3")}
-            placeholder="e.g. Need WhatsApp OCR for petrol fuel slips and GST invoice reconciliation for 22 delivery reps..."
+            placeholder="e.g. How your team shares bills today"
             {...register("notes")}
           />
         </div>
@@ -354,12 +350,12 @@ export function ContactForm({ variant }: { variant: "demo" | "partner" }) {
             disabled={formState.isSubmitting}
             className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-primary font-label-lg text-label-lg text-on-primary shadow-sm transition-all hover:bg-primary-container hover:shadow-md disabled:opacity-60"
           >
-            <span>{formState.isSubmitting ? "Sending…" : tab === "sales" ? "Send Enquiry" : "Request Demo Walkthrough"}</span>
+            <span>{formState.isSubmitting ? "Sending…" : tab === "sales" ? "Send" : "Request a demo"}</span>
             <span className="material-symbols-outlined text-lg" aria-hidden>arrow_forward</span>
           </button>
           <div className="flex items-center justify-center gap-2 text-center">
             <span className="material-symbols-outlined text-sm text-secondary" aria-hidden>lock_clock</span>
-            <span className="font-body-sm text-body-sm text-on-surface-variant">No credit card needed · We confirm the slot with you by phone or email</span>
+            <span className="font-body-sm text-body-sm text-on-surface-variant">We will confirm a time with you by phone or email</span>
           </div>
         </div>
         {status}

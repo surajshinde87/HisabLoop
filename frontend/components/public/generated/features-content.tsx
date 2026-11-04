@@ -19,7 +19,7 @@ export const featuresJsonLd = {
       url: `${SITE_URL}/features`,
       name: "HisabLoop features",
       description:
-        "WhatsApp bill capture, automatic bill reading, approvals, policy checks, GST details, reimbursement batches and accountant-ready exports.",
+        "WhatsApp bill capture, automatic bill reading, approvals, policy checks, GST reports, reimbursement batches and Excel and CSV exports.",
       inLanguage: "en-IN",
       isPartOf: { "@id": `${SITE_URL}/#website` },
     },
@@ -239,11 +239,10 @@ export function FeaturesContent() {
             id="features-title"
             className="font-headline-xl text-primary font-bold tracking-tight max-w-3xl text-[30px] leading-[38px] sm:text-[38px] sm:leading-[46px] lg:text-[46px] lg:leading-[54px]"
           >
-            Everything an expense claim needs, from bill to books
+            Everything you need to manage expense claims
           </h1>
           <p className="mt-5 font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
-            HisabLoop connects WhatsApp bill capture, approvals, policy checks and accountant-ready
-            exports in one workflow, so your team does not have to learn new software.
+            Bill capture on WhatsApp, approvals, policy checks and clean exports for your accountant.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
@@ -262,7 +261,7 @@ export function FeaturesContent() {
           </div>
 
           <p className="mt-6 max-w-2xl font-body-sm text-body-sm text-on-surface-variant">
-            Features marked <PlannedTag /> are on the roadmap and are not part of the first release.
+            Features marked <PlannedTag /> are not available yet.
           </p>
 
           <nav aria-label="On this page" className="w-full mt-10">
@@ -286,16 +285,13 @@ export function FeaturesContent() {
         {/* ---------------------------- Capture --------------------------- */}
         <FeatureSection
           id="feature-whatsapp"
-          title="Capture bills on WhatsApp, with nothing to install"
-          intro="Field staff and sales teams send a photo or PDF of a bill to the HisabLoop number. They check the details in the chat and tap Yes."
+          title="Capture bills on WhatsApp"
+          intro="Employees send a photo or PDF of the bill to the HisabLoop number, check the details and tap Yes."
           points={[
             { text: "Accepts photos and PDFs of bills sent on WhatsApp." },
             { text: "Shows the vendor, date, amount and category for the employee to confirm or edit." },
-            { text: "Works on the WhatsApp the employee already uses, with no login or training." },
-            {
-              text: "Add a claim by text or voice note when there is no bill, for example a cash auto fare.",
-              planned: true,
-            },
+            { text: "No app to install." },
+            { text: "No bill? Send a short text such as “Auto fare 180 cash”." },
           ]}
           visual={
             <Mock caption="Illustration with sample data: the bot reads a bill and asks the employee to confirm.">
@@ -331,13 +327,12 @@ export function FeaturesContent() {
         <FeatureSection
           id="feature-ocr"
           reverse
-          title="Bills read automatically, confirmed by the employee"
-          intro="OCR and an AI model pull the key fields from the bill, and a validation step checks them. Because the employee confirms every claim, mistakes are caught before they reach your manager."
+          title="Bills read automatically"
+          intro="HisabLoop fills in the details from the bill. The employee checks them before submitting, so mistakes are caught early."
           points={[
             { text: "Reads vendor, date, total, tax amount, GSTIN and payment mode." },
-            { text: "Suggests a category and learns from the employee's corrections." },
-            { text: "Checks the GSTIN format and flags a missing or invalid number." },
-            { text: "Faded thermal slips and handwritten bills are harder to read, which is why the confirm step stays." },
+            { text: "Flags a missing or badly formatted GSTIN." },
+            { text: "Faded or handwritten bills are harder to read, so the employee can correct any field." },
           ]}
           visual={
             <Mock caption="Illustration with sample data. The employee can edit any field before submitting.">
@@ -378,13 +373,12 @@ export function FeaturesContent() {
         {/* --------------------------- Approvals -------------------------- */}
         <FeatureSection
           id="feature-approvals"
-          title="Approve in chat, with the policy result in view"
-          intro="Managers receive an approval card in WhatsApp with Approve, Reject and Ask options. They see whether the claim is within limits and whether a duplicate was found."
+          title="Approvals with the checks in view"
+          intro="Managers see whether a claim is within limits and whether a duplicate was found, then approve, reject or send it back."
           points={[
-            { text: "Ask the employee a question without rejecting the claim." },
-            { text: "Reminders for claims that stay pending." },
+            { text: "Send a claim back for changes instead of rejecting it." },
+            { text: "Claims above a set amount need a second approval." },
             { text: "Every status change is logged with who made it and when." },
-            { text: "Multi-level approval based on the claim amount.", planned: true },
             { text: "Hand over approvals to a delegate while a manager is on leave.", planned: true },
           ]}
           visual={
@@ -409,7 +403,7 @@ export function FeaturesContent() {
                 </p>
                 <div className="grid grid-cols-3 gap-2">
                   <FakeButton tone="secondary">Approve</FakeButton>
-                  <FakeButton tone="neutral">Ask</FakeButton>
+                  <FakeButton tone="neutral">Send back</FakeButton>
                   <FakeButton tone="neutral">Reject</FakeButton>
                 </div>
               </div>
@@ -428,8 +422,7 @@ export function FeaturesContent() {
               Policy checks before a claim reaches approval
             </h2>
             <p className="font-body-lg text-body-lg text-on-surface-variant mt-3 leading-relaxed">
-              Rules run as soon as the employee confirms a bill, so managers spend their time on claims
-              that need a decision.
+              Checks run when the employee confirms a bill, so managers only look at what needs a decision.
             </p>
           </div>
           <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-gutter">
@@ -458,21 +451,17 @@ export function FeaturesContent() {
         <FeatureSection
           id="feature-gst"
           reverse
-          title="GST details captured when the bill is sent"
-          intro="HisabLoop keeps the GSTIN, tax amount and CGST, SGST and IGST split with every claim. Capturing them at the moment of purchase means the employee can still fix a gap."
+          title="GST details on every claim"
+          intro="HisabLoop keeps the GSTIN and the CGST, SGST and IGST split with every claim, while the employee can still fix a gap."
           points={[
             { text: "Tax fields are stored in separate columns, ready for your accountant." },
             { text: "Missing or invalid GSTINs are flagged on the claim." },
-            {
-              text: "GST report with taxable value, CGST, SGST, IGST and eligible input tax credit.",
-              planned: true,
-            },
+            { text: "Monthly GST report, including ITC you have marked as eligible." },
           ]}
           extra={
             <p className="rounded-xl bg-surface-container-low p-4 font-body-sm text-body-sm text-on-surface-variant">
-              <strong className="font-semibold text-primary">Please note:</strong> HisabLoop helps organise
-              tax records and prepare for reconciliation. It does not replace advice from a chartered
-              accountant or the filing of returns.
+              <strong className="font-semibold text-primary">Note:</strong> HisabLoop organises tax records.
+              It does not file returns or replace your accountant.
             </p>
           }
           visual={
@@ -496,12 +485,12 @@ export function FeaturesContent() {
         {/* ----------------------------- Batches -------------------------- */}
         <FeatureSection
           id="feature-batches"
-          title="Group approved claims into reimbursement batches"
-          intro="Approved claims join a batch. Finance reviews the batch, downloads a bank transfer file and marks it paid, and each employee gets a Paid message on WhatsApp."
+          title="Reimburse in batches"
+          intro="Finance groups approved claims into a batch, pays through the bank and marks it paid. Employees get a Paid message on WhatsApp."
           points={[
             { text: "See the total for each employee before you pay." },
             { text: "Download a bank transfer file in CSV format." },
-            { text: "Payment status is recorded on every claim." },
+            { text: "Payment status is recorded on every claim. HisabLoop does not move money." },
             {
               text: "Pay by UPI directly from HisabLoop through a licensed payment partner.",
               planned: true,
@@ -548,12 +537,12 @@ export function FeaturesContent() {
         <FeatureSection
           id="feature-reports"
           reverse
-          title="Exports your accountant can use"
-          intro="The first release exports to Excel and CSV files with accountant-friendly columns, so your accountant gets one clean file instead of a folder of photos."
+          title="Reports and exports"
+          intro="See where money goes, and give your accountant one clean file instead of a folder of photos."
           points={[
             { text: "Excel and CSV exports for any month or date range." },
             { text: "Each row traces back to the original bill and its approval history." },
-            { text: "Spend by category, person, team and month in a dashboard.", planned: true },
+            { text: "Spend reports by category, employee, team and vendor." },
           ]}
           visual={
             <Mock caption="Export formats and the columns in each file." decorative={false}>
@@ -587,8 +576,8 @@ export function FeaturesContent() {
         {/* --------------------------- CA workspace ----------------------- */}
         <FeatureSection
           id="feature-ca-workspace"
-          title="One workspace for accountants with several clients"
-          intro="Accountants get a partner login to switch between client companies, review claims and download clean exports. A free partner account is planned."
+          title="One login for accountants"
+          intro="Accountants switch between client companies, review claims and download exports. Access is read-only and given by each client."
           points={[
             { text: "Switch between client companies without logging out." },
             { text: "Review each client's claims and flags in one place." },
@@ -647,8 +636,7 @@ export function FeaturesContent() {
             Try these features with your own team
           </h2>
           <p className="font-body-lg text-body-lg text-on-primary-container max-w-xl leading-relaxed">
-            We are working with a small group of pilot teams and accountants. Pilot teams start with a
-            free 30-day trial.
+            We are onboarding a small group of pilot teams.
           </p>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
             <a

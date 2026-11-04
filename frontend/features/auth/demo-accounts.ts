@@ -25,7 +25,7 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
     title: "Admin / Owner",
     subtitle: "Shinde Agro Traders",
     tag: "Full Access",
-    description: "Review company spending, manage expense policies, approve high-value claims, and batch payouts.",
+    description: "Review spending, manage expense policies, approve high-value claims and create payout batches.",
   },
   {
     key: "meera",
@@ -35,7 +35,7 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
     title: "Department Manager",
     subtitle: "Sales & Ops",
     tag: "Sales & Ops",
-    description: "Approve team receipts, review policy limit violations, and flag duplicate taxi/fuel bills.",
+    description: "Approve team claims and review limit and duplicate flags.",
   },
   {
     key: "ravi",
@@ -45,7 +45,7 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
     title: "Sales Executive",
     subtitle: "+91 98201 10004",
     tag: "WhatsApp User",
-    description: "Snap bills on WhatsApp, submit daily auto/Uber/client meal expenses, and track reimbursement status.",
+    description: "Send bills on WhatsApp, submit daily expenses and track reimbursement status.",
   },
   {
     key: "priya",
@@ -55,7 +55,7 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
     title: "Chartered Accountant",
     subtitle: "4 client workspaces",
     tag: "Audit & Tax",
-    description: "Audit GST compliance, download ITC reports for GSTR-2B matching, and verify vendor GSTINs.",
+    description: "Review claims and GST reports, and download Excel or CSV exports.",
   },
 ];
 

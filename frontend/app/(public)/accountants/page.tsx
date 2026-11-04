@@ -3,8 +3,8 @@ import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata(
   "/accountants",
-  "Expense Management for Chartered Accountants & Tax Professionals | HisabLoop",
-  "Collect clean, GST-validated expense receipts from client teams via WhatsApp. Get organized Excel and CSV ledger summaries with zero receipt chasing.",
+  "For Chartered Accountants",
+  "Your clients send bills on WhatsApp. You review claims with GST details and download Excel or CSV files.",
 );
 
 export default function Page() {

@@ -63,7 +63,7 @@ const commonFlow: Step[] = [
     who: "Manager",
     icon: "how_to_reg",
     title: "Approves in chat",
-    text: "Approve, Reject or Ask a question, with limit and duplicate checks shown.",
+    text: "Approve, reject or send back, with limit and duplicate checks shown.",
   },
   {
     who: "Finance",
@@ -78,9 +78,9 @@ const solutions: Solution[] = [
     id: "small-business",
     navLabel: "Small businesses",
     navIcon: "storefront",
-    title: "For small businesses: stop collecting bills in shoeboxes",
+    title: "For small businesses",
     intro:
-      "If you run a shop, clinic, agency or distribution business, bills probably reach you as paper slips and WhatsApp photos. At month end, someone types them all into Excel. HisabLoop moves that work to the moment the bill is sent.",
+      "Bills reach you as paper slips and WhatsApp photos, and someone types them into Excel at month end. HisabLoop captures the details when the bill is sent.",
     bestFor: "Owners and office managers of teams of about 5 to 50 people.",
     steps: [
       {
@@ -132,9 +132,9 @@ const solutions: Solution[] = [
     id: "startups",
     navLabel: "Startups",
     navIcon: "rocket_launch",
-    title: "For startups: keep spending visible without slowing people down",
+    title: "For startups",
     intro:
-      "Growing teams need quick approvals and a clear view of spend, without heavy finance software. HisabLoop keeps claims moving and gives finance one clean list to work from.",
+      "Quick approvals and a clear view of spend, without heavy finance software.",
     bestFor: "Founders and finance leads of teams of about 5 to 50 people.",
     steps: [
       {
@@ -153,14 +153,13 @@ const solutions: Solution[] = [
         who: "Manager",
         icon: "how_to_reg",
         title: "Approves in chat",
-        text: "Gets a reminder if a claim stays pending.",
+        text: "Sees the checks before deciding.",
       },
       {
-        who: "Founder",
+        who: "Admin",
         icon: "account_tree",
         title: "Second approval for big amounts",
-        text: "Claims above an amount you set go one level higher.",
-        planned: true,
+        text: "Claims above an amount you set need a second approval.",
       },
       {
         who: "Finance",
@@ -182,9 +181,8 @@ const solutions: Solution[] = [
       },
       {
         icon: "bar_chart",
-        title: "Spend by category, person and month",
-        text: "A dashboard that shows where the money is going.",
-        planned: true,
+        title: "Spend reports",
+        text: "See spend by category, employee, team and vendor.",
       },
     ],
     link: { href: "/pricing", label: "See planned pricing" },
@@ -194,9 +192,9 @@ const solutions: Solution[] = [
     id: "field-teams",
     navLabel: "Field teams",
     navIcon: "local_shipping",
-    title: "For field and sales teams: send the bill from the road",
+    title: "For field and sales teams",
     intro:
-      "Sales reps, drivers and site supervisors rarely sit at a laptop. With HisabLoop they photograph the bill, send it on WhatsApp and get back to work.",
+      "Sales reps, drivers and site supervisors photograph the bill, send it on WhatsApp and get back to work.",
     bestFor: "Anyone who pays for fuel, tolls, food or stays while travelling for work.",
     steps: [
       {
@@ -234,7 +232,7 @@ const solutions: Solution[] = [
       {
         icon: "edit_note",
         title: "Fix mistakes on the spot",
-        text: "Faded or handwritten bills can be hard to read. That is why you always confirm before it goes to your manager.",
+        text: "You check the details before the claim goes to your manager.",
       },
       {
         icon: "visibility",
@@ -243,9 +241,8 @@ const solutions: Solution[] = [
       },
       {
         icon: "keyboard_voice",
-        title: "Claims by text or voice note",
-        text: "For cash spends where there is no bill, such as an auto fare.",
-        planned: true,
+        title: "Claims by text",
+        text: "No bill for a cash spend? Send a short text such as “Auto fare 180 cash”.",
       },
     ],
     link: { href: "/how-it-works", label: "See how it works" },
@@ -255,9 +252,9 @@ const solutions: Solution[] = [
     id: "finance-teams",
     navLabel: "Finance teams and CAs",
     navIcon: "account_balance",
-    title: "For finance teams and accountants: clean records, one batch at a time",
+    title: "For finance teams and accountants",
     intro:
-      "Finance teams and chartered accountants need records that are complete and easy to check. HisabLoop keeps each bill, the details read from it and its approval history together.",
+      "Each bill, its details and its approval history stay together, so records are complete and easy to check.",
     bestFor: "Finance staff, business owners who handle accounts, and CAs with several clients.",
     steps: [
       {
@@ -304,9 +301,8 @@ const solutions: Solution[] = [
       },
       {
         icon: "assessment",
-        title: "GST report and eligible ITC",
-        text: "Taxable value, CGST, SGST, IGST and eligible input tax credit in one report.",
-        planned: true,
+        title: "GST report",
+        text: "Monthly CGST, SGST and IGST totals, and ITC you have marked as eligible.",
       },
       {
         icon: "currency_rupee",
@@ -315,32 +311,9 @@ const solutions: Solution[] = [
         planned: true,
       },
     ],
-    note: "HisabLoop helps organise tax records. Your accountant remains responsible for GST filing.",
+    note: "HisabLoop organises tax records. Your accountant still handles GST filing.",
     link: { href: "/accountants", label: "For accountants" },
     tone: "bg-background",
-  },
-];
-
-const comparison = [
-  {
-    team: "Small businesses",
-    first: "WhatsApp capture, one-tap approval, Excel and CSV for the CA",
-    later: "GST reports",
-  },
-  {
-    team: "Startups",
-    first: "Category and role limits, reminders, batches",
-    later: "Approval by amount, spend dashboard",
-  },
-  {
-    team: "Field teams",
-    first: "Send bills from the road, confirm in chat, Paid message",
-    later: "Claims by text or voice note",
-  },
-  {
-    team: "Finance teams and CAs",
-    first: "Reimbursement batches, bank file, audit log, client switching for CAs",
-    later: "GST reports, UPI payouts",
   },
 ];
 
@@ -360,7 +333,7 @@ const glossary = [
   },
   {
     term: "Planned",
-    meaning: "On our roadmap, but not part of the first release.",
+    meaning: "Not available yet.",
   },
 ];
 
@@ -494,11 +467,10 @@ export function SolutionsContent() {
               id="solutions-title"
               className="font-headline-xl text-primary font-bold tracking-tight text-[30px] leading-[38px] sm:text-[38px] sm:leading-[46px] lg:text-[46px] lg:leading-[54px]"
             >
-              Expense claims for small businesses, startups and field teams
+              HisabLoop for your team
             </h1>
             <p className="mt-5 font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-              Pick the team that looks most like yours to see how a bill goes from a WhatsApp photo to a
-              paid claim.
+              Pick the team most like yours.
             </p>
 
             <nav aria-label="Choose your team" className="mt-8 w-full">
@@ -543,18 +515,13 @@ export function SolutionsContent() {
         <Wrapper>
           <header className="max-w-3xl mb-8 sm:mb-10">
             <h2 id="common-flow-title" className={h2Class}>
-              The same simple flow for every team
+              How it works for every team
             </h2>
             <p className="mt-3 font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-              Employees and managers stay in WhatsApp. Finance and accountants use a web dashboard. Each
-              team below changes only a few steps.
+              Employees and managers use WhatsApp. Finance and accountants use the web dashboard.
             </p>
           </header>
           <Flow steps={commonFlow} label="How a bill becomes a paid claim" />
-          <p className="mt-6 font-body-sm text-body-sm text-on-surface-variant">
-            Steps with a dashed outline and the <PlannedTag /> label are on the roadmap and are not part
-            of the first release.
-          </p>
         </Wrapper>
       </section>
 
@@ -625,49 +592,6 @@ export function SolutionsContent() {
         </section>
       ))}
 
-      {/* ----------------------------- Comparison ------------------------- */}
-      <section
-        aria-labelledby="compare-title"
-        className="w-full bg-surface-container-low py-14 sm:py-20 lg:py-24"
-      >
-        <Wrapper>
-          <header className="max-w-3xl mb-8 sm:mb-10">
-            <h2 id="compare-title" className={h2Class}>
-              Where each team starts, and what comes later
-            </h2>
-            <p className="mt-3 font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-              Everyone starts with the same core flow. The right-hand column shows planned additions.
-            </p>
-          </header>
-          <div
-            className="overflow-x-auto rounded-xl bg-surface-container-lowest shadow-sm"
-            tabIndex={0}
-            role="region"
-            aria-label="Comparison of teams, scrolls sideways on small screens"
-          >
-            <table className="w-full min-w-[640px] text-left font-body-md text-body-md">
-              <caption className="sr-only">What each team uses first and what is planned for later</caption>
-              <thead>
-                <tr className="bg-surface-container text-primary">
-                  <th scope="col" className="px-4 py-3 font-semibold">Team</th>
-                  <th scope="col" className="px-4 py-3 font-semibold">Uses first</th>
-                  <th scope="col" className="px-4 py-3 font-semibold">Planned for later</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant/40">
-                {comparison.map((r) => (
-                  <tr key={r.team} className="align-top">
-                    <th scope="row" className="px-4 py-4 font-semibold text-primary">{r.team}</th>
-                    <td className="px-4 py-4 text-on-surface">{r.first}</td>
-                    <td className="px-4 py-4 text-on-surface-variant">{r.later}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Wrapper>
-      </section>
-
       {/* ------------------------------ Glossary -------------------------- */}
       <section aria-labelledby="glossary-title" className="w-full bg-background py-14 sm:py-20">
         <Wrapper>
@@ -698,8 +622,7 @@ export function SolutionsContent() {
               Not sure which fits your team?
             </h2>
             <p className="font-body-lg text-body-lg text-on-primary-container max-w-xl leading-relaxed">
-              Tell us how your team handles expenses today and we will show you how it would work in
-              HisabLoop. Pilot teams start with a free 30-day trial.
+              Tell us how your team handles expenses today and we will show you how HisabLoop fits.
             </p>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
               <a

@@ -143,7 +143,7 @@ function Login() {
 
   if (!env.demoMode) {
     return (
-      <AuthShell title="Sign in to HisabLoop" subtitle="Bills, approvals and reimbursements — all in one place.">
+      <AuthShell title="Sign in to HisabLoop" subtitle="Manage bills, approvals and reimbursements.">
         {notices}
         {emailForm}
       </AuthShell>
@@ -157,7 +157,7 @@ function Login() {
       title="Welcome to HisabLoop"
       subtitle={
         <>
-          <p>Bills, approvals and reimbursements — all in one place. Choose a demo role to explore the workspace:</p>
+          <p>Choose a demo role to explore the workspace:</p>
           <div className="mt-space-md inline-flex items-center gap-2 rounded-full bg-surface-container-low px-3 py-1 font-label-sm text-label-sm text-on-surface-variant">
             <span className="h-2 w-2 rounded-full bg-secondary" />
             <span>Development demo mode</span>

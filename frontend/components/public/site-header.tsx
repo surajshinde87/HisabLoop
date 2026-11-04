@@ -17,25 +17,25 @@ const SOLUTIONS: DropdownItem[] = [
   {
     href: "/solutions#small-business",
     label: "Small Businesses",
-    desc: "For teams of 5–50 with active field expenses",
+    desc: "Bills and approvals without the paperwork",
     icon: "storefront",
   },
   {
     href: "/solutions#startups",
     label: "Startups",
-    desc: "Fast approval chains and real-time category limits",
+    desc: "Quick approvals and clear spend",
     icon: "rocket_launch",
   },
   {
     href: "/solutions#field-teams",
     label: "Field Teams",
-    desc: "Snap receipts in WhatsApp with zero app install",
+    desc: "Send bills on WhatsApp from anywhere",
     icon: "commute",
   },
   {
     href: "/solutions#finance-teams",
     label: "Finance Teams",
-    desc: "Automated OCR, GST checks and bank payout files",
+    desc: "GST details, batches and exports",
     icon: "account_balance",
   },
 ];
@@ -44,19 +44,19 @@ const RESOURCES: DropdownItem[] = [
   {
     href: "/how-it-works",
     label: "How It Works",
-    desc: "Step-by-step from bill snap to payout & export",
+    desc: "From bill to reimbursement in four steps",
     icon: "route",
   },
   {
     href: "/faq",
     label: "FAQ",
-    desc: "Answers on GST, OCR accuracy, limits and security",
+    desc: "Answers to common questions",
     icon: "help",
   },
   {
     href: "/contact",
     label: "Contact Us",
-    desc: "Talk with our onboarding and pilot support team",
+    desc: "Book a demo or ask a question",
     icon: "support_agent",
   },
 ];

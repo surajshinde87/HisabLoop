@@ -6,7 +6,7 @@ const COLUMNS = [
     links: [
       { href: "/", label: "Overview" },
       { href: "/features", label: "Features" },
-      { href: "/accountants", label: "CA Portal" },
+      { href: "/accountants", label: "For Accountants" },
       { href: "/pricing", label: "Pricing" },
     ],
   },
@@ -32,8 +32,7 @@ const COLUMNS = [
     title: "Legal",
     links: [
       { href: "/privacy", label: "Privacy Policy" },
-      { href: "/terms", label: "Terms of Service" },
-      { href: "/privacy#security", label: "Security & Compliance" },
+      { href: "/terms", label: "Terms of Service" }
     ],
   },
 ];
@@ -58,23 +57,9 @@ export function SiteFooter() {
             </div>
             <p className="font-label-md text-label-md font-semibold uppercase tracking-wider text-secondary">Expenses in. Clarity out.</p>
             <p className="max-w-sm font-body-md text-body-md leading-relaxed text-on-surface-variant">
-              The friction-free B2B expense ecosystem bridging daily WhatsApp-first receipt submission with audit-grade accounting
-              ledgers for Indian MSMEs and Chartered Accountants.
+              Expense claims for Indian small businesses. Bills on WhatsApp, quick approvals and clean records for your
+              accountant.
             </p>
-            <div className="flex items-center gap-space-sm pt-space-xs">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-container-lowest px-space-sm py-1 font-label-sm text-label-sm text-secondary shadow-[0_1px_3px_rgba(11,42,91,0.04)]">
-                <span className="material-symbols-outlined text-sm" aria-hidden>
-                  verified
-                </span>
-                CA Compliance Ready
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-container-lowest px-space-sm py-1 font-label-sm text-label-sm text-on-surface-variant shadow-[0_1px_3px_rgba(11,42,91,0.04)]">
-                <span className="material-symbols-outlined text-sm" aria-hidden>
-                  chat
-                </span>
-                WhatsApp Native
-              </span>
-            </div>
           </div>
           {COLUMNS.map((col) => (
             <div key={col.title} className="flex flex-col gap-space-sm">
@@ -92,15 +77,7 @@ export function SiteFooter() {
           ))}
         </div>
         <div className="flex flex-col items-center justify-between gap-space-md rounded-xl bg-surface-container/40 px-space-md py-space-sm pt-space-lg sm:flex-row">
-          <p className="font-body-sm text-body-sm text-on-surface-variant">© {year} HisabLoop Technologies India Pvt. Ltd. All rights reserved.</p>
-          <div className="flex items-center gap-space-md">
-            <span className="flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant">
-              <span className="material-symbols-outlined text-sm text-secondary" aria-hidden>
-                lock
-              </span>
-              ISO 27001 Certified &amp; SOC 2 Ready
-            </span>
-          </div>
+          <p className="font-body-sm text-body-sm text-on-surface-variant">© {year} HisabLoop Technologies All rights reserved.</p>
         </div>
       </div>
     </footer>

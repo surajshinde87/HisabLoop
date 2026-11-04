@@ -61,33 +61,33 @@ type Status = "Core" | "Planned";
 const features: { icon: string; title: string; text: string; status: Status }[] = [
   {
     icon: "sms",
-    title: "Capture and reading on WhatsApp",
-    text: "Employees send bills where they already chat. OCR and an AI model fill in the fields, and the employee confirms before anything is submitted.",
+    title: "Bills on WhatsApp",
+    text: "Employees send bills where they already chat. HisabLoop fills in the details and the employee confirms them before submitting.",
     status: "Core",
   },
   {
     icon: "content_copy",
     title: "Duplicate and limit checks",
-    text: "A bill sent twice, or a claim above the limit for that category and role, is flagged before the manager sees it.",
+    text: "A bill sent twice, or a claim above its category limit, is flagged before the manager sees it.",
     status: "Core",
   },
   {
     icon: "bolt",
-    title: "One-tap approvals",
-    text: "Managers approve, reject or ask a question from WhatsApp. Reminders go out for claims that are still pending.",
+    title: "Quick approvals",
+    text: "Managers approve, reject or send a claim back for changes. Larger amounts can need a second approval.",
     status: "Core",
   },
   {
     icon: "table_view",
-    title: "Accountant-friendly exports",
-    text: "Excel and CSV files with vendor, GSTIN, tax split and category in separate columns, so nothing is re-typed.",
+    title: "Excel and CSV exports",
+    text: "Vendor, GSTIN, tax split and category in separate columns, so nothing is re-typed.",
     status: "Core",
   },
   {
     icon: "account_balance",
     title: "GST reports",
-    text: "Reports for taxable value, CGST, SGST, IGST and eligible ITC, ready to share with your accountant.",
-    status: "Planned",
+    text: "Monthly CGST, SGST and IGST totals, and the ITC you have marked as eligible.",
+    status: "Core",
   },
   {
     icon: "payments",
@@ -127,91 +127,32 @@ const care = [
     text: "Each company's claims and bills are kept apart from every other company's.",
   },
   {
-    icon: "lock",
-    title: "Encryption",
-    text: "Data is encrypted in transit and at rest.",
-  },
-  {
     icon: "history_edu",
     title: "Audit trail",
-    text: "Every status change is recorded with who made it and when, and the original bill image is kept with the claim.",
-  },
-  {
-    icon: "inventory",
-    title: "Retention and deletion",
-    text: "Bills are kept for the statutory period, which you can configure. Personal data requests are handled under India's DPDP Act.",
-  },
-];
-
-const plans = [
-  {
-    name: "Starter",
-    price: "₹99",
-    blurb: "For small teams that want bills captured and approved without the chasing.",
-    items: [
-      "Capture on WhatsApp",
-      "Manager approval",
-      "Basic category limits",
-      "Excel and CSV export",
-    ],
-    cta: { label: "Join the pilot", href: "/register" },
-    highlight: false,
-  },
-  {
-    name: "Growth",
-    price: "₹149",
-    blurb: "For teams that need GST reports and tighter approval rules.",
-    items: [
-      "Everything in Starter",
-      "Multi-level approval by amount",
-      "GST reports (planned)",
-      "Spend analytics (planned)",
-    ],
-    cta: { label: "Join the pilot", href: "/register" },
-    highlight: true,
-  },
-  {
-    name: "Business",
-    price: "₹249",
-    blurb: "For teams that want payouts and priority support.",
-    items: [
-      "Everything in Growth",
-      "UPI payouts (planned)",
-      "Priority support",
-    ],
-    cta: { label: "Talk to us", href: "/contact" },
-    highlight: false,
+    text: "Every status change is recorded with who made it and when. The original bill stays with the claim.",
   },
 ];
 
 const faqs = [
   {
     q: "Do employees need to install an app?",
-    a: "No. Employees only use WhatsApp. They send a photo or PDF of a bill to the HisabLoop number, check the details the bot reads out, and tap Yes or Edit.",
+    a: "No. Employees send a photo or PDF of the bill to the HisabLoop WhatsApp number, check the details, and tap Yes or Edit.",
   },
   {
-    q: "How accurate is the bill reading?",
-    a: "HisabLoop reads bills with OCR and an AI model, and every claim is shown to the employee to confirm before it moves on, so mistakes are caught at the start. Faded thermal slips and handwritten bills are the hardest. We are measuring accuracy with pilot teams rather than promising a single number.",
+    q: "What if a bill is read wrongly?",
+    a: "The employee sees the details before submitting and can correct them. Faded or handwritten bills are the hardest to read.",
   },
   {
-    q: "Can managers approve or reject claims?",
-    a: "Yes. Managers get an approval card in chat with Approve, Reject and Ask options, and can ask the employee a question when something looks wrong. Claims that stay pending trigger reminders.",
-  },
-  {
-    q: "Does HisabLoop handle GST and ITC?",
-    a: "It captures the GSTIN, tax amount and CGST, SGST and IGST split from each bill and flags a missing or badly formatted GSTIN. The tax data is a working aid, and your accountant remains responsible for filing. GST reports and ITC summaries are planned after the first release.",
+    q: "Does HisabLoop handle GST?",
+    a: "It records the GSTIN and the CGST, SGST and IGST split, flags missing or badly formatted GSTINs, and gives you monthly GST reports. Your accountant still handles filing.",
   },
   {
     q: "How are employees paid back?",
-    a: "In the first release, finance downloads a bank transfer file for each approved batch and pays from it. Paying by UPI directly from HisabLoop is planned and will go through a licensed payment partner.",
+    a: "Finance groups approved claims into a batch, pays through the bank using the bank file, and marks the batch as paid. HisabLoop does not move money.",
   },
   {
-    q: "What files does my accountant get?",
-    a: "The first release exports to Excel and CSV with accountant-friendly columns. Your accountant can open them in Excel or use them as the starting point for their own records. HisabLoop does not connect directly to accounting software yet.",
-  },
-  {
-    q: "Who can see my company's data?",
-    a: "Access depends on role, and each company's data is kept separate and encrypted. HisabLoop is being built to follow the consent and deletion requirements of India's Digital Personal Data Protection Act.",
+    q: "Does it connect to my accounting software?",
+    a: "Not yet. Your accountant gets Excel and CSV files to use in their own records.",
   },
 ];
 
@@ -319,7 +260,7 @@ function StatusTag({ status }: { status: Status }) {
       : "bg-surface-container text-on-surface-variant";
   return (
     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 font-label-sm text-label-sm ${styles}`}>
-      {status === "Core" ? "In the first release" : "Planned"}
+      {status === "Core" ? "Available" : "Planned"}
     </span>
   );
 }
@@ -358,8 +299,7 @@ export function HomeContent() {
 
               <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl leading-relaxed">
                 HisabLoop is an expense claim tool for small Indian teams. Employees send a photo of
-                a bill, managers approve in chat, and finance and accountants get structured,
-                GST-aware data instead of a month-end pile of images.
+                the bill, managers approve, and your accountant gets clean records with GST details.
               </p>
 
               <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 w-full sm:w-auto">
@@ -552,7 +492,7 @@ export function HomeContent() {
           <SectionHeader
             id="features-title"
             title="What HisabLoop does"
-            intro="Features marked “In the first release” make up the core product. Planned features follow once the pilot confirms what teams need most."
+            intro="Features marked “Planned” are not available yet."
           />
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-gutter">
             {features.map((f) => (
@@ -584,7 +524,7 @@ export function HomeContent() {
           <SectionHeader
             id="export-title"
             title="What your accountant receives"
-            intro="One structured file instead of a folder of photos. Each claim keeps its original bill, the extracted fields and its approval history."
+            intro="One clean file instead of a folder of photos."
           />
           <div className="bg-surface-container-lowest rounded-2xl shadow-sm p-3 sm:p-5">
             <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Sample export table, scrolls sideways on small screens">
@@ -650,10 +590,9 @@ export function HomeContent() {
         <div className="max-w-7xl mx-auto px-margin">
           <SectionHeader
             id="care-title"
-            title="Your business records, handled with care"
-            intro="These are the standards HisabLoop is being built to. An independent security review is planned before the paid launch."
+            title="How we look after your data"
           />
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {care.map((c) => (
               <li key={c.title} className="bg-surface-container-lowest rounded-2xl p-5 shadow-sm flex flex-col gap-3 min-w-0">
                 <div className="w-10 h-10 rounded-xl bg-surface-container text-primary flex items-center justify-center">
@@ -667,70 +606,6 @@ export function HomeContent() {
         </div>
       </section>
 
-      {/* ----------------------------- Pricing ---------------------------- */}
-      <section
-        id="pricing"
-        aria-labelledby="pricing-title"
-        className="w-full bg-surface-container-low py-14 sm:py-20 lg:py-24 scroll-mt-24"
-      >
-        <div className="max-w-6xl mx-auto px-margin">
-          <SectionHeader
-            id="pricing-title"
-            title="Simple per-user pricing"
-            intro="Planned prices in Indian rupees, per user per month. They may change as the pilot teaches us what teams value."
-          />
-          <ul className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-gutter items-stretch">
-            {plans.map((p) => (
-              <li key={p.name} className="min-w-0">
-                <article
-                  className={`h-full rounded-2xl p-6 sm:p-8 flex flex-col justify-between bg-surface-container-lowest ${p.highlight ? "shadow-xl ring-2 ring-secondary" : "shadow-sm"
-                    }`}
-                >
-                  <div>
-                    <h3 className="font-headline-sm text-headline-sm text-primary font-bold">
-                      {p.name}
-                      {p.highlight ? (
-                        <span className="ml-2 align-middle rounded-full bg-secondary text-on-secondary px-2.5 py-0.5 font-label-sm text-label-sm">
-                          Suggested for GST needs
-                        </span>
-                      ) : null}
-                    </h3>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-2 mb-5">{p.blurb}</p>
-                    <p className="flex items-baseline gap-1 mb-6">
-                      <span className="font-currency-display text-currency-display text-primary font-bold">
-                        {p.price}
-                      </span>
-                      <span className="font-body-sm text-body-sm text-on-surface-variant">per user per month</span>
-                    </p>
-                    <ul className="flex flex-col gap-3 text-on-surface font-body-sm text-body-sm">
-                      {p.items.map((it) => (
-                        <li key={it} className="flex items-start gap-2">
-                          <Icon name="check" className="text-secondary text-base mt-0.5" />
-                          <span>{it}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <Link
-                    href={p.cta.href}
-                    className={`mt-8 w-full h-11 rounded-lg flex items-center justify-center font-label-md text-label-md font-semibold transition-colors ${focusRing} ${p.highlight
-                      ? "bg-primary-container text-on-primary hover:bg-primary shadow-md"
-                      : "bg-surface-container text-primary hover:bg-surface-container-high"
-                      }`}
-                  >
-                    {p.cta.label}
-                  </Link>
-                </article>
-              </li>
-            ))}
-          </ul>
-          <p className="text-center font-body-sm text-body-sm text-on-surface-variant mt-8">
-            Pilot teams start with a free 30-day trial. Accountants can use a free partner account to
-            manage their clients.
-          </p>
-        </div>
-      </section>
-
       {/* ------------------------------- FAQ ------------------------------ */}
       <section
         id="faq"
@@ -738,7 +613,7 @@ export function HomeContent() {
         className="w-full bg-surface py-14 sm:py-20 lg:py-24 scroll-mt-24"
       >
         <div className="max-w-3xl mx-auto px-margin">
-          <SectionHeader id="faq-title" title="Questions teams ask first" />
+          <SectionHeader id="faq-title" title="Common questions" />
           <div className="flex flex-col gap-3">
             {faqs.map((f) => (
               <details
@@ -775,8 +650,7 @@ export function HomeContent() {
               Try HisabLoop with your own team
             </h2>
             <p className="font-body-lg text-body-lg text-surface-variant max-w-xl leading-relaxed">
-              We are working with a small group of pilot teams and accountants. Tell us how your team
-              handles expenses today and we will help you set up your first claims.
+              We are onboarding a small group of pilot teams and will help you set up your first claims.
             </p>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
               <Link

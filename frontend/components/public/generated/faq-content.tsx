@@ -1,4 +1,5 @@
 import { FaqSearchInput, FaqFilterPill } from "@/components/public/faq-search";
+import { Reveal } from "@/components/public/motion";
 
 type Section = { id: string; icon: string; title: string; items: { q: string; a: string }[] };
 
@@ -116,7 +117,7 @@ export function FaqContent() {
         <section className="relative overflow-hidden bg-gradient-to-b from-surface via-surface-container-low to-background pt-8 pb-16 lg:pb-24">
           <div className="absolute -top-32 -left-20 w-96 h-96 rounded-full bg-secondary-fixed-dim/20 blur-3xl pointer-events-none"></div>
           <div className="absolute top-1/4 -right-24 w-96 h-96 rounded-full bg-primary-fixed-dim/25 blur-3xl pointer-events-none"></div>
-          <div className="max-w-7xl mx-auto px-margin">
+          <Reveal immediate className="max-w-7xl mx-auto px-margin">
             <div className="max-w-3xl mb-10 pt-8">
               <h1 className="font-headline-xl text-headline-xl text-primary font-bold tracking-tight mb-4">
                 Frequently asked questions
@@ -148,14 +149,14 @@ export function FaqContent() {
                 ))}
               </div>
             </div>
-          </div>
+          </Reveal>
         </section>
 
         {/* Questions */}
         <section className="py-16 lg:py-24 bg-background">
           <div className="max-w-4xl mx-auto px-margin">
             {sections.map((s) => (
-              <div key={s.id} className="mb-16 last:mb-0 scroll-mt-28" id={s.id}>
+              <Reveal key={s.id} className="mb-16 last:mb-0 scroll-mt-28" id={s.id}>
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-9 h-9 rounded-xl bg-secondary-container/40 flex items-center justify-center text-on-secondary-container">
                     <span className="material-symbols-outlined text-xl">{s.icon}</span>
@@ -181,7 +182,7 @@ export function FaqContent() {
                     </details>
                   ))}
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </section>
@@ -190,26 +191,26 @@ export function FaqContent() {
         <section className="py-16 lg:py-24 bg-primary text-on-primary relative overflow-hidden">
           <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-secondary/15 blur-3xl pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-primary-container/80 blur-3xl pointer-events-none"></div>
-          <div className="max-w-4xl mx-auto px-margin text-center relative z-10">
+          <Reveal className="max-w-4xl mx-auto px-margin text-center relative z-10">
             <h2 className="font-headline-xl text-headline-xl font-bold tracking-tight mb-4">Still have a question?</h2>
             <p className="font-body-lg text-body-lg text-on-primary-container max-w-2xl mx-auto mb-8 leading-relaxed">
               Write to us and we will get back to you.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
-                className="w-full sm:w-auto inline-flex items-center justify-center h-12 px-8 rounded-xl bg-secondary-container hover:bg-secondary-fixed text-on-secondary-container font-label-lg text-label-lg transition-all shadow-lg hover:shadow-xl"
+                className="btn-lift w-full sm:w-auto inline-flex items-center justify-center h-12 px-8 rounded-xl bg-secondary-container hover:bg-secondary-fixed text-on-secondary-container font-label-lg text-label-lg transition-all shadow-lg hover:shadow-xl"
                 href="/contact"
               >
                 Contact us
               </a>
               <a
-                className="w-full sm:w-auto inline-flex items-center justify-center h-12 px-8 rounded-xl bg-surface-container-lowest/10 hover:bg-surface-container-lowest/20 text-on-primary font-label-lg text-label-lg transition-all"
+                className="btn-lift w-full sm:w-auto inline-flex items-center justify-center h-12 px-8 rounded-xl bg-surface-container-lowest/10 hover:bg-surface-container-lowest/20 text-on-primary font-label-lg text-label-lg transition-all"
                 href="/register"
               >
                 Join the pilot
               </a>
             </div>
-          </div>
+          </Reveal>
         </section>
       </div>
     </main>

@@ -1,4 +1,5 @@
 import { ContactForm } from "@/components/public/contact-form";
+import { Reveal, Stagger, StaggerItem } from "@/components/public/motion";
 
 const CONTACT_EMAIL = "help@hisabloop.com";
 
@@ -29,22 +30,22 @@ export function ContactContent() {
       <div className="flex flex-col w-full">
         {/* Hero */}
         <section className="w-full bg-surface-container-low px-margin py-space-xl">
-          <div className="max-w-7xl mx-auto flex flex-col gap-space-sm">
+          <Reveal immediate className="max-w-7xl mx-auto flex flex-col gap-space-sm">
             <h1 className="font-headline-xl text-headline-xl text-primary tracking-tight">Talk to us</h1>
             <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
               Book a demo, ask a question, or join the CA partner pilot.
             </p>
-          </div>
+          </Reveal>
         </section>
 
         {/* Form and sidebar */}
         <section className="w-full px-margin py-space-2xl">
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter">
-            <div className="lg:col-span-7 flex flex-col bg-surface-container-lowest rounded-xl p-space-xl shadow-sm">
+            <Reveal immediate delay={0.08} className="lg:col-span-7 flex flex-col bg-surface-container-lowest rounded-xl p-space-xl shadow-sm">
               <ContactForm variant="demo" />
-            </div>
+            </Reveal>
 
-            <div className="lg:col-span-5 flex flex-col gap-space-lg">
+            <Reveal immediate delay={0.16} className="lg:col-span-5 flex flex-col gap-space-lg">
               <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
                 <h2 className="font-headline-sm text-headline-sm text-primary">What happens next</h2>
                 <div className="flex flex-col gap-space-sm">
@@ -78,7 +79,7 @@ export function ContactContent() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -86,14 +87,14 @@ export function ContactContent() {
         <section className="w-full bg-surface-container-low px-margin py-space-2xl">
           <div className="max-w-5xl mx-auto flex flex-col gap-space-xl">
             <h2 className="font-headline-lg text-headline-lg text-primary text-center">Common questions</h2>
-            <div className="flex flex-col gap-space-sm">
+            <Stagger className="flex flex-col gap-space-sm">
               {faqs.map((f) => (
-                <div key={f.q} className="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+                <StaggerItem key={f.q} className="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
                   <h3 className="font-label-lg text-label-lg text-primary">{f.q}</h3>
                   <p className="mt-space-sm font-body-md text-body-md text-on-surface-variant leading-relaxed">{f.a}</p>
-                </div>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
             <p className="text-center font-body-md text-body-md text-on-surface-variant">
               More answers on the{" "}
               <a className="text-secondary hover:underline" href="/faq">

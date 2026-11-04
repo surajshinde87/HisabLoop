@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Reveal, Stagger, StaggerItem } from "@/components/public/motion";
 
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisabloop.com";
@@ -119,15 +120,15 @@ function FeatureSection({
       aria-labelledby={`${id}-title`}
       className="scroll-mt-24 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-gutter items-center"
     >
-      <div className={`lg:col-span-6 min-w-0 flex flex-col gap-5 ${reverse ? "lg:order-2" : ""}`}>
+      <Reveal className={`lg:col-span-6 min-w-0 flex flex-col gap-5 ${reverse ? "lg:order-2" : ""}`}>
         <h2 id={`${id}-title`} className={h2Class}>
           {title}
         </h2>
         <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">{intro}</p>
         <PointList points={points} />
         {extra}
-      </div>
-      <div className={`lg:col-span-6 min-w-0 ${reverse ? "lg:order-1" : ""}`}>{visual}</div>
+      </Reveal>
+      <Reveal delay={0.08} className={`lg:col-span-6 min-w-0 ${reverse ? "lg:order-1" : ""}`}>{visual}</Reveal>
     </section>
   );
 }
@@ -234,7 +235,7 @@ export function FeaturesContent() {
 
       {/* ------------------------------ Hero ------------------------------ */}
       <section aria-labelledby="features-title" className="w-full bg-surface px-margin py-12 sm:py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
+        <Reveal immediate className="max-w-7xl mx-auto flex flex-col items-center text-center">
           <h1
             id="features-title"
             className="font-headline-xl text-primary font-bold tracking-tight max-w-3xl text-[30px] leading-[38px] sm:text-[38px] sm:leading-[46px] lg:text-[46px] lg:leading-[54px]"
@@ -248,13 +249,13 @@ export function FeaturesContent() {
           <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
             <a
               href="/register"
-              className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg shadow-md hover:bg-primary-container transition-colors ${focusRing}`}
+              className={`btn-lift inline-flex items-center justify-center h-12 px-8 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg shadow-md hover:bg-primary-container transition-colors ${focusRing}`}
             >
               Join the pilot
             </a>
             <a
               href="/contact"
-              className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:bg-surface-container transition-colors ${focusRing}`}
+              className={`btn-lift inline-flex items-center justify-center h-12 px-8 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:bg-surface-container transition-colors ${focusRing}`}
             >
               Talk to us
             </a>
@@ -278,7 +279,7 @@ export function FeaturesContent() {
               ))}
             </ul>
           </nav>
-        </div>
+        </Reveal>
       </section>
 
       <div className="max-w-7xl mx-auto px-margin py-12 sm:py-16 flex flex-col gap-16 sm:gap-20 lg:gap-24">
@@ -417,17 +418,17 @@ export function FeaturesContent() {
           aria-labelledby="feature-policies-title"
           className="scroll-mt-24 bg-surface-container-low rounded-2xl p-6 sm:p-8 lg:p-10"
         >
-          <div className="max-w-2xl mb-8">
+          <Reveal className="max-w-2xl mb-8">
             <h2 id="feature-policies-title" className={h2Class}>
               Policy checks before a claim reaches approval
             </h2>
             <p className="font-body-lg text-body-lg text-on-surface-variant mt-3 leading-relaxed">
               Checks run when the employee confirms a bill, so managers only look at what needs a decision.
             </p>
-          </div>
-          <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-gutter">
+          </Reveal>
+          <Stagger as="ul" className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-gutter">
             {policyCards.map((c) => (
-              <li key={c.title} className="min-w-0">
+              <StaggerItem as="li" lift key={c.title} className="min-w-0">
                 <article className="h-full bg-surface-container-lowest rounded-xl p-5 shadow-sm flex flex-col gap-3">
                   <div className="w-10 h-10 rounded-xl bg-surface-container text-primary flex items-center justify-center">
                     <Icon name={c.icon} className="text-xl" />
@@ -438,9 +439,9 @@ export function FeaturesContent() {
                     {c.example}
                   </p>
                 </article>
-              </li>
+              </StaggerItem>
             ))}
-          </ul>
+          </Stagger>
           <p className="mt-6 font-body-sm text-body-sm text-on-surface-variant">
             Flags for suspicious bills, such as an edited image or a future date, are planned
             <PlannedTag />
@@ -628,7 +629,7 @@ export function FeaturesContent() {
 
       {/* ------------------------------- CTA ------------------------------ */}
       <section aria-labelledby="features-cta-title" className="w-full px-margin pb-16 sm:pb-24">
-        <div className="max-w-5xl mx-auto bg-primary text-on-primary rounded-3xl px-6 py-12 sm:px-10 sm:py-14 lg:p-16 text-center flex flex-col items-center gap-5 shadow-xl">
+        <Reveal className="max-w-5xl mx-auto bg-primary text-on-primary rounded-3xl px-6 py-12 sm:px-10 sm:py-14 lg:p-16 text-center flex flex-col items-center gap-5 shadow-xl">
           <h2
             id="features-cta-title"
             className="font-headline-xl font-bold tracking-tight text-on-primary max-w-2xl text-[26px] leading-[34px] sm:text-[32px] sm:leading-[40px] lg:text-[38px] lg:leading-[46px]"
@@ -641,18 +642,18 @@ export function FeaturesContent() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
             <a
               href="/register"
-              className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-secondary text-on-secondary font-label-lg text-label-lg font-bold shadow-lg hover:opacity-90 transition-opacity ${focusRing}`}
+              className={`btn-lift inline-flex items-center justify-center h-12 px-8 rounded-lg bg-secondary text-on-secondary font-label-lg text-label-lg font-bold shadow-lg hover:opacity-90 transition-opacity ${focusRing}`}
             >
               Join the pilot
             </a>
             <a
               href="/contact"
-              className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-surface-container-lowest/10 text-on-primary font-label-lg text-label-lg hover:bg-surface-container-lowest/20 transition-colors ${focusRing}`}
+              className={`btn-lift inline-flex items-center justify-center h-12 px-8 rounded-lg bg-surface-container-lowest/10 text-on-primary font-label-lg text-label-lg hover:bg-surface-container-lowest/20 transition-colors ${focusRing}`}
             >
               Talk to us
             </a>
           </div>
-        </div>
+        </Reveal>
       </section>
     </main>
   );

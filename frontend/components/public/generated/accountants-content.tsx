@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { ContactForm } from "@/components/public/contact-form";
+import { Reveal, Stagger, StaggerItem } from "@/components/public/motion";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisabloop.com";
 
@@ -198,11 +199,11 @@ function PlannedTag() {
 
 function Flow({ steps, label }: { steps: Step[]; label: string }) {
   return (
-    <ol aria-label={label} className="grid grid-cols-1 lg:grid-cols-5 gap-3 lg:gap-2">
+    <Stagger as="ol" aria-label={label} className="grid grid-cols-1 lg:grid-cols-5 gap-3 lg:gap-2">
       {steps.map((s, i) => {
         const isLast = i === steps.length - 1;
         return (
-          <li key={s.title} className="flex flex-col lg:flex-row items-stretch min-w-0">
+          <StaggerItem as="li" key={s.title} className="flex flex-col lg:flex-row items-stretch min-w-0">
             <div className="flex-1 rounded-xl bg-surface-container-lowest p-5 shadow-sm border border-outline-variant/30 flex flex-col justify-between gap-3">
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
@@ -229,10 +230,10 @@ function Flow({ steps, label }: { steps: Step[]; label: string }) {
                 <Icon name="arrow_forward" className="hidden lg:block text-lg" />
               </div>
             )}
-          </li>
+          </StaggerItem>
         );
       })}
-    </ol>
+    </Stagger>
   );
 }
 
@@ -257,7 +258,7 @@ export function AccountantsContent() {
       {/* Hero */}
       <section aria-labelledby="ca-title" className="w-full bg-surface-container-low py-14 sm:py-20 lg:py-24 border-b border-outline-variant/20">
         <Wrapper>
-          <div className="max-w-3xl mx-auto flex flex-col items-center text-center">
+          <Reveal immediate className="max-w-3xl mx-auto flex flex-col items-center text-center">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase mb-4">
               For CAs and accountants
             </span>
@@ -273,13 +274,13 @@ export function AccountantsContent() {
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
               <a
                 href="#partner-form"
-                className={`inline-flex items-center justify-center w-full sm:w-auto h-12 px-8 rounded-lg bg-primary text-on-primary font-semibold text-sm shadow hover:bg-primary/90 transition-all ${focusRing}`}
+                className={`btn-lift inline-flex items-center justify-center w-full sm:w-auto h-12 px-8 rounded-lg bg-primary text-on-primary font-semibold text-sm shadow hover:bg-primary/90 transition-all ${focusRing}`}
               >
                 Join the partner pilot
               </a>
               <a
                 href="#how-it-works-ca"
-                className={`inline-flex items-center justify-center w-full sm:w-auto h-12 px-8 rounded-lg bg-surface-container-lowest text-on-surface font-semibold text-sm border border-outline-variant/40 hover:bg-surface-container transition-all ${focusRing}`}
+                className={`btn-lift inline-flex items-center justify-center w-full sm:w-auto h-12 px-8 rounded-lg bg-surface-container-lowest text-on-surface font-semibold text-sm border border-outline-variant/40 hover:bg-surface-container transition-all ${focusRing}`}
               >
                 See how it works
               </a>
@@ -287,32 +288,32 @@ export function AccountantsContent() {
             <p className="mt-4 text-xs sm:text-sm text-on-surface-variant">
               Read-only access, given by each client.
             </p>
-          </div>
+          </Reveal>
         </Wrapper>
       </section>
 
       {/* The Problem */}
       <section aria-labelledby="problem-title" className="w-full bg-surface py-14 sm:py-20">
         <Wrapper>
-          <header className="max-w-2xl mb-10">
+          <Reveal as="header" className="max-w-2xl mb-10">
             <h2 id="problem-title" className={h2Class}>
               The month-end problem
             </h2>
             <p className="mt-3 text-base text-on-surface-variant leading-relaxed">
               When bills come in as chats and paper slips, your team spends filing days on data entry.
             </p>
-          </header>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          </Reveal>
+          <Stagger as="ul" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {painPoints.map((p) => (
-              <li key={p.title} className="rounded-xl bg-surface-container-low p-6 flex flex-col gap-3 border border-outline-variant/20">
+              <StaggerItem as="li" lift key={p.title} className="rounded-xl bg-surface-container-low p-6 flex flex-col gap-3 border border-outline-variant/20">
                 <div className="w-10 h-10 rounded-lg bg-surface-container-lowest text-primary flex items-center justify-center shadow-xs">
                   <Icon name={p.icon} className="text-xl" />
                 </div>
                 <h3 className="font-bold text-primary text-base">{p.title}</h3>
                 <p className="text-sm text-on-surface-variant leading-relaxed">{p.text}</p>
-              </li>
+              </StaggerItem>
             ))}
-          </ul>
+          </Stagger>
         </Wrapper>
       </section>
 
@@ -323,14 +324,14 @@ export function AccountantsContent() {
         className="w-full bg-surface-container-low py-14 sm:py-20 scroll-mt-20 border-y border-outline-variant/20"
       >
         <Wrapper>
-          <header className="max-w-2xl mb-10">
+          <Reveal as="header" className="max-w-2xl mb-10">
             <h2 id="flow-title" className={h2Class}>
               How bills reach your practice
             </h2>
             <p className="mt-3 text-base text-on-surface-variant leading-relaxed">
               Clients send bills on WhatsApp. You review them on the web.
             </p>
-          </header>
+          </Reveal>
           <Flow steps={flow} label="Process flow from receipt capture to accountant download" />
         </Wrapper>
       </section>
@@ -338,17 +339,17 @@ export function AccountantsContent() {
       {/* Benefits */}
       <section aria-labelledby="benefits-title" className="w-full bg-surface py-14 sm:py-20">
         <Wrapper>
-          <header className="max-w-2xl mb-10">
+          <Reveal as="header" className="max-w-2xl mb-10">
             <h2 id="benefits-title" className={h2Class}>
               What you get
             </h2>
             <p className="mt-3 text-base text-on-surface-variant leading-relaxed">
               Fewer follow-up queries and clean records for every client.
             </p>
-          </header>
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          </Reveal>
+          <Stagger as="ul" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {benefits.map((b) => (
-              <li key={b.title} className="min-w-0">
+              <StaggerItem as="li" lift key={b.title} className="min-w-0">
                 <article className="h-full rounded-xl bg-surface-container-lowest p-6 shadow-sm border border-outline-variant/30 flex flex-col gap-3">
                   <div className="w-10 h-10 rounded-lg bg-surface-container text-secondary flex items-center justify-center">
                     <Icon name={b.icon} className="text-xl" />
@@ -359,9 +360,9 @@ export function AccountantsContent() {
                   </h3>
                   <p className="text-sm text-on-surface-variant leading-relaxed">{b.text}</p>
                 </article>
-              </li>
+              </StaggerItem>
             ))}
-          </ul>
+          </Stagger>
         </Wrapper>
       </section>
 
@@ -372,7 +373,7 @@ export function AccountantsContent() {
       >
         <Wrapper>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            <div className="lg:col-span-5 min-w-0">
+            <Reveal className="lg:col-span-5 min-w-0">
               <h2 id="workspace-title" className={h2Class}>
                 All your clients in one place
               </h2>
@@ -390,9 +391,9 @@ export function AccountantsContent() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </Reveal>
 
-            <figure className="lg:col-span-7 min-w-0">
+            <Reveal as="figure" delay={0.08} className="lg:col-span-7 min-w-0">
               <div className="rounded-xl bg-surface-container-lowest p-4 sm:p-6 shadow-md border border-outline-variant/30">
                 <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Sample client list">
                   <table className="w-full min-w-[440px] text-left text-sm">
@@ -432,7 +433,7 @@ export function AccountantsContent() {
               <figcaption className="mt-2 text-center text-xs text-on-surface-variant">
                 Illustration with sample data.
               </figcaption>
-            </figure>
+            </Reveal>
           </div>
         </Wrapper>
       </section>
@@ -441,7 +442,7 @@ export function AccountantsContent() {
       <section id="partner-form" aria-labelledby="partner-title" className="w-full bg-surface py-14 sm:py-20 scroll-mt-20">
         <Wrapper>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-            <div className="lg:col-span-5 min-w-0 flex flex-col">
+            <Reveal className="lg:col-span-5 min-w-0 flex flex-col">
               <h2 id="partner-title" className={h2Class}>
                 Join the partner pilot
               </h2>
@@ -468,9 +469,9 @@ export function AccountantsContent() {
               <div className="mt-8 rounded-xl bg-surface-container-low p-4 text-xs text-on-surface-variant border border-outline-variant/30 leading-relaxed">
                 <strong className="font-semibold text-primary">Note:</strong> HisabLoop is expense management software. It does not provide audit, legal or accounting services.
               </div>
-            </div>
+            </Reveal>
 
-            <div className="lg:col-span-7 min-w-0">
+            <Reveal delay={0.08} className="lg:col-span-7 min-w-0">
               <div className="rounded-2xl bg-surface-container-lowest p-6 sm:p-8 shadow-md border border-outline-variant/30">
                 <h3 className="text-xl font-bold text-primary">
                   Tell us about your practice
@@ -480,7 +481,7 @@ export function AccountantsContent() {
                 </p>
                 <ContactForm variant="partner" />
               </div>
-            </div>
+            </Reveal>
           </div>
         </Wrapper>
       </section>
@@ -491,7 +492,7 @@ export function AccountantsContent() {
           <h2 id="ca-faq-title" className={`${h2Class} mb-8 text-center`}>
             Common questions
           </h2>
-          <div className="flex flex-col gap-3">
+          <Reveal className="flex flex-col gap-3">
             {faqs.map((f) => (
               <details key={f.q} name="ca-faq" className="group rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-xs">
                 <summary
@@ -508,14 +509,14 @@ export function AccountantsContent() {
                 </p>
               </details>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Bottom CTA */}
       <section aria-labelledby="ca-cta-title" className="w-full bg-surface py-14 sm:py-20">
         <Wrapper>
-          <div className="bg-primary text-on-primary rounded-3xl p-8 sm:p-12 lg:p-16 text-center flex flex-col items-center gap-5 shadow-xl">
+          <Reveal className="bg-primary text-on-primary rounded-3xl p-8 sm:p-12 lg:p-16 text-center flex flex-col items-center gap-5 shadow-xl">
             <h2
               id="ca-cta-title"
               className="font-bold tracking-tight text-white max-w-2xl text-2xl sm:text-3xl lg:text-4xl leading-tight"
@@ -527,11 +528,11 @@ export function AccountantsContent() {
             </p>
             <a
               href="#partner-form"
-              className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-white text-primary font-bold text-sm shadow hover:bg-white/90 transition-all ${focusRing}`}
+              className={`btn-lift inline-flex items-center justify-center h-12 px-8 rounded-lg bg-white text-primary font-bold text-sm shadow hover:bg-white/90 transition-all ${focusRing}`}
             >
               Join the partner pilot
             </a>
-          </div>
+          </Reveal>
         </Wrapper>
       </section>
     </main>

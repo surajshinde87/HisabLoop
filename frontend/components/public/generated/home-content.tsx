@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { Reveal, Stagger, StaggerItem } from "@/components/public/motion";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisabloop.com";
 
@@ -240,7 +241,7 @@ function SectionHeader({
   center?: boolean;
 }) {
   return (
-    <header className={`max-w-3xl mb-10 sm:mb-14 ${center ? "mx-auto text-center" : ""}`}>
+    <Reveal as="header" className={`max-w-3xl mb-10 sm:mb-14 ${center ? "mx-auto text-center" : ""}`}>
       <h2 id={id} className={h2Class}>
         {title}
       </h2>
@@ -249,7 +250,7 @@ function SectionHeader({
           {intro}
         </p>
       ) : null}
-    </header>
+    </Reveal>
   );
 }
 
@@ -284,7 +285,7 @@ export function HomeContent() {
       >
         <div className="max-w-7xl mx-auto px-margin">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-gutter items-center">
-            <div className="lg:col-span-6 min-w-0 flex flex-col items-start gap-5 sm:gap-6">
+            <Reveal immediate className="lg:col-span-6 min-w-0 flex flex-col items-start gap-5 sm:gap-6">
               <p className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container text-secondary font-label-sm text-label-sm">
                 <Icon name="all_inclusive" className="text-base" />
                 Expenses in. Clarity out.
@@ -305,13 +306,13 @@ export function HomeContent() {
               <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 w-full sm:w-auto">
                 <Link
                   href="/register"
-                  className={`inline-flex items-center justify-center h-12 px-6 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-md hover:bg-primary transition-colors duration-200 ${focusRing}`}
+                  className={`btn-lift inline-flex items-center justify-center h-12 px-6 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-md hover:bg-primary transition-colors duration-200 ${focusRing}`}
                 >
                   Join the pilot
                 </Link>
                 <a
                   href="#how-it-works"
-                  className={`inline-flex items-center justify-center h-12 px-6 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:bg-surface-container transition-colors duration-200 ${focusRing}`}
+                  className={`btn-lift inline-flex items-center justify-center h-12 px-6 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:bg-surface-container transition-colors duration-200 ${focusRing}`}
                 >
                   See how it works
                 </a>
@@ -332,10 +333,10 @@ export function HomeContent() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </Reveal>
 
             {/* Illustration: sample data only */}
-            <figure className="lg:col-span-6 min-w-0 w-full max-w-lg mx-auto lg:max-w-none">
+            <Reveal as="figure" immediate delay={0.1} className="lg:col-span-6 min-w-0 w-full max-w-lg mx-auto lg:max-w-none">
               <div
                 aria-hidden="true"
                 className="bg-surface-container-lowest rounded-2xl p-4 sm:p-6 shadow-xl flex flex-col gap-4"
@@ -404,7 +405,7 @@ export function HomeContent() {
                 Illustration with sample data: the bot reads a bill, the employee confirms, and the
                 manager approves in chat.
               </figcaption>
-            </figure>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -415,7 +416,7 @@ export function HomeContent() {
         className="w-full bg-surface-container-low py-14 sm:py-20 lg:py-24"
       >
         <div className="max-w-7xl mx-auto px-margin grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-gutter">
-          <div className="lg:col-span-5 min-w-0">
+          <Reveal className="lg:col-span-5 min-w-0">
             <h2 id="problem-title" className={h2Class}>
               Expense claims should not mean chasing receipts
             </h2>
@@ -423,11 +424,11 @@ export function HomeContent() {
               In many small businesses, bills arrive as WhatsApp photos, paper slips and Excel
               sheets. Each person in the chain loses time, and the accountant inherits the mess.
             </p>
-          </div>
+          </Reveal>
 
-          <dl className="lg:col-span-7 min-w-0 flex flex-col divide-y divide-outline-variant/40">
+          <Stagger as="dl" className="lg:col-span-7 min-w-0 flex flex-col divide-y divide-outline-variant/40">
             {painPoints.map((p) => (
-              <div key={p.who} className="flex gap-4 py-5 first:pt-0 last:pb-0">
+              <StaggerItem key={p.who} className="flex gap-4 py-5 first:pt-0 last:pb-0">
                 <div className="w-11 h-11 shrink-0 rounded-xl bg-surface-container-lowest text-primary flex items-center justify-center shadow-sm">
                   <Icon name={p.icon} className="text-2xl" />
                 </div>
@@ -437,9 +438,9 @@ export function HomeContent() {
                     {p.text}
                   </dd>
                 </div>
-              </div>
+              </StaggerItem>
             ))}
-          </dl>
+          </Stagger>
         </div>
       </section>
 
@@ -455,9 +456,9 @@ export function HomeContent() {
             title="From bill to reimbursement in four steps"
             intro="Employees and managers stay in WhatsApp. Finance and accountants work in a web dashboard."
           />
-          <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-gutter">
+          <Stagger as="ol" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-gutter">
             {steps.map((s, i) => (
-              <li
+              <StaggerItem as="li" lift
                 key={s.title}
                 className="bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col gap-4 min-w-0"
               >
@@ -476,9 +477,9 @@ export function HomeContent() {
                   </h3>
                   <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">{s.text}</p>
                 </div>
-              </li>
+              </StaggerItem>
             ))}
-          </ol>
+          </Stagger>
         </div>
       </section>
 
@@ -494,9 +495,9 @@ export function HomeContent() {
             title="What HisabLoop does"
             intro="Features marked “Planned” are not available yet."
           />
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-gutter">
+          <Stagger as="ul" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-gutter">
             {features.map((f) => (
-              <li key={f.title} className="min-w-0">
+              <StaggerItem as="li" lift key={f.title} className="min-w-0">
                 <article className="h-full bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col gap-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="w-12 h-12 shrink-0 rounded-xl bg-surface-container text-primary flex items-center justify-center">
@@ -509,9 +510,9 @@ export function HomeContent() {
                     <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">{f.text}</p>
                   </div>
                 </article>
-              </li>
+              </StaggerItem>
             ))}
-          </ul>
+          </Stagger>
         </div>
       </section>
 
@@ -526,7 +527,7 @@ export function HomeContent() {
             title="What your accountant receives"
             intro="One clean file instead of a folder of photos."
           />
-          <div className="bg-surface-container-lowest rounded-2xl shadow-sm p-3 sm:p-5">
+          <Reveal className="bg-surface-container-lowest rounded-2xl shadow-sm p-3 sm:p-5">
             <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Sample export table, scrolls sideways on small screens">
               <table className="w-full min-w-[720px] text-left font-body-sm text-body-sm">
                 <caption className="text-left px-2 pb-3 font-body-sm text-body-sm text-on-surface-variant">
@@ -554,7 +555,7 @@ export function HomeContent() {
                 </tbody>
               </table>
             </div>
-          </div>
+          </Reveal>
           <p className="mt-4 max-w-3xl font-body-sm text-body-sm text-on-surface-variant">
             Extracted tax data is a working aid. Your accountant remains responsible for GST filing.
           </p>
@@ -568,17 +569,17 @@ export function HomeContent() {
       >
         <div className="max-w-7xl mx-auto px-margin">
           <SectionHeader id="roles-title" title="Built for the people who touch every claim" />
-          <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-gutter">
+          <Stagger as="ul" className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-gutter">
             {roles.map((r) => (
-              <li key={r.title} className="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm min-w-0">
+              <StaggerItem as="li" lift key={r.title} className="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm min-w-0">
                 <div className="w-12 h-12 rounded-xl bg-surface-container text-primary flex items-center justify-center mb-5">
                   <Icon name={r.icon} className="text-2xl" />
                 </div>
                 <h3 className="font-headline-md text-headline-md text-primary font-bold mb-2">{r.title}</h3>
                 <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">{r.text}</p>
-              </li>
+              </StaggerItem>
             ))}
-          </ul>
+          </Stagger>
         </div>
       </section>
 
@@ -592,17 +593,17 @@ export function HomeContent() {
             id="care-title"
             title="How we look after your data"
           />
-          <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Stagger as="ul" className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {care.map((c) => (
-              <li key={c.title} className="bg-surface-container-lowest rounded-2xl p-5 shadow-sm flex flex-col gap-3 min-w-0">
+              <StaggerItem as="li" lift key={c.title} className="bg-surface-container-lowest rounded-2xl p-5 shadow-sm flex flex-col gap-3 min-w-0">
                 <div className="w-10 h-10 rounded-xl bg-surface-container text-primary flex items-center justify-center">
                   <Icon name={c.icon} className="text-xl" />
                 </div>
                 <h3 className="font-headline-sm text-headline-sm text-primary font-bold">{c.title}</h3>
                 <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">{c.text}</p>
-              </li>
+              </StaggerItem>
             ))}
-          </ul>
+          </Stagger>
         </div>
       </section>
 
@@ -614,7 +615,7 @@ export function HomeContent() {
       >
         <div className="max-w-3xl mx-auto px-margin">
           <SectionHeader id="faq-title" title="Common questions" />
-          <div className="flex flex-col gap-3">
+          <Reveal className="flex flex-col gap-3">
             {faqs.map((f) => (
               <details
                 key={f.q}
@@ -635,14 +636,14 @@ export function HomeContent() {
                 </p>
               </details>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* ------------------------------- CTA ------------------------------ */}
       <section aria-labelledby="cta-title" className="w-full bg-surface pb-16 sm:pb-24 pt-4">
         <div className="max-w-7xl mx-auto px-margin">
-          <div className="bg-primary-container text-on-primary rounded-3xl px-6 py-12 sm:px-10 sm:py-14 lg:p-16 text-center flex flex-col items-center gap-5 shadow-xl">
+          <Reveal className="bg-primary-container text-on-primary rounded-3xl px-6 py-12 sm:px-10 sm:py-14 lg:p-16 text-center flex flex-col items-center gap-5 shadow-xl">
             <h2
               id="cta-title"
               className="font-headline-xl font-bold tracking-tight text-on-primary max-w-2xl text-[26px] leading-[34px] sm:text-[32px] sm:leading-[40px] lg:text-[38px] lg:leading-[46px]"
@@ -655,18 +656,18 @@ export function HomeContent() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
               <Link
                 href="/register"
-                className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-secondary text-on-secondary font-label-lg text-label-lg font-bold shadow-md hover:bg-secondary-fixed-dim transition-colors ${focusRing}`}
+                className={`btn-lift inline-flex items-center justify-center h-12 px-8 rounded-lg bg-secondary text-on-secondary font-label-lg text-label-lg font-bold shadow-md hover:bg-secondary-fixed-dim transition-colors ${focusRing}`}
               >
                 Join the pilot
               </Link>
               <Link
                 href="/contact"
-                className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-surface-container-lowest/10 text-on-primary font-label-lg text-label-lg hover:bg-surface-container-lowest/20 transition-colors ${focusRing}`}
+                className={`btn-lift inline-flex items-center justify-center h-12 px-8 rounded-lg bg-surface-container-lowest/10 text-on-primary font-label-lg text-label-lg hover:bg-surface-container-lowest/20 transition-colors ${focusRing}`}
               >
                 Talk to us
               </Link>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
     </main>

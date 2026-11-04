@@ -1,3 +1,5 @@
+import { Reveal, Stagger, StaggerItem } from "@/components/public/motion";
+
 type Step = {
   number: string;
   icon: string;
@@ -86,7 +88,7 @@ export function HowItWorksContent() {
         <div className="relative overflow-hidden w-full bg-gradient-to-b from-surface via-surface-container-low/60 to-surface pb-space-2xl">
           {/* Hero */}
           <section className="max-w-7xl mx-auto px-margin pt-space-2xl pb-space-xl">
-            <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+            <Reveal immediate className="flex flex-col items-center text-center max-w-4xl mx-auto">
               <h1 className="font-headline-xl text-headline-xl text-primary tracking-tight mb-space-md">
                 From bill to reimbursement in four steps
               </h1>
@@ -95,14 +97,14 @@ export function HowItWorksContent() {
               </p>
               <div className="flex flex-wrap items-center justify-center gap-space-md mb-space-2xl">
                 <a
-                  className="inline-flex items-center justify-center h-12 px-7 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg shadow-md hover:shadow-lg transition-all duration-200 gap-2"
+                  className="btn-lift inline-flex items-center justify-center h-12 px-7 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg shadow-md hover:shadow-lg transition-all duration-200 gap-2"
                   href="/register"
                 >
                   <span>Join the pilot</span>
                   <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                 </a>
                 <a
-                  className="inline-flex items-center justify-center h-12 px-7 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-primary font-label-lg text-label-lg shadow-sm transition-all duration-200 gap-2"
+                  className="btn-lift inline-flex items-center justify-center h-12 px-7 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-primary font-label-lg text-label-lg shadow-sm transition-all duration-200 gap-2"
                   href="/contact"
                 >
                   <span className="material-symbols-outlined text-secondary text-[20px]">calendar_today</span>
@@ -129,7 +131,7 @@ export function HowItWorksContent() {
                   ))}
                 </div>
               </div>
-            </div>
+            </Reveal>
           </section>
 
           {/* Steps */}
@@ -139,7 +141,7 @@ export function HowItWorksContent() {
               id={`step-${s.number}`}
               className="max-w-3xl mx-auto px-margin py-space-xl scroll-mt-24"
             >
-              <div className="flex flex-col gap-space-md">
+              <Reveal className="flex flex-col gap-space-md">
                 <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-secondary/10 text-secondary">
                   <span className="material-symbols-outlined text-[16px]">{s.icon}</span>
                   <span className="font-label-sm text-label-sm font-bold uppercase tracking-wider">
@@ -156,26 +158,26 @@ export function HowItWorksContent() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </Reveal>
             </section>
           ))}
 
           {/* Exceptions */}
           <section className="max-w-7xl mx-auto px-margin py-space-2xl">
-            <div className="text-center max-w-3xl mx-auto mb-space-xl">
+            <Reveal className="text-center max-w-3xl mx-auto mb-space-xl">
               <h2 className="font-headline-xl text-headline-xl text-primary">When something needs attention</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+            </Reveal>
+            <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
               {exceptions.map((e) => (
-                <div key={e.title} className="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm">
+                <StaggerItem lift key={e.title} className="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm">
                   <div className="w-12 h-12 rounded-xl bg-surface-container text-secondary flex items-center justify-center mb-space-md">
                     <span className="material-symbols-outlined text-[24px]">{e.icon}</span>
                   </div>
                   <h3 className="font-headline-sm text-headline-sm text-primary mb-2">{e.title}</h3>
                   <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">{e.text}</p>
-                </div>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
           </section>
 
           {/* CTA */}
@@ -183,7 +185,7 @@ export function HowItWorksContent() {
             <div className="relative rounded-3xl bg-primary text-on-primary overflow-hidden p-space-xl sm:p-space-2xl shadow-xl">
               <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-secondary/20 blur-3xl pointer-events-none"></div>
               <div className="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-secondary-container/10 blur-3xl pointer-events-none"></div>
-              <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
+              <Reveal className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
                 <h2 className="font-headline-xl text-headline-xl text-on-primary mb-space-sm leading-tight">
                   See how it fits your team
                 </h2>
@@ -192,21 +194,21 @@ export function HowItWorksContent() {
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-space-md w-full">
                   <a
-                    className="inline-flex items-center justify-center h-12 px-space-xl rounded-lg bg-secondary hover:bg-secondary-fixed text-on-secondary hover:text-on-secondary-fixed font-label-lg text-label-lg shadow-md transition-all duration-200 gap-2"
+                    className="btn-lift inline-flex items-center justify-center h-12 px-space-xl rounded-lg bg-secondary hover:bg-secondary-fixed text-on-secondary hover:text-on-secondary-fixed font-label-lg text-label-lg shadow-md transition-all duration-200 gap-2"
                     href="/register"
                   >
                     <span>Join the pilot</span>
                     <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                   </a>
                   <a
-                    className="inline-flex items-center justify-center h-12 px-space-xl rounded-lg bg-primary-container text-on-primary hover:bg-surface-tint font-label-lg text-label-lg transition-colors gap-2"
+                    className="btn-lift inline-flex items-center justify-center h-12 px-space-xl rounded-lg bg-primary-container text-on-primary hover:bg-surface-tint font-label-lg text-label-lg transition-colors gap-2"
                     href="/contact"
                   >
                     <span className="material-symbols-outlined text-[20px]">calendar_month</span>
                     <span>Book a demo</span>
                   </a>
                 </div>
-              </div>
+              </Reveal>
             </div>
           </section>
         </div>

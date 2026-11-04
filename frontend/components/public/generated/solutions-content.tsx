@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Reveal, Stagger, StaggerItem } from "@/components/public/motion";
 
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hisabloop.com";
@@ -401,11 +402,11 @@ function PlannedTag() {
  */
 function Flow({ steps, label }: { steps: Step[]; label: string }) {
   return (
-    <ol aria-label={label} className="flex flex-col lg:flex-row lg:items-stretch gap-0">
+    <Stagger as="ol" aria-label={label} className="flex flex-col lg:flex-row lg:items-stretch gap-0">
       {steps.map((s, i) => {
         const last = i === steps.length - 1;
         return (
-          <li key={s.title} className="flex flex-col lg:flex-row lg:flex-1 items-stretch min-w-0">
+          <StaggerItem as="li" key={s.title} className="flex flex-col lg:flex-row lg:flex-1 items-stretch min-w-0">
             <div
               className={`flex-1 min-w-0 rounded-xl bg-surface-container-lowest p-4 shadow-sm flex flex-col gap-2 ${s.planned ? "border border-dashed border-outline" : ""
                 }`}
@@ -434,10 +435,10 @@ function Flow({ steps, label }: { steps: Step[]; label: string }) {
                 <Icon name="arrow_forward" className="hidden lg:block" />
               </div>
             ) : null}
-          </li>
+          </StaggerItem>
         );
       })}
-    </ol>
+    </Stagger>
   );
 }
 
@@ -462,7 +463,7 @@ export function SolutionsContent() {
       {/* ------------------------------ Hero ------------------------------ */}
       <section aria-labelledby="solutions-title" className="w-full bg-surface py-12 sm:py-16 lg:py-20">
         <Wrapper>
-          <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
+          <Reveal immediate className="flex flex-col items-center text-center max-w-3xl mx-auto">
             <h1
               id="solutions-title"
               className="font-headline-xl text-primary font-bold tracking-tight text-[30px] leading-[38px] sm:text-[38px] sm:leading-[46px] lg:text-[46px] lg:leading-[54px]"
@@ -492,18 +493,18 @@ export function SolutionsContent() {
             <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
               <a
                 href="/register"
-                className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg shadow-md hover:bg-primary-container transition-colors ${focusRing}`}
+                className={`btn-lift inline-flex items-center justify-center h-12 px-8 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg shadow-md hover:bg-primary-container transition-colors ${focusRing}`}
               >
                 Join the pilot
               </a>
               <a
                 href="/contact"
-                className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:bg-surface-container transition-colors ${focusRing}`}
+                className={`btn-lift inline-flex items-center justify-center h-12 px-8 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:bg-surface-container transition-colors ${focusRing}`}
               >
                 Talk to us
               </a>
             </div>
-          </div>
+          </Reveal>
         </Wrapper>
       </section>
 
@@ -513,14 +514,14 @@ export function SolutionsContent() {
         className="w-full bg-surface-container-low py-12 sm:py-16 lg:py-20"
       >
         <Wrapper>
-          <header className="max-w-3xl mb-8 sm:mb-10">
+          <Reveal as="header" className="max-w-3xl mb-8 sm:mb-10">
             <h2 id="common-flow-title" className={h2Class}>
               How it works for every team
             </h2>
             <p className="mt-3 font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
               Employees and managers use WhatsApp. Finance and accountants use the web dashboard.
             </p>
-          </header>
+          </Reveal>
           <Flow steps={commonFlow} label="How a bill becomes a paid claim" />
         </Wrapper>
       </section>
@@ -534,7 +535,7 @@ export function SolutionsContent() {
           className={`w-full ${s.tone} py-14 sm:py-20 lg:py-24 scroll-mt-24`}
         >
           <Wrapper>
-            <header className="max-w-3xl">
+            <Reveal as="header" className="max-w-3xl">
               <h2 id={`${s.id}-title`} className={h2Class}>
                 {s.title}
               </h2>
@@ -543,7 +544,7 @@ export function SolutionsContent() {
                 <strong className="font-semibold text-primary">Best for: </strong>
                 {s.bestFor}
               </p>
-            </header>
+            </Reveal>
 
             <h3 className="mt-10 mb-4 font-headline-md text-headline-md text-primary font-bold">
               How it works for this team
@@ -553,9 +554,9 @@ export function SolutionsContent() {
             <h3 className="mt-10 mb-4 font-headline-md text-headline-md text-primary font-bold">
               What helps
             </h3>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Stagger as="ul" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {s.points.map((p) => (
-                <li
+                <StaggerItem as="li" lift
                   key={p.title}
                   className="min-w-0 rounded-xl bg-surface-container-lowest p-5 shadow-sm flex items-start gap-4"
                 >
@@ -571,9 +572,9 @@ export function SolutionsContent() {
                       {p.text}
                     </p>
                   </div>
-                </li>
+                </StaggerItem>
               ))}
-            </ul>
+            </Stagger>
 
             {s.note ? (
               <p className="mt-6 max-w-3xl rounded-xl bg-surface-container-lowest p-4 font-body-sm text-body-sm text-on-surface-variant">
@@ -598,23 +599,23 @@ export function SolutionsContent() {
           <h2 id="glossary-title" className={`${h2Class} mb-8`}>
             Words used on this page
           </h2>
-          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Stagger as="dl" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {glossary.map((g) => (
-              <div key={g.term} className="rounded-xl bg-surface-container-low p-5 min-w-0">
+              <StaggerItem key={g.term} className="rounded-xl bg-surface-container-low p-5 min-w-0">
                 <dt className="font-headline-sm text-headline-sm text-primary font-bold">{g.term}</dt>
                 <dd className="mt-1 font-body-md text-body-md text-on-surface-variant leading-relaxed">
                   {g.meaning}
                 </dd>
-              </div>
+              </StaggerItem>
             ))}
-          </dl>
+          </Stagger>
         </Wrapper>
       </section>
 
       {/* -------------------------------- CTA ----------------------------- */}
       <section aria-labelledby="solutions-cta-title" className="w-full bg-background pb-16 sm:pb-24">
         <Wrapper>
-          <div className="bg-primary-container text-on-primary rounded-3xl px-6 py-12 sm:px-10 sm:py-14 lg:p-16 text-center flex flex-col items-center gap-5 shadow-xl">
+          <Reveal className="bg-primary-container text-on-primary rounded-3xl px-6 py-12 sm:px-10 sm:py-14 lg:p-16 text-center flex flex-col items-center gap-5 shadow-xl">
             <h2
               id="solutions-cta-title"
               className="font-headline-xl font-bold tracking-tight text-on-primary max-w-2xl text-[26px] leading-[34px] sm:text-[32px] sm:leading-[40px] lg:text-[38px] lg:leading-[46px]"
@@ -627,18 +628,18 @@ export function SolutionsContent() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
               <a
                 href="/register"
-                className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-secondary text-on-secondary font-label-lg text-label-lg font-bold shadow-md hover:opacity-90 transition-opacity ${focusRing}`}
+                className={`btn-lift inline-flex items-center justify-center h-12 px-8 rounded-lg bg-secondary text-on-secondary font-label-lg text-label-lg font-bold shadow-md hover:opacity-90 transition-opacity ${focusRing}`}
               >
                 Join the pilot
               </a>
               <a
                 href="/contact"
-                className={`inline-flex items-center justify-center h-12 px-8 rounded-lg bg-surface-container-lowest/10 text-on-primary font-label-lg text-label-lg hover:bg-surface-container-lowest/20 transition-colors ${focusRing}`}
+                className={`btn-lift inline-flex items-center justify-center h-12 px-8 rounded-lg bg-surface-container-lowest/10 text-on-primary font-label-lg text-label-lg hover:bg-surface-container-lowest/20 transition-colors ${focusRing}`}
               >
                 Talk to us
               </a>
             </div>
-          </div>
+          </Reveal>
         </Wrapper>
       </section>
     </main>

@@ -1,3 +1,4 @@
+import { Reveal, Stagger, StaggerItem } from "@/components/public/motion";
 import { PricingEstimator } from "@/components/public/pricing-estimator";
 
 type Plan = {
@@ -89,21 +90,22 @@ export function PricingContent() {
 
           {/* Hero */}
           <section className="max-w-7xl mx-auto px-margin pt-space-xl pb-space-lg">
-            <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
+            <Reveal immediate className="flex flex-col items-center text-center max-w-3xl mx-auto">
               <h1 className="font-headline-xl text-headline-xl text-primary tracking-tight mb-space-md">
                 Simple per-user pricing
               </h1>
               <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
                 Pay per team member, per month. Prices are in Indian rupees and exclude GST.
               </p>
-            </div>
+            </Reveal>
           </section>
 
           {/* Plans */}
           <section className="max-w-7xl mx-auto px-margin py-space-lg">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-gutter items-stretch">
+            <Stagger className="grid grid-cols-1 lg:grid-cols-3 gap-gutter items-stretch">
               {plans.map((p) => (
-                <div
+                <StaggerItem
+                  lift
                   key={p.name}
                   className={`relative flex flex-col justify-between bg-surface-container-lowest rounded-xl p-space-xl ${
                     p.highlight
@@ -155,7 +157,7 @@ export function PricingContent() {
                   </div>
                   <div className="pt-space-xl mt-space-lg">
                     <a
-                      className={`w-full inline-flex items-center justify-center px-space-lg rounded-lg font-label-lg text-label-lg transition-colors ${
+                      className={`btn-lift w-full inline-flex items-center justify-center px-space-lg rounded-lg font-label-lg text-label-lg transition-colors ${
                         p.highlight
                           ? "h-12 bg-primary hover:bg-primary-container text-on-primary shadow-md"
                           : "h-11 bg-surface-container hover:bg-surface-container-high text-primary"
@@ -165,9 +167,9 @@ export function PricingContent() {
                       {p.cta.label}
                     </a>
                   </div>
-                </div>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
 
             <div className="mt-space-lg p-space-md rounded-xl bg-surface-container-low flex items-start sm:items-center gap-space-sm text-on-surface-variant">
               <span className="material-symbols-outlined text-secondary text-xl shrink-0">info</span>
@@ -179,9 +181,9 @@ export function PricingContent() {
 
           {/* Estimator */}
           <section className="max-w-7xl mx-auto px-margin py-space-xl">
-            <div className="bg-surface-container-lowest rounded-xl p-space-xl shadow-sm">
+            <Reveal className="bg-surface-container-lowest rounded-xl p-space-xl shadow-sm">
               <PricingEstimator />
-            </div>
+            </Reveal>
           </section>
 
           {/* FAQ */}
@@ -189,17 +191,17 @@ export function PricingContent() {
             <div className="text-center mb-space-xl">
               <h2 className="font-headline-lg text-headline-lg text-primary tracking-tight">Pricing questions</h2>
             </div>
-            <div className="flex flex-col gap-space-md">
+            <Stagger className="flex flex-col gap-space-md">
               {faqs.map((f) => (
-                <div key={f.q} className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
+                <StaggerItem key={f.q} className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
                   <div className="flex items-start justify-between gap-space-md">
                     <h3 className="font-headline-sm text-headline-sm text-primary">{f.q}</h3>
                     <span className="material-symbols-outlined text-secondary shrink-0">help_outline</span>
                   </div>
                   <p className="font-body-md text-body-md text-on-surface-variant mt-space-sm leading-relaxed">{f.a}</p>
-                </div>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
           </section>
 
           {/* CTA */}
@@ -207,7 +209,7 @@ export function PricingContent() {
             <div className="bg-primary-container rounded-xl p-space-xl md:p-space-2xl text-on-primary relative overflow-hidden shadow-xl">
               <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-secondary/20 rounded-full blur-3xl pointer-events-none"></div>
               <div className="absolute -left-10 -top-10 w-60 h-60 bg-secondary-container/10 rounded-full blur-2xl pointer-events-none"></div>
-              <div className="relative z-10 max-w-3xl flex flex-col items-start gap-space-md">
+              <Reveal className="relative z-10 max-w-3xl flex flex-col items-start gap-space-md">
                 <h2 className="font-headline-xl text-headline-xl text-on-primary tracking-tight">
                   Try HisabLoop with your team
                 </h2>
@@ -216,20 +218,20 @@ export function PricingContent() {
                 </p>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-md pt-space-md w-full sm:w-auto">
                   <a
-                    className="inline-flex items-center justify-center h-12 px-space-xl rounded-lg bg-secondary hover:bg-secondary/90 text-on-secondary font-label-lg text-label-lg shadow-md transition-all"
+                    className="btn-lift inline-flex items-center justify-center h-12 px-space-xl rounded-lg bg-secondary hover:bg-secondary/90 text-on-secondary font-label-lg text-label-lg shadow-md transition-all"
                     href="/register"
                   >
                     Join the pilot
                   </a>
                   <a
-                    className="inline-flex items-center justify-center h-12 px-space-lg rounded-lg bg-surface-container-lowest/10 hover:bg-surface-container-lowest/20 text-on-primary font-label-lg text-label-lg transition-colors"
+                    className="btn-lift inline-flex items-center justify-center h-12 px-space-lg rounded-lg bg-surface-container-lowest/10 hover:bg-surface-container-lowest/20 text-on-primary font-label-lg text-label-lg transition-colors"
                     href="/contact"
                   >
                     <span className="material-symbols-outlined mr-2 text-lg">calendar_month</span>
                     Book a demo
                   </a>
                 </div>
-              </div>
+              </Reveal>
             </div>
           </section>
         </div>

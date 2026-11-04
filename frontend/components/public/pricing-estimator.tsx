@@ -87,7 +87,7 @@ export function PricingEstimator() {
         <div className="pt-space-lg">
           <Link
             href="/register"
-            className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary px-space-md font-label-lg text-label-lg text-on-primary transition-colors hover:bg-primary-container"
+            className="btn-lift inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary px-space-md font-label-lg text-label-lg text-on-primary transition-colors hover:bg-primary-container"
           >
             Join the pilot
           </Link>

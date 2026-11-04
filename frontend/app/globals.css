@@ -53,3 +53,18 @@ td,
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
+
+/* Subtle hover rise for call-to-action buttons. Hover-capable devices only; off for reduced motion. */
+.btn-lift {
+  transition-property: transform, box-shadow, background-color, color, opacity;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .btn-lift:hover {
+    transform: translateY(-1px);
+  }
+  .btn-lift:active {
+    transform: translateY(0);
+  }
+}
